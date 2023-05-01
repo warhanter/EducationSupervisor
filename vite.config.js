@@ -5,5 +5,5 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/EducationSupervisor/",
-  publicDir: "public/EducationSupervisor/",
+  publicDir: "/EducationSupervisor/public",
 });
