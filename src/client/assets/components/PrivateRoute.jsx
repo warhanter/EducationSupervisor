@@ -4,7 +4,7 @@ import app from "../../realm";
 
 const PrivateRoute = ({ children }) => {
   const [user, setUser] = useState(app.currentUser);
-  return user ? <>{children}</> : <Navigate to="./login" />;
+  return user ? <>{children}</> : <Navigate to="/EducationSupervisor/login" />;
 };
 
 export default PrivateRoute;
