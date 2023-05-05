@@ -17,7 +17,7 @@ const Login = () => {
       await loginApp(emailRef.current.value, passwordRef.current.value);
       setLoading(true);
       setError();
-      navigate("/EducationSupervisor/students");
+      navigate("/students");
     } catch (error) {
       setError(error.error);
     }
@@ -25,7 +25,7 @@ const Login = () => {
   };
 
   if (currentUser) {
-    return <Navigate to={"/EducationSupervisor/"} replace />;
+    return <Navigate to={"/"} replace />;
   }
 
   return (
