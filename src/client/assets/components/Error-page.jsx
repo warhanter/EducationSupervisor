@@ -18,7 +18,10 @@ export default function ErrorPage() {
             <p style={{ color: "orangered" }}>
               <i>{error.statusText || error.message}</i>
             </p>
-            <NavLink style={{ alignSelf: "center" }} to={"/"}>
+            <NavLink
+              style={{ alignSelf: "center" }}
+              to={"/EducationSupervisor/"}
+            >
               Back to Home
             </NavLink>
           </Card.Body>
