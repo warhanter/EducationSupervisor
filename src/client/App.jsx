@@ -1,35 +1,54 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg"
-
-import "./App.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Students from "./assets/components/Students";
+import Login from "./assets/components/login";
+import ErrorPage from "./assets/components/Error-page";
+import Dashboard from "./assets/components/Dashboard";
+import { AuthProvider } from "./assets/contexts/AuthContext";
+import { Container } from "react-bootstrap";
+import PrivateRoute from "./assets/components/PrivateRoute";
+import NavigationBar from "./assets/components/Navbar";
+// import "bootstrap/dist/css/bootstrap.rtl.min.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Dashboard />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/students",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+  ]);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="./vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR!
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <AuthProvider>
+      <Container
+        style={{ minHeight: "100vh" }}
+        className="d-flex  justify-content-center"
+      >
+        <div style={{ minWidth: 1280 }} className="w-100">
+          <RouterProvider router={router} />
+        </div>
+      </Container>
+    </AuthProvider>
   );
 }
 
