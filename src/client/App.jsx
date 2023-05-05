@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Students from "./assets/components/Students";
-import Login from "./assets/components/login";
+import Login from "./assets/components/Login";
 import ErrorPage from "./assets/components/Error-page";
 import Dashboard from "./assets/components/Dashboard";
 import { AuthProvider } from "./assets/contexts/AuthContext";
