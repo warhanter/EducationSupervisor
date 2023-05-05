@@ -64,7 +64,8 @@ const Students = () => {
       (i) =>
         i.first_name.search(fistName) >= 0 ||
         i.last_name.search(fistName) >= 0 ||
-        (i.last_name + " " + i.first_name).search(fistName) >= 0
+        (i.last_name + " " + i.first_name).search(fistName) >= 0 ||
+        new Date(i.student_DOB).toLocaleDateString("fr").search(fistName) >= 0
     );
 
     setCurrentItems(filtredData);
