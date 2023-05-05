@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  createRoutesFromElements,
+} from "react-router-dom";
 import Students from "./assets/components/Students";
 import Login from "./assets/components/Login";
 import ErrorPage from "./assets/components/Error-page";
@@ -34,6 +38,9 @@ function App() {
           <Students />
         </PrivateRoute>
       ),
+      errorElement: <ErrorPage />,
+    },
+    {
       errorElement: <ErrorPage />,
     },
   ]);

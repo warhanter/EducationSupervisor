@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/server/main.js -w src/server",
     "start": "NODE_ENV=production node src/server/main.js",
-    "build": "vite build"
+    "build": "vite build",
+    "preview": "vite preview --port 8080"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.0.0",
