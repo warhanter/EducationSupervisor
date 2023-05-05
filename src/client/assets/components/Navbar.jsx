@@ -29,12 +29,15 @@ const NavigationBar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            {/* <Nav.Link onClick={() => navigate("/EducationSupervisor/")}>Home</Nav.Link>
-            <Nav.Link onClick={() => navigate("/EducationSupervisor/students")}>students</Nav.Link>
-            <Nav.Link onClick={() => navigate("/EducationSupervisor/Link")}>Link</Nav.Link> */}
-            <Nav.Link href="/EducationSupervisor/">Home</Nav.Link>
-            <Nav.Link href="/EducationSupervisor/students">students</Nav.Link>
-            <Nav.Link href="/EducationSupervisor/Link">Link</Nav.Link>
+            <Nav.Link onClick={() => navigate("/EducationSupervisor/")}>
+              Home
+            </Nav.Link>
+            <Nav.Link onClick={() => navigate("/EducationSupervisor/students")}>
+              students
+            </Nav.Link>
+            <Nav.Link onClick={() => navigate("/EducationSupervisor/Link")}>
+              Link
+            </Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
