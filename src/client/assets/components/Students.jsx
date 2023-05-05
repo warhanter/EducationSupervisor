@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import "./Students.css";
 import * as Realm from "realm-web";
 import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
-import Pagination from "./pagination";
+import Pagination from "./Pagination";
 import _ from "lodash";
 import { useRef } from "react";
 const STable = lazy(() => import("./StudentTable.jsx"));
