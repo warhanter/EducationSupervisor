@@ -1,7 +1,7 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  createRoutesFromElements,
+  createHashRouter,
 } from "react-router-dom";
 import Students from "./assets/components/Students";
 import Login from "./assets/components/Login";
@@ -14,7 +14,7 @@ import NavigationBar from "./assets/components/Navbar";
 // import "bootstrap/dist/css/bootstrap.rtl.min.css";
 
 function App() {
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/EducationSupervisor/",
       element: (
