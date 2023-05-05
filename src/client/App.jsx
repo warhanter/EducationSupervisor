@@ -12,7 +12,7 @@ import NavigationBar from "./assets/components/Navbar";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/EducationSupervisor/",
       element: (
         <PrivateRoute>
           <NavigationBar />
@@ -22,12 +22,12 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "/login",
+      path: "/EducationSupervisor/login",
       element: <Login />,
       errorElement: <ErrorPage />,
     },
     {
-      path: "/students",
+      path: "/EducationSupervisor/students",
       element: (
         <PrivateRoute>
           <NavigationBar />
