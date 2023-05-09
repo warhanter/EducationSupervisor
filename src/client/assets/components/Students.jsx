@@ -26,6 +26,7 @@ const Students = ({ queryTbale }) => {
   // const endOffset = itemOffset2 + itemsPerPage;
   const [currentItems, setCurrentItems] = useState();
   const [currentItems2, setCurrentItems2] = useState([]);
+  const [currentItems3, setCurrentItems3] = useState([]);
   const [pageCount1, setPageCount1] = useState(0);
   const [pageCount2, setPageCount2] = useState(0);
   const [error, setError] = useState();
@@ -73,6 +74,7 @@ const Students = ({ queryTbale }) => {
     }
     setData(data1);
     setCurrentItems2(data2);
+    setCurrentItems3(_.filter(data1, (i) => i.absence_date));
   };
 
   const handleSearch = (fistName) => {
@@ -147,7 +149,7 @@ const Students = ({ queryTbale }) => {
         )}
         {queryTbale === "Absence" && (
           <Suspense fallback={<BasicSpinner />}>
-            <ATable data={currentItems2} />
+            <ATable data={currentItems3} />
           </Suspense>
         )}
         {error && (

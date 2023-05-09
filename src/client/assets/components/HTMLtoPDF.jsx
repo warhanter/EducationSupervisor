@@ -34,19 +34,13 @@ const MyDocument = () => {
   const options11 = {
     hour: "numeric",
     minute: "numeric",
-
-    // dayPeriod: 'long',
   };
-
   const date_format2 = {
-    // weekday: 'long',
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    // hour: 'numeric',
-    // minute: 'numeric',
-    // hour12: false,
   };
+
   const daily_rapport = false;
 
   const handleGeneratePdf = () => {
