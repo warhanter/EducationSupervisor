@@ -33,40 +33,42 @@ const Login = () => {
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
     >
-      <div className="w-100" style={{ maxWidth: 400 }}>
+      <div className="w-100" style={{ textAlign: "right", maxWidth: 400 }}>
         <Card>
-          <h1 className="text-center mt-4">Sign in</h1>
+          <h1 className="text-center mt-4">تسجيل الدخول</h1>
           <Card.Body>
             {currentUser && <Alert>{currentUser.profile.email}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group id="email" className="mb-2">
-                <Form.Label>Username</Form.Label>
+                <Form.Label>اسم المستخدم</Form.Label>
                 <Form.Control
+                  style={{ textAlign: "right" }}
                   type="text"
-                  placeholder="Enter email"
+                  placeholder="اسم المستخدم"
                   required
                   ref={emailRef}
                 />
               </Form.Group>
               <Form.Group id="password" className="my-2">
-                <Form.Label>password</Form.Label>
+                <Form.Label>الرقم السري</Form.Label>
                 <Form.Control
+                  style={{ textAlign: "right" }}
                   type="password"
-                  placeholder="Enter password"
+                  placeholder="الرقم السري"
                   required
                   ref={passwordRef}
                 />
               </Form.Group>
               <Button className="my-4 w-100" type="submit" disabled={loading}>
-                Login
+                دخول
               </Button>
               {error && <Alert variant="danger">{error}</Alert>}
             </Form>
           </Card.Body>
         </Card>
-        <div className="w-100 mt-4">
+        {/* <div className="w-100 mt-4">
           Don't have an account? please create one Sign Up
-        </div>
+        </div> */}
       </div>
     </Container>
   );
