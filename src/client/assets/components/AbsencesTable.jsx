@@ -10,7 +10,7 @@ const AbsencesTable = ({ data }) => {
           <th>اللقب</th>
           <th>الاسم</th>
           <th>تاريخ الميلاد</th>
-          <th>تاريخ الغياب</th>
+          <th>السنة</th>
           <th>القسم</th>
           <th>الفوج</th>
           <th>الصفة</th>
@@ -25,9 +25,9 @@ const AbsencesTable = ({ data }) => {
                 <td>{student.last_name}</td>
                 <td>{student.first_name}</td>
                 <td>
-                  {new Date(student.student_DOB).toLocaleDateString("fr")}
+                  {new Date(student.date_of_absence).toLocaleDateString("fr")}
                 </td>
-                <td>{student.level}</td>
+                <td>{student.class_level}</td>
                 <td>{student.class_name}</td>
                 <td>{student.class_number}</td>
                 <td>{student.student_status}</td>

@@ -124,8 +124,8 @@ const Students = ({ queryTbale }) => {
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-center w-100">
-      <div className="mt-4" style={{ minWidth: 1280 }}>
+    <div className="container d-flex align-items-center justify-content-center">
+      <div className="mt-4 w-100" style={{ maxWidth: 1280 }}>
         <div>
           <InputGroup className="mb-4">
             <Form.Control
