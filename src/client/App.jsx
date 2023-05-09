@@ -1,8 +1,4 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-  createHashRouter,
-} from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import Students from "./assets/components/Students";
 import Login from "./assets/components/Login";
 import ErrorPage from "./assets/components/Error-page";
@@ -11,7 +7,9 @@ import { AuthProvider } from "./assets/contexts/AuthContext";
 import { Container } from "react-bootstrap";
 import PrivateRoute from "./assets/components/PrivateRoute";
 import NavigationBar from "./assets/components/Navbar";
-// import "bootstrap/dist/css/bootstrap.rtl.min.css";
+import "bootstrap/dist/css/bootstrap.rtl.min.css";
+import "./App.css";
+import MyDocument from "./assets/components/HTMLtoPDF";
 
 function App() {
   const router = createHashRouter([
@@ -31,11 +29,32 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "/students",
+      path: "/pdf",
       element: (
         <PrivateRoute>
           <NavigationBar />
-          <Students />
+          <MyDocument />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/students",
+
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="Student" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/absences",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="Absence" />
         </PrivateRoute>
       ),
       errorElement: <ErrorPage />,
