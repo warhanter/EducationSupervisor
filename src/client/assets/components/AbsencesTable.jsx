@@ -67,6 +67,7 @@ const AbsencesTable = ({ data }) => {
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
+      studentObject.student_status = student.student_status;
       studentObject.class = `${student.level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
@@ -90,6 +91,12 @@ const AbsencesTable = ({ data }) => {
       <div className="my-4 w-100 d-flex justify-content-end">
         <h4>
           <Badge bg="danger">{`عدد الغيابات : ${absencesData.length}`}</Badge>
+        </h4>
+        <h4>
+          <Badge bg="danger">{`خارجي : ${(_.filter(absencesData,(student => student.gender === 'خارجي'))).length}`}</Badge>
+        </h4>
+        <h4>
+          <Badge bg="danger">{`نصف داخلي : ${absencesData.length}`}</Badge>
         </h4>
       </div>
       <table id="studentsTable">
