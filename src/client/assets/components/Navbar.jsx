@@ -27,7 +27,7 @@ const NavigationBar = () => {
     <Navbar bg="light" expand="lg">
       <Container>
         <NavDropdown
-          title={app?.currentUser.profile.email + " بروفايل  "}
+          title={app?.currentUser?.profile.email + " بروفايل  "}
           id="basic-nav-dropdown"
         >
           <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

@@ -1,23 +1,12 @@
-import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
-import Html from "react-pdf-html";
+import React, { useCallback, useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import {
-  Document,
-  Page,
-  PDFViewer,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
-// import app from "../../realm";
+import { PDFViewer, StyleSheet } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
-import { Button } from "react-bootstrap";
-import "../fonts/Janna LT Bold-normal.js";
-import "../fonts/Janna LT Bold-bold.js";
+import { Button, Container } from "react-bootstrap";
+import TableView from "./TableView.jsx";
 
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
-const dbAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
 
 // Create Document Component
 const MyDocument = () => {
@@ -25,12 +14,12 @@ const MyDocument = () => {
   const [accessToken, setAccessToken] = useState(app.currentUser?.accessToken);
   const [data, setData] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
+  const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
 
   let headers = new Headers({
     "Content-Type": "application/json",
     Authorization: "Bearer " + accessToken,
   });
-
   const options11 = {
     hour: "numeric",
     minute: "numeric",
@@ -40,8 +29,6 @@ const MyDocument = () => {
     month: "2-digit",
     year: "numeric",
   };
-
-  const daily_rapport = false;
 
   const handleGeneratePdf = () => {
     const absencesData = generateRapportTableData();
@@ -103,23 +90,26 @@ const MyDocument = () => {
       putOnlyUsedFonts: true,
       orientation: "p",
     });
-    doc.setFont("Janna LT Bold", "normal", 400);
+    doc.setFont("Janna LT Bold");
     doc.setLanguage("ar");
+    doc.setFontSize(14);
     doc.setLineHeightFactor(0.5);
     doc.text(
-      `غيابات التلاميذ ليوم ${new Date().toLocaleDateString("fr")}`,
-      200,
-      15,
+      `غيابات التلاميذ ليوم: ${new Date().toLocaleDateString("fr")}`,
+      190,
+      13,
       null,
       null,
       "right"
     );
-    doc.table(30, 20, generateData(), headers, {
+    doc.table(20, 20, generateData(), headers, {
       autoSize: true,
-      fontSize: 8,
+      fontSize: 10,
       printHeaders: true,
     });
-    doc.save();
+    // doc.save();
+
+    setAttribute(doc.output("bloburl"));
   };
 
   useEffect(() => {
@@ -132,33 +122,20 @@ const MyDocument = () => {
       headers: headers,
     }).then((res) => (res.ok ? res.json() : undefined));
   }, []);
-  const getDataAbsence = useCallback(async () => {
-    return fetch(dbAbsences, {
-      method: "GET",
-      headers: headers,
-    }).then((res) => (res.ok ? res.json() : undefined));
-  }, []);
-
   const handleData = async () => {
     const data1 = await getDataStudent();
-    const data2 = await getDataAbsence();
     if (data1 === undefined) {
       setError("Error loading Data, please logout and login again...   ");
       return;
     }
-    if (data2 === undefined) {
-      setError("Error loading Data, please logout and login again...   ");
-      return;
-    }
     setData(data1);
-    setCurrentItems2(data2);
   };
 
   const generateRapportTableData = () => {
     let result = [];
     let i = 0;
 
-    data.map((student) => {
+    data.map((student, index) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
@@ -166,7 +143,6 @@ const MyDocument = () => {
       i += 1;
       const dateOfAbsence = new Date(student.absence_date);
       const date1 = Date.now();
-      // const date2 = student.absence_date.getTime();
       const date2 = new Date(student.absence_date);
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
@@ -199,6 +175,7 @@ const MyDocument = () => {
           ? "إعذار"
           : "شطب";
       };
+      studentObject.number = index.toString();
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
@@ -220,17 +197,45 @@ const MyDocument = () => {
     return result;
   };
 
+  const absencesData = generateRapportTableData();
+  absencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
+
   return (
-    <>
-      <Button className="m-4" onClick={() => handleGeneratePdf()}>
-        Print Table
-      </Button>
-      <PDFViewer style={{ height: "100%", width: "100%" }}>
-        <Document>
-          <Page size="A4"></Page>
-        </Document>
-      </PDFViewer>
-    </>
+    <Container
+      style={{ fontFamily: "serif" }}
+      className="d-flex flex-row-reverse"
+    >
+      <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
+        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
+          استدعاء
+        </Button>
+        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
+          تقرير بتلميذ
+        </Button>
+        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
+          التقرير اليومي
+        </Button>
+      </div>
+      {/* {attribute && (
+        <div className="w-100 vh-100 mt-4">
+          <iframe
+            id="main-iframe"
+            src={attribute}
+            style={{
+              width: "100%",
+              height: "100%",
+              zIndex: 2,
+              border: "none",
+            }}
+          />
+        </div>
+      )} */}
+      <div className="w-100 vh-100 mt-4">
+        <PDFViewer style={{ height: "100%", width: "100%" }}>
+          <TableView data={absencesData}></TableView>
+        </PDFViewer>
+      </div>
+    </Container>
   );
 };
 

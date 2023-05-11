@@ -4,11 +4,6 @@ import { Badge } from "react-bootstrap";
 import _ from "lodash";
 
 const AbsencesTable = ({ data }) => {
-  const [absencesData, setAbsencesData] = useState("");
-  useEffect(() => {
-    setAbsencesData(generateRapportTableData());
-  }, []);
-
   const options11 = {
     hour: "numeric",
     minute: "numeric",
@@ -86,17 +81,31 @@ const AbsencesTable = ({ data }) => {
     return result;
   };
 
+  let absencesData = generateRapportTableData();
+  absencesData = _.orderBy(absencesData, ["class", "absence_days"], ["asc"]);
+
+  const filterData = (filterName) => {
+    return _.filter(absencesData, (item) => item.student_status === filterName);
+  };
+
   return (
     <div>
-      <div className="my-4 w-100 d-flex justify-content-end">
+      <div className="my-3 w-100 d-flex justify-content-end">
         <h4>
-          <Badge bg="danger">{`عدد الغيابات : ${absencesData.length}`}</Badge>
+          <Badge bg="danger">{`نصف داخلي : ${
+            filterData("نصف داخلي").length
+          }`}</Badge>
         </h4>
         <h4>
-          <Badge bg="danger">{`خارجي : ${(_.filter(absencesData,(student => student.gender === 'خارجي'))).length}`}</Badge>
+          <Badge className="mx-4" bg="danger">{`خارجي : ${
+            filterData("خارجي").length
+          }`}</Badge>
         </h4>
         <h4>
-          <Badge bg="danger">{`نصف داخلي : ${absencesData.length}`}</Badge>
+          <Badge
+            className="ml-4"
+            bg="danger"
+          >{`عدد الغيابات : ${absencesData.length}`}</Badge>
         </h4>
       </div>
       <table id="studentsTable">
@@ -120,11 +129,10 @@ const AbsencesTable = ({ data }) => {
                   <td>{i + 1}</td>
                   <td>{student.last_name}</td>
                   <td>{student.first_name}</td>
+                  <td>{student.class}</td>
                   <td>
                     {new Date(student.absence_date).toLocaleDateString("fr")}
                   </td>
-                  {/* <td>{student.absence_date}</td> */}
-                  <td>{student.class}</td>
                   <td>{student.missed_hours}</td>
                   <td>{student.absence_days}</td>
                   <td>{student.noticeName}</td>
