@@ -1,15 +1,16 @@
+import { lazy } from "react";
 import { RouterProvider, createHashRouter } from "react-router-dom";
-import Students from "./assets/components/Students";
-import Login from "./assets/components/Login";
-import ErrorPage from "./assets/components/Error-page";
-import Dashboard from "./assets/components/Dashboard";
 import { AuthProvider } from "./assets/contexts/AuthContext";
 import { Container } from "react-bootstrap";
+import Login from "./assets/components/Login";
+import ErrorPage from "./assets/components/Error-page";
 import PrivateRoute from "./assets/components/PrivateRoute";
 import NavigationBar from "./assets/components/Navbar";
+import MyDocument from "./assets/components/HTMLtoPDF";
 import "bootstrap/dist/css/bootstrap.rtl.min.css";
 import "./App.css";
-import MyDocument from "./assets/components/HTMLtoPDF";
+const Dashboard = lazy(() => import("./assets/components/Dashboard"));
+const Students = lazy(() => import("./assets/components/Students"));
 
 function App() {
   const router = createHashRouter([
@@ -55,6 +56,46 @@ function App() {
         <PrivateRoute>
           <NavigationBar />
           <Students queryTbale="Absence" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/nisfdakhil",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="nisfdakhil" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/wafidin",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="wafidin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/moghadirin",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="moghadirin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/machtobin",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="machtobin" />
         </PrivateRoute>
       ),
       errorElement: <ErrorPage />,

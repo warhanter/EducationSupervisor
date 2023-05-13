@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./Students.css";
+import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
 import _ from "lodash";
 

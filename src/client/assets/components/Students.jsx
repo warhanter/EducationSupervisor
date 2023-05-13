@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
-import "./Students.css";
+import "../styles/Students.css";
 import * as Realm from "realm-web";
 import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
 import Pagination from "./Pagination";
@@ -7,11 +7,18 @@ import _ from "lodash";
 import { useRef } from "react";
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
+import {
+  students,
+  wafidin,
+  moghadirin,
+  machtobin,
+  nisfDakhili,
+  absents,
+} from "../contexts/dbconnect";
 
 // const dbAPI =
 //   "https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student";
 const appID = "supervisorapp-nlsbq";
-
 const Students = ({ queryTbale }) => {
   const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
   const dbAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
@@ -152,6 +159,27 @@ const Students = ({ queryTbale }) => {
             <ATable data={currentItems3} />
           </Suspense>
         )}
+        {queryTbale === "nisfdakhil" && (
+          <Suspense fallback={<BasicSpinner />}>
+            <STable data={nisfDakhili} />
+          </Suspense>
+        )}
+        {queryTbale === "wafidin" && (
+          <Suspense fallback={<BasicSpinner />}>
+            <STable data={wafidin} />
+          </Suspense>
+        )}
+        {queryTbale === "moghadirin" && (
+          <Suspense fallback={<BasicSpinner />}>
+            <STable data={moghadirin} />
+          </Suspense>
+        )}
+        {queryTbale === "machtobin" && (
+          <Suspense fallback={<BasicSpinner />}>
+            <STable data={machtobin} />
+          </Suspense>
+        )}
+        {queryTbale && <ViewTable />}
         {error && (
           <div className="d-flex justify-content-center m-5">
             <Alert variant="danger">{error}</Alert>

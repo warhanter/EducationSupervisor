@@ -17,7 +17,7 @@ const Login = () => {
       await loginApp(emailRef.current.value, passwordRef.current.value);
       setLoading(true);
       setError();
-      navigate("/students");
+      navigate("/");
     } catch (error) {
       setError(error.error);
     }

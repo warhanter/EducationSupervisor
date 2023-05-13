@@ -1,0 +1,52 @@
+.parentContainer {
+  margin-top: 170px;
+}
+
+div.cardContainer {
+  width: 250px;
+  height: 150px;
+  margin: 40px 0 0 40px;
+  background-color: #337ab7;
+  color: whitesmoke;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  border-radius: 4px;
+}
+
+.cardLink {
+  text-decoration: none;
+  padding-right: 20px;
+}
+.link {
+  display: flex;
+  color: #337ab7;
+  background-color: #f5f5f5;
+  width: 246px;
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  justify-content: right;
+  align-items: center;
+  cursor: pointer;
+  margin: 2px;
+}
+.cardTitle {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: xx-large;
+}
+.cardText {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+}
+
+.icon {
+  margin: 20px;
+}
+.arrowIcon {
+  position: absolute;
+  left: 15px;
+}
