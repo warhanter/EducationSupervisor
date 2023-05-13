@@ -179,7 +179,6 @@ const Students = ({ queryTbale }) => {
             <STable data={machtobin} />
           </Suspense>
         )}
-        {queryTbale && <ViewTable />}
         {error && (
           <div className="d-flex justify-content-center m-5">
             <Alert variant="danger">{error}</Alert>
