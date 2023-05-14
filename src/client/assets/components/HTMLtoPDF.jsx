@@ -207,12 +207,12 @@ const MyDocument = () => {
       style={{ fontFamily: "serif" }}
       className="d-flex flex-row-reverse"
     >
+      <DatePicker
+      showIcon
+      selected={startDate}
+      onChange={(date) => setStartDate(date)}
+      />
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
-        <DatePicker
-        showIcon
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
           استدعاء
         </Button>
