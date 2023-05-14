@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     marginRight: 35,
   },
 });
-const TableView = ({ data, splitter = "" }) => {
-  function reverseString(str) {
+const TableView = ({ data }) => {
+  function reverseString(str, splitter = "") {
     // Step 1. Use the split() method to return a new array
     var splitString = str.split(splitter);
     // Step 2. Use the reverse() method to reverse the new created array
