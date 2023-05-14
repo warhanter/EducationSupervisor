@@ -63,6 +63,17 @@ const styles = StyleSheet.create({
   },
 });
 const TableView = ({ data }) => {
+  function reverseString(str) {
+    // Step 1. Use the split() method to return a new array
+    var splitString = str.split("");
+    // Step 2. Use the reverse() method to reverse the new created array
+    var reverseArray = splitString.reverse();
+    // Step 3. Use the join() method to join all elements of the array into a string
+    var joinArray = reverseArray.join("");
+    //Step 4. Return the reversed string
+    return joinArray; 
+}
+
   return (
     <Document>
       <Page>
@@ -108,7 +119,7 @@ const TableView = ({ data }) => {
                     <Text style={styles.tableCell}>{student.absence_days}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>{student.missed_hours}</Text>
+                    <Text style={styles.tableCell}>{reverseString(student.missed_hours)}</Text>
                   </View>
                   <View style={[styles.tableCol, { width: "70px" }]}>
                     <Text style={styles.tableCell}>{student.absence_date}</Text>
