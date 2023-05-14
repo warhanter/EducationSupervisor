@@ -1,5 +1,6 @@
 .parentContainer {
-  margin-top: 60px;
+  margin-top: 50px;
+   min-width: 1280px;
 }
 
 div.cardContainer {
