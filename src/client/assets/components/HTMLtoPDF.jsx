@@ -150,7 +150,7 @@ const MyDocument = () => {
       }
       i += 1;
       const dateOfAbsence = new Date(student.absence_date);
-      const date1 = Date.now();
+      const date1 = startDate.getTime();
       const date2 = new Date(student.absence_date);
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
