@@ -4,6 +4,7 @@ import { PDFViewer, StyleSheet } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
 import TableView from "./TableView.jsx";
+import DatePicker from "react-datepicker";
 
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
@@ -15,6 +16,7 @@ const MyDocument = () => {
   const [data, setData] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
   const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
+  const [startDate, setStartDate] = useState(new Date());
 
   let headers = new Headers({
     "Content-Type": "application/json",
@@ -206,6 +208,11 @@ const MyDocument = () => {
       className="d-flex flex-row-reverse"
     >
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
+        <DatePicker
+        showIcon
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+        />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
           استدعاء
         </Button>
@@ -232,7 +239,7 @@ const MyDocument = () => {
       )} */}
       <div className="w-100 vh-100 mt-4">
         <PDFViewer style={{ height: "100%", width: "100%" }}>
-          <TableView data={absencesData}></TableView>
+          <TableView data={absencesData} date={startDate}></TableView>
         </PDFViewer>
       </div>
     </Container>

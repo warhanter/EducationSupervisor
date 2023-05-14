@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginRight: 35,
   },
 });
-const TableView = ({ data }) => {
+const TableView = ({ data, date }) => {
   function reverseString(str, splitter = "") {
     // Step 1. Use the split() method to return a new array
     var splitString = str.split(splitter);
@@ -78,7 +78,7 @@ const TableView = ({ data }) => {
     <Document>
       <Page>
         <Text style={styles.header}>
-          {reverseString(new Date().toLocaleDateString("fr"), "/")} غيابات التلاميذ ليوم
+          {reverseString(date.toLocaleDateString("fr"), "/")} غيابات التلاميذ ليوم
         </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
