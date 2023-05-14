@@ -122,7 +122,7 @@ const TableView = ({ data }) => {
                     <Text style={styles.tableCell}>{reverseString(student.missed_hours)}</Text>
                   </View>
                   <View style={[styles.tableCol, { width: "70px" }]}>
-                    <Text style={styles.tableCell}>{student.absence_date}</Text>
+                    <Text style={styles.tableCell}>{reverseString(student.absence_date)}</Text>
                   </View>
                   <View style={[styles.tableCol, { width: "110px" }]}>
                     <Text style={styles.tableCell}>{student.class}</Text>
