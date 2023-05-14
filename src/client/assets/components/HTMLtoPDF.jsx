@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, forwardRef } from "react";
 import jsPDF from "jspdf";
 import { PDFViewer, StyleSheet } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
@@ -18,6 +18,11 @@ const MyDocument = () => {
   const [currentItems2, setCurrentItems2] = useState([]);
   const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
+  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button className="w-100 mb-3 btn btn-primary" onClick={onClick} ref={ref}>
+      {value}
+    </button>
+  ));
 
   let headers = new Headers({
     "Content-Type": "application/json",
@@ -213,6 +218,7 @@ const MyDocument = () => {
         showIcon
         selected={startDate}
         onChange={(date) => setStartDate(date)}
+        customInput={<ExampleCustomInput />}
         />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
           استدعاء
