@@ -64,6 +64,7 @@ const AbsencesTable = ({ data }) => {
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
       studentObject.student_status = student.student_status;
+      studentObject.medical_leave = student.medical_leave;
       studentObject.class = `${student.level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
@@ -120,26 +121,24 @@ const AbsencesTable = ({ data }) => {
             <th>سا/غ</th>
             <th>الايام</th>
             <th>الاجراء</th>
+            <th>المبرر</th>
           </tr>
         </thead>
         <tbody>
           {absencesData &&
             absencesData.map((student, i) => {
+              console.log(student);
               return (
                 <tr key={i}>
                   <td>{i + 1}</td>
                   <td>{student.last_name}</td>
                   <td>{student.first_name}</td>
                   <td>{student.class}</td>
-                  <td>
-                    {reverseString(
-                      new Date(student.absence_date).toLocaleDateString("fr"),
-                      "/"
-                    )}
-                  </td>
+                  <td>{reverseString(student.absence_date, "/")}</td>
                   <td>{student.missed_hours}</td>
                   <td>{student.absence_days}</td>
                   <td>{student.noticeName}</td>
+                  <td>{student.medical_leave ? "ش طبية" : ""}</td>
                 </tr>
               );
             })}
