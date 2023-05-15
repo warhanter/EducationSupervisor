@@ -161,10 +161,14 @@ const MyDocument = () => {
         );
         const weekday = new Intl.DateTimeFormat("fr", {
           weekday: "long",
-        }).format(Date.now());
-        return (weekday === "mardi" || weekday === "tuesday" || weekday === "Tuesday") & (daysOfAbcence >= 1)
+        }).format(startDate);
+        console.log(weekday);
+        return (weekday === "mardi") & (daysOfAbcence >= 1)
           ? `4  -  0`
-          : (weekday === "mardi" || weekday === "tuesday" || weekday === "Tuesday") & (daysOfAbcence < 1)
+          : (weekday === "mardi" ||
+              weekday === "tuesday" ||
+              weekday === "Tuesday") &
+            (daysOfAbcence < 1)
           ? `${12 - start}  -  0`
           : daysOfAbcence >= 1
           ? `4  -  3`
@@ -187,6 +191,7 @@ const MyDocument = () => {
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
+      studentObject.medical_leave = student.medical_leave ? "ش طبية" : "";
       studentObject.class = `${student.level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
@@ -215,10 +220,10 @@ const MyDocument = () => {
     >
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
         <DatePicker
-        showIcon
-        selected={startDate}
-        onChange={(date) => setStartDate(date)}
-        customInput={<ExampleCustomInput />}
+          showIcon
+          selected={startDate}
+          onChange={(date) => setStartDate(date)}
+          customInput={<ExampleCustomInput />}
         />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
           استدعاء

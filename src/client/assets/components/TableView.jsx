@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
+import { reverseString } from "../contexts/AppFunctions";
 import NotoNaskhArabic from "../fonts/Amiri-Bold.ttf";
 Font.register({
   family: "arabic",
@@ -34,14 +35,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tableCol: {
-    width: "8%",
+    width: "7%",
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
   tableColHeader: {
-    width: "8%",
+    width: "7%",
     borderStyle: "solid",
     borderWidth: 1,
     borderLeftWidth: 0,
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   tableCell: {
     marginRight: 5,
     marginTop: 5,
-    fontSize: 11,
+    fontSize: 10,
     textAlign: "right",
   },
   header: {
@@ -63,47 +64,40 @@ const styles = StyleSheet.create({
   },
 });
 const TableView = ({ data, date }) => {
-  function reverseString(str, splitter = "") {
-    // Step 1. Use the split() method to return a new array
-    var splitString = str.split(splitter);
-    // Step 2. Use the reverse() method to reverse the new created array
-    var reverseArray = splitString.reverse();
-    // Step 3. Use the join() method to join all elements of the array into a string
-    var joinArray = reverseArray.join(splitter);
-    //Step 4. Return the reversed string
-    return joinArray; 
-}
-
   return (
     <Document>
       <Page>
         <Text style={styles.header}>
-          {reverseString(date.toLocaleDateString("fr"), "/")} غيابات التلاميذ ليوم
+          {reverseString(date.toLocaleDateString("fr"), "/")} غيابات التلاميذ
+          ليوم
         </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
             <View style={styles.tableColHeader}>
+              <Text style={styles.tableCell}>المبرر</Text>
+            </View>
+            <View style={styles.tableColHeader}>
               <Text style={styles.tableCell}>الإجراء</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "40px" }]}>
+            <View style={[styles.tableColHeader, { width: "30px" }]}>
               <Text style={styles.tableCell}>الأيام</Text>
             </View>
             <View style={styles.tableColHeader}>
               <Text style={styles.tableCell}>سا/غ</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "70px" }]}>
+            <View style={[styles.tableColHeader, { width: "65px" }]}>
               <Text style={styles.tableCell}>ت/الغياب</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "110px" }]}>
+            <View style={[styles.tableColHeader, { width: "130px" }]}>
               <Text style={styles.tableCell}>القسم</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "90px" }]}>
+            <View style={[styles.tableColHeader, { width: "80px" }]}>
               <Text style={styles.tableCell}>الاسم</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "80px" }]}>
+            <View style={[styles.tableColHeader, { width: "70px" }]}>
               <Text style={styles.tableCell}>اللقب</Text>
             </View>
-            <View style={[styles.tableColHeader, { width: "40px" }]}>
+            <View style={[styles.tableColHeader, { width: "30px" }]}>
               <Text style={styles.tableCell}>الرقم</Text>
             </View>
           </View>
@@ -113,27 +107,36 @@ const TableView = ({ data, date }) => {
               return (
                 <View key={index} style={styles.tableRow}>
                   <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>
+                      {student.medical_leave}
+                    </Text>
+                  </View>
+                  <View style={styles.tableCol}>
                     <Text style={styles.tableCell}>{student.noticeName}</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "40px" }]}>
+                  <View style={[styles.tableCol, { width: "30px" }]}>
                     <Text style={styles.tableCell}>{student.absence_days}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>{reverseString(student.missed_hours)}</Text>
+                    <Text style={styles.tableCell}>
+                      {reverseString(student.missed_hours)}
+                    </Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "70px" }]}>
-                    <Text style={styles.tableCell}>{reverseString(student.absence_date,"/")}</Text>
+                  <View style={[styles.tableCol, { width: "65px" }]}>
+                    <Text style={styles.tableCell}>
+                      {reverseString(student.absence_date, "/")}
+                    </Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "110px" }]}>
+                  <View style={[styles.tableCol, { width: "130px" }]}>
                     <Text style={styles.tableCell}>{student.class}</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "90px" }]}>
+                  <View style={[styles.tableCol, { width: "80px" }]}>
                     <Text style={styles.tableCell}>{student.first_name}</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "80px" }]}>
+                  <View style={[styles.tableCol, { width: "70px" }]}>
                     <Text style={styles.tableCell}>{student.last_name}</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "40px" }]}>
+                  <View style={[styles.tableCol, { width: "30px" }]}>
                     <Text style={styles.tableCell}>
                       {data.indexOf(student) + 1}
                     </Text>

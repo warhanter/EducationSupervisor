@@ -101,6 +101,16 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
+      path: "/otlaMaradiya",
+      element: (
+        <PrivateRoute>
+          <NavigationBar />
+          <Students queryTbale="otlaMaradiya" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
       errorElement: <ErrorPage />,
     },
   ]);

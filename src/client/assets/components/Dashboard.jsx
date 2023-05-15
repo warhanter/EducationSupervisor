@@ -10,6 +10,7 @@ import {
   machtobin,
   nisfDakhili,
   absents,
+  otlaMaradiya,
 } from "../contexts/dbconnect";
 const Dashboard = () => {
   return (
@@ -51,6 +52,12 @@ const Dashboard = () => {
             title={machtobin.length}
             subtitle="المشطوبين"
             link="/machtobin"
+          />
+          <DashboardCard
+            bgcolor="#3f88c5"
+            title={otlaMaradiya.length}
+            subtitle="العطل المرضية"
+            link="/otlaMaradiya"
           />
         </Suspense>
       </div>

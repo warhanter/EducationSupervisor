@@ -7,6 +7,7 @@ import _ from "lodash";
 import { useRef } from "react";
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
+const OTable = lazy(() => import("./MedialLeaveTable.jsx"));
 import {
   students,
   wafidin,
@@ -14,6 +15,7 @@ import {
   machtobin,
   nisfDakhili,
   absents,
+  otlaMaradiya,
 } from "../contexts/dbconnect";
 
 // const dbAPI =
@@ -166,17 +168,22 @@ const Students = ({ queryTbale }) => {
         )}
         {queryTbale === "wafidin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={wafidin} />
+            <STable data={wafidin} tableName="wafidin" />
           </Suspense>
         )}
         {queryTbale === "moghadirin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={moghadirin} />
+            <STable data={moghadirin} tableName="moghadirin" />
           </Suspense>
         )}
         {queryTbale === "machtobin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={machtobin} />
+            <STable data={machtobin} tableName="machtobin" />
+          </Suspense>
+        )}
+        {queryTbale === "otlaMaradiya" && (
+          <Suspense fallback={<BasicSpinner />}>
+            <OTable data={otlaMaradiya} />
           </Suspense>
         )}
         {error && (

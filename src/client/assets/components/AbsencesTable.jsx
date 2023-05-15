@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
 import _ from "lodash";
+import { reverseString } from "../contexts/AppFunctions";
 
 const AbsencesTable = ({ data }) => {
   const options11 = {
@@ -131,7 +132,10 @@ const AbsencesTable = ({ data }) => {
                   <td>{student.first_name}</td>
                   <td>{student.class}</td>
                   <td>
-                    {new Date(student.absence_date).toLocaleDateString("fr")}
+                    {reverseString(
+                      new Date(student.absence_date).toLocaleDateString("fr"),
+                      "/"
+                    )}
                   </td>
                   <td>{student.missed_hours}</td>
                   <td>{student.absence_days}</td>
