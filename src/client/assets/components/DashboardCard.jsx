@@ -3,10 +3,21 @@ import "../styles/Dashboard.css";
 import { MdPeopleAlt, MdArrowCircleLeft } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-const DashboardCard = ({ bgcolor, icon, title, subtitle, link, chidldren }) => {
+const DashboardCard = ({
+  bgcolor,
+  icon,
+  title,
+  subtitle,
+  link,
+  className,
+  chidldren,
+}) => {
   const navigate = useNavigate();
   return (
-    <div style={{ backgroundColor: bgcolor }} className="cardContainer">
+    <div
+      style={{ backgroundColor: bgcolor }}
+      className={`cardContainer ${className}`}
+    >
       <MdPeopleAlt className="icon" color="white" size={60} />
       {chidldren}
       <span className="cardTitle" color="white">

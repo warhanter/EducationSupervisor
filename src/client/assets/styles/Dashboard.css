@@ -1,12 +1,17 @@
 .parentContainer {
-  margin-top: 50px;
-   min-width: 1280px;
+  margin-top: 60px;
+  min-width: 1280px;
+}
+
+.w-75 {
+  width: 66% !important;
 }
 
 div.cardContainer {
   width: 250px;
   height: 150px;
-  margin: 40px 0 0 40px;
+  margin: 0;
+  margin-bottom: 40px;
   background-color: #337ab7;
   color: whitesmoke;
   overflow: hidden;
@@ -50,4 +55,173 @@ div.cardContainer {
 .arrowIcon {
   position: absolute;
   left: 15px;
+}
+
+.studentCard {
+  background-image: linear-gradient(
+    189deg,
+    hsl(240deg 100% 50%) 0%,
+    hsl(224deg 100% 50%) 11%,
+    hsl(217deg 100% 50%) 22%,
+    hsl(211deg 100% 50%) 33%,
+    hsl(206deg 100% 50%) 44%,
+    hsl(201deg 100% 50%) 56%,
+    hsl(201deg 100% 60%) 67%,
+    hsl(203deg 100% 73%) 78%,
+    hsl(202deg 86% 82%) 89%,
+    hsl(200deg 53% 90%) 100%
+  );
+}
+.leaveCard {
+  background-image: linear-gradient(
+    200deg,
+    hsl(62deg 76% 43%) 2%,
+    hsl(52deg 12% 66%) 76%,
+    hsl(251deg 50% 73%) 90%,
+    hsl(251deg 58% 68%) 97%,
+    hsl(251deg 27% 48%) 99%,
+    hsl(0deg 0% 0%) 100%
+  );
+}
+.wafidinCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(150deg 100% 35%) 0%,
+    hsl(129deg 46% 65%) 33%,
+    hsl(115deg 56% 80%) 67%,
+    hsl(102deg 100% 90%) 100%
+  );
+}
+.nisfdakhiliCard {
+  background-image: linear-gradient(
+    192deg,
+    hsl(223deg 68% 6%) 0%,
+    hsl(263deg 87% 29%) 10%,
+    hsl(264deg 93% 39%) 21%,
+    hsl(265deg 97% 47%) 32%,
+    hsl(257deg 98% 67%) 52%,
+    hsl(255deg 91% 79%) 70%,
+    hsl(255deg 75% 88%) 85%,
+    hsl(270deg 27% 94%) 100%
+  );
+}
+.moghadirinCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(305deg 100% 35%) 0%,
+    hsl(308deg 91% 38%) 6%,
+    hsl(311deg 84% 40%) 11%,
+    hsl(314deg 76% 43%) 17%,
+    hsl(317deg 70% 45%) 22%,
+    hsl(320deg 64% 48%) 28%,
+    hsl(323deg 60% 51%) 33%,
+    hsl(326deg 61% 54%) 39%,
+    hsl(329deg 62% 57%) 44%,
+    hsl(333deg 63% 60%) 50%,
+    hsl(336deg 65% 63%) 56%,
+    hsl(339deg 66% 66%) 61%,
+    hsl(342deg 68% 69%) 67%,
+    hsl(345deg 70% 72%) 72%,
+    hsl(348deg 73% 76%) 78%,
+    hsl(351deg 76% 79%) 83%,
+    hsl(354deg 81% 83%) 89%,
+    hsl(357deg 88% 86%) 94%,
+    hsl(0deg 100% 90%) 100%
+  );
+}
+.ghiyabatCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(0deg 86% 44%) 0%,
+    hsl(2deg 85% 44%) 6%,
+    hsl(4deg 85% 45%) 11%,
+    hsl(7deg 84% 46%) 17%,
+    hsl(9deg 84% 46%) 22%,
+    hsl(11deg 83% 47%) 28%,
+    hsl(13deg 83% 47%) 33%,
+    hsl(15deg 83% 48%) 39%,
+    hsl(17deg 82% 49%) 44%,
+    hsl(19deg 82% 49%) 50%,
+    hsl(22deg 82% 50%) 56%,
+    hsl(24deg 83% 51%) 61%,
+    hsl(26deg 85% 51%) 67%,
+    hsl(28deg 87% 52%) 72%,
+    hsl(30deg 89% 53%) 78%,
+    hsl(33deg 90% 53%) 83%,
+    hsl(35deg 92% 54%) 89%,
+    hsl(37deg 94% 55%) 94%,
+    hsl(39deg 96% 55%) 100%
+  );
+}
+.moghadirinCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(305deg 100% 35%) 0%,
+    hsl(308deg 91% 38%) 6%,
+    hsl(311deg 84% 40%) 11%,
+    hsl(314deg 76% 43%) 17%,
+    hsl(317deg 70% 45%) 22%,
+    hsl(320deg 64% 48%) 28%,
+    hsl(323deg 60% 51%) 33%,
+    hsl(326deg 61% 54%) 39%,
+    hsl(329deg 62% 57%) 44%,
+    hsl(333deg 63% 60%) 50%,
+    hsl(336deg 65% 63%) 56%,
+    hsl(339deg 66% 66%) 61%,
+    hsl(342deg 68% 69%) 67%,
+    hsl(345deg 70% 72%) 72%,
+    hsl(348deg 73% 76%) 78%,
+    hsl(351deg 76% 79%) 83%,
+    hsl(354deg 81% 83%) 89%,
+    hsl(357deg 88% 86%) 94%,
+    hsl(0deg 100% 90%) 100%
+  );
+}
+.machtobinCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(0deg 9% 2%) 0%,
+    hsl(2deg 11% 4%) 6%,
+    hsl(4deg 12% 6%) 11%,
+    hsl(6deg 14% 8%) 17%,
+    hsl(9deg 16% 10%) 22%,
+    hsl(11deg 18% 11%) 28%,
+    hsl(13deg 19% 13%) 33%,
+    hsl(15deg 21% 15%) 39%,
+    hsl(17deg 23% 16%) 44%,
+    hsl(19deg 25% 18%) 50%,
+    hsl(22deg 27% 19%) 56%,
+    hsl(24deg 30% 20%) 61%,
+    hsl(26deg 32% 22%) 67%,
+    hsl(28deg 34% 23%) 72%,
+    hsl(30deg 37% 24%) 78%,
+    hsl(32deg 39% 25%) 83%,
+    hsl(35deg 42% 26%) 89%,
+    hsl(37deg 44% 27%) 94%,
+    hsl(39deg 47% 28%) 100%
+  );
+}
+.moghadirinCard {
+  background-image: linear-gradient(
+    225deg,
+    hsl(305deg 100% 35%) 0%,
+    hsl(308deg 91% 38%) 6%,
+    hsl(311deg 84% 40%) 11%,
+    hsl(314deg 76% 43%) 17%,
+    hsl(317deg 70% 45%) 22%,
+    hsl(320deg 64% 48%) 28%,
+    hsl(323deg 60% 51%) 33%,
+    hsl(326deg 61% 54%) 39%,
+    hsl(329deg 62% 57%) 44%,
+    hsl(333deg 63% 60%) 50%,
+    hsl(336deg 65% 63%) 56%,
+    hsl(339deg 66% 66%) 61%,
+    hsl(342deg 68% 69%) 67%,
+    hsl(345deg 70% 72%) 72%,
+    hsl(348deg 73% 76%) 78%,
+    hsl(351deg 76% 79%) 83%,
+    hsl(354deg 81% 83%) 89%,
+    hsl(357deg 88% 86%) 94%,
+    hsl(0deg 100% 90%) 100%
+  );
 }
