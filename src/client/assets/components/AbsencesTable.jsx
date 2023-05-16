@@ -4,7 +4,7 @@ import { Badge } from "react-bootstrap";
 import _ from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
 import { absents } from "../contexts/dbconnect";
-const AbsencesTable = () => {
+const AbsencesTable = ({ data, itemOffset }) => {
   const options11 = {
     hour: "numeric",
     minute: "numeric",
@@ -14,13 +14,12 @@ const AbsencesTable = () => {
     month: "2-digit",
     year: "numeric",
   };
-  console.log(absents);
 
   const generateRapportTableData = () => {
     let result = [];
     let i = 0;
 
-    absents.map((student) => {
+    data.map((student) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
@@ -88,7 +87,7 @@ const AbsencesTable = () => {
   absencesData = _.orderBy(absencesData, ["class", "absence_days"], ["asc"]);
 
   const filterData = (filterName) => {
-    return _.filter(absencesData, (item) => item.student_status === filterName);
+    return _.filter(absents, (item) => item.student_status === filterName);
   };
 
   return (
@@ -108,7 +107,7 @@ const AbsencesTable = () => {
           <Badge
             className="ml-4"
             bg="danger"
-          >{`عدد الغيابات : ${absencesData.length}`}</Badge>
+          >{`عدد الغيابات : ${absents.length}`}</Badge>
         </h4>
       </div>
       <table id="studentsTable">
@@ -131,7 +130,7 @@ const AbsencesTable = () => {
               console.log(student);
               return (
                 <tr key={i}>
-                  <td>{i + 1}</td>
+                  <td>{itemOffset + i + 1}</td>
                   <td>{student.last_name}</td>
                   <td>{student.first_name}</td>
                   <td>{student.class}</td>

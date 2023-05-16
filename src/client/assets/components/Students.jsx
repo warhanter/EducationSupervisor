@@ -18,18 +18,12 @@ import {
 } from "../contexts/dbconnect";
 
 const Students = ({ queryTbale }) => {
-  const [data, setData] = useState([]);
-  const itemsPerPage = 15;
-  const [itemOffset1, setItemOffset1] = useState(0);
-  const [itemOffset2, setItemOffset2] = useState(0);
+  const itemsPerPage = 20;
+  const [itemOffset, setItemOffset] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
   const [searchValue, setSearchValue] = useState("");
-  // const endOffset = itemOffset1 + itemsPerPage;
-  // const endOffset = itemOffset2 + itemsPerPage;
   const [currentItems, setCurrentItems] = useState([]);
-  const [currentItems2, setCurrentItems2] = useState([]);
-  const [currentItems3, setCurrentItems3] = useState([]);
-  const [pageCount1, setPageCount1] = useState(0);
-  const [pageCount2, setPageCount2] = useState(0);
+  const [searchData, setSearchData] = useState();
   const [error, setError] = useState();
   const searchRef = useRef();
 
@@ -58,57 +52,39 @@ const Students = ({ queryTbale }) => {
     }
   };
 
-  // if (studentsTablesData.length === undefined) {
-  //   setError("Error loading Data, please logout and login again...   ");
-  //   return;
-  // }
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
-  const handlePageClick1 = (event) => {
+  const handlePageClick = (event) => {
     const newOffset =
-      (event.selected * itemsPerPage) % studentsTablesData.length;
-    setItemOffset1(newOffset);
-  };
-  const handlePageClick2 = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % currentItems2.length;
-    setItemOffset2(newOffset);
+      (event.selected * itemsPerPage) % studentsTablesData().length;
+    setItemOffset(newOffset);
   };
 
   const handleSearch = (fistName) => {
     if (fistName === "") {
-      handleData(studentsTablesData);
+      setSearchData(undefined);
+      setCurrentItems(studentsTablesData());
+      setSearchValue(fistName);
+      return;
     }
     const filtredData = _.filter(
-      studentsTablesData,
+      studentsTablesData(),
       (i) =>
         i.first_name.search(fistName) >= 0 ||
         i.last_name.search(fistName) >= 0 ||
         (i.last_name + " " + i.first_name).search(fistName) >= 0 ||
         new Date(i.student_DOB).toLocaleDateString("fr").search(fistName) >= 0
     );
-
-    setCurrentItems(filtredData);
-    setPageCount1(Math.ceil(filtredData.length / itemsPerPage));
-    // if (queryTbale === "Student") {
-    // } else {
-    //   setCurrentItems2(filtredData);
-    //   setPageCount2(Math.ceil(filtredData.length / itemsPerPage));
-    // }
-
+    setSearchData(filtredData);
+    setPageCount(Math.ceil(filtredData.length / itemsPerPage));
     setSearchValue(fistName);
   };
 
   useEffect(() => {
-    const endOffset = itemOffset1 + itemsPerPage;
-    setCurrentItems(studentsTablesData().slice(itemOffset1, endOffset));
-    setPageCount1(Math.ceil(studentsTablesData().length / itemsPerPage));
-  }, [itemOffset1, itemsPerPage]);
-
-  // useEffect(() => {
-  //   const endOffset = itemOffset2 + itemsPerPage;
-  //   // setCurrentItems2(currentItems2.slice(itemOffset2, endOffset));
-  //   setPageCount2(Math.ceil(currentItems2.length / itemsPerPage));
-  // }, [currentItems2, itemOffset2, itemsPerPage]);
+    const endOffset = itemOffset + itemsPerPage;
+    setCurrentItems(studentsTablesData().slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(studentsTablesData().length / itemsPerPage));
+  }, [currentItems, itemOffset, itemsPerPage]);
 
   useEffect(() => {
     setCurrentItems(studentsTablesData());
@@ -140,37 +116,61 @@ const Students = ({ queryTbale }) => {
         </div>
         {queryTbale === "Student" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={currentItems} />
+            <STable
+              data={searchData ? searchData : currentItems}
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "Absence" && (
           <Suspense fallback={<BasicSpinner />}>
-            <ATable />
+            <ATable
+              data={searchData ? searchData : currentItems}
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "nisfdakhil" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={currentItems} />
+            <STable
+              data={searchData ? searchData : currentItems}
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "wafidin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={currentItems} tableName="wafidin" />
+            <STable
+              data={searchData ? searchData : currentItems}
+              tableName="wafidin"
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "moghadirin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={currentItems} tableName="moghadirin" />
+            <STable
+              data={searchData ? searchData : currentItems}
+              tableName="moghadirin"
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "machtobin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={currentItems} tableName="machtobin" />
+            <STable
+              data={searchData ? searchData : currentItems}
+              tableName="machtobin"
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {queryTbale === "otlaMaradiya" && (
           <Suspense fallback={<BasicSpinner />}>
-            <OTable data={currentItems} />
+            <OTable
+              data={searchData ? searchData : currentItems}
+              itemOffset={itemOffset}
+            />
           </Suspense>
         )}
         {error && (
@@ -181,14 +181,14 @@ const Students = ({ queryTbale }) => {
         <div className="d-flex justify-content-center my-5">
           {!searchValue && queryTbale !== "Absence" && (
             <Pagination
-              handlePageClick={handlePageClick1}
-              pageCount={pageCount1}
+              handlePageClick={handlePageClick}
+              pageCount={pageCount}
             ></Pagination>
           )}
           {!searchValue && queryTbale === "Absence" && (
             <Pagination
-              handlePageClick={handlePageClick2}
-              pageCount={pageCount2}
+              handlePageClick={handlePageClick}
+              pageCount={pageCount}
             ></Pagination>
           )}
         </div>

@@ -1,8 +1,8 @@
 import React from "react";
 import "../styles/Students.css";
 import { reverseString } from "../contexts/AppFunctions";
-import { indexOf } from "lodash";
-const StudentTable = ({ data, tableName }) => {
+
+const StudentTable = ({ data, tableName, itemOffset }) => {
   return (
     <table id="studentsTable">
       <thead>
@@ -25,7 +25,7 @@ const StudentTable = ({ data, tableName }) => {
           data.map((student, i) => {
             return (
               <tr key={i}>
-                <td>{indexOf(student) + 1}</td>
+                <td>{itemOffset + i + 1}</td>
                 <td>{student.last_name}</td>
                 <td>{student.first_name}</td>
                 <td>
