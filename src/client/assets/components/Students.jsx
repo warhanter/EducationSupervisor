@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import "../styles/Students.css";
-import * as Realm from "realm-web";
 import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
 import Pagination from "./Pagination";
 import _ from "lodash";
@@ -26,7 +25,7 @@ const Students = ({ queryTbale }) => {
   const [searchValue, setSearchValue] = useState("");
   // const endOffset = itemOffset1 + itemsPerPage;
   // const endOffset = itemOffset2 + itemsPerPage;
-  const [currentItems, setCurrentItems] = useState();
+  const [currentItems, setCurrentItems] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
   const [currentItems3, setCurrentItems3] = useState([]);
   const [pageCount1, setPageCount1] = useState(0);
@@ -34,48 +33,45 @@ const Students = ({ queryTbale }) => {
   const [error, setError] = useState();
   const searchRef = useRef();
 
-  const studentsTablesData =
-    queryTbale === "Student"
-      ? students
-      : queryTbale === "Absence"
-      ? absents
-      : queryTbale === "nisfdakhil"
-      ? nisfDakhili
-      : queryTbale === "wafidin"
-      ? wafidin
-      : queryTbale === "moghadirin"
-      ? moghadirin
-      : queryTbale === "machtobin"
-      ? machtobin
-      : queryTbale === "otlaMaradiya"
-      ? otlaMaradiya
-      : students;
+  const studentsTablesData = () => {
+    if (students.length === 0) {
+      setError(
+        "..... لايمكن الاتصال بقاعدة البيانات، من فضلك قم بتسجيل الخروج وإعادة تسجيل الدخول مرة ثانية"
+      );
+      return [];
+    } else {
+      return queryTbale === "Student"
+        ? students
+        : queryTbale === "Absence"
+        ? absents
+        : queryTbale === "nisfdakhil"
+        ? nisfDakhili
+        : queryTbale === "wafidin"
+        ? wafidin
+        : queryTbale === "moghadirin"
+        ? moghadirin
+        : queryTbale === "machtobin"
+        ? machtobin
+        : queryTbale === "otlaMaradiya"
+        ? otlaMaradiya
+        : [];
+    }
+  };
 
+  // if (studentsTablesData.length === undefined) {
+  //   setError("Error loading Data, please logout and login again...   ");
+  //   return;
+  // }
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
   const handlePageClick1 = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % data.length;
+    const newOffset =
+      (event.selected * itemsPerPage) % studentsTablesData.length;
     setItemOffset1(newOffset);
   };
   const handlePageClick2 = (event) => {
     const newOffset = (event.selected * itemsPerPage) % currentItems2.length;
     setItemOffset2(newOffset);
-  };
-
-  const handleData = async () => {
-    const data1 = await getDataStudent();
-    const data2 = await getDataAbsence();
-    if (data1 === undefined) {
-      setError("Error loading Data, please logout and login again...   ");
-      return;
-    }
-    if (data2 === undefined) {
-      setError("Error loading Data, please logout and login again...   ");
-      return;
-    }
-    setData(data1);
-    setCurrentItems2(data2);
-    setCurrentItems3(_.filter(data1, (i) => i.absence_date));
   };
 
   const handleSearch = (fistName) => {
@@ -102,11 +98,11 @@ const Students = ({ queryTbale }) => {
     setSearchValue(fistName);
   };
 
-  // useEffect(() => {
-  //   const endOffset = itemOffset1 + itemsPerPage;
-  //   setCurrentItems(data.slice(itemOffset1, endOffset));
-  //   setPageCount1(Math.ceil(data.length / itemsPerPage));
-  // }, [data, itemOffset1, itemsPerPage]);
+  useEffect(() => {
+    const endOffset = itemOffset1 + itemsPerPage;
+    setCurrentItems(studentsTablesData().slice(itemOffset1, endOffset));
+    setPageCount1(Math.ceil(studentsTablesData().length / itemsPerPage));
+  }, [itemOffset1, itemsPerPage]);
 
   // useEffect(() => {
   //   const endOffset = itemOffset2 + itemsPerPage;
@@ -115,8 +111,9 @@ const Students = ({ queryTbale }) => {
   // }, [currentItems2, itemOffset2, itemsPerPage]);
 
   useEffect(() => {
-    setCurrentItems(studentsTablesData);
+    setCurrentItems(studentsTablesData());
   }, []);
+
   const BasicSpinner = () => {
     return (
       <Spinner animation="border" role="status">
@@ -182,7 +179,7 @@ const Students = ({ queryTbale }) => {
           </div>
         )}
         <div className="d-flex justify-content-center my-5">
-          {!searchValue && queryTbale === "Student" && (
+          {!searchValue && queryTbale !== "Absence" && (
             <Pagination
               handlePageClick={handlePageClick1}
               pageCount={pageCount1}
