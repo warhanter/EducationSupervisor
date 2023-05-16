@@ -18,15 +18,8 @@ import {
   otlaMaradiya,
 } from "../contexts/dbconnect";
 
-// const dbAPI =
-//   "https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student";
-const appID = "supervisorapp-nlsbq";
 const Students = ({ queryTbale }) => {
-  const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
-  const dbAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
   const [data, setData] = useState([]);
-  const app = Realm.getApp(appID);
-  const [accessToken, setAccessToken] = useState(app.currentUser?.accessToken);
   const itemsPerPage = 15;
   const [itemOffset1, setItemOffset1] = useState(0);
   const [itemOffset2, setItemOffset2] = useState(0);
@@ -41,6 +34,23 @@ const Students = ({ queryTbale }) => {
   const [error, setError] = useState();
   const searchRef = useRef();
 
+  const studentsTablesData =
+    queryTbale === "Student"
+      ? students
+      : queryTbale === "Absence"
+      ? absents
+      : queryTbale === "nisfdakhil"
+      ? nisfDakhili
+      : queryTbale === "wafidin"
+      ? wafidin
+      : queryTbale === "moghadirin"
+      ? moghadirin
+      : queryTbale === "machtobin"
+      ? machtobin
+      : queryTbale === "otlaMaradiya"
+      ? otlaMaradiya
+      : students;
+
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
   const handlePageClick1 = (event) => {
@@ -51,24 +61,6 @@ const Students = ({ queryTbale }) => {
     const newOffset = (event.selected * itemsPerPage) % currentItems2.length;
     setItemOffset2(newOffset);
   };
-
-  let headers = new Headers({
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + accessToken,
-  });
-
-  const getDataStudent = useCallback(async () => {
-    return fetch(dbAPI, {
-      method: "GET",
-      headers: headers,
-    }).then((res) => (res.ok ? res.json() : undefined));
-  }, []);
-  const getDataAbsence = useCallback(async () => {
-    return fetch(dbAbsences, {
-      method: "GET",
-      headers: headers,
-    }).then((res) => (res.ok ? res.json() : undefined));
-  }, []);
 
   const handleData = async () => {
     const data1 = await getDataStudent();
@@ -87,12 +79,11 @@ const Students = ({ queryTbale }) => {
   };
 
   const handleSearch = (fistName) => {
-    const searchData = queryTbale === "Student" ? data : currentItems2;
     if (fistName === "") {
-      handleData(searchData);
+      handleData(studentsTablesData);
     }
     const filtredData = _.filter(
-      searchData,
+      studentsTablesData,
       (i) =>
         i.first_name.search(fistName) >= 0 ||
         i.last_name.search(fistName) >= 0 ||
@@ -100,31 +91,31 @@ const Students = ({ queryTbale }) => {
         new Date(i.student_DOB).toLocaleDateString("fr").search(fistName) >= 0
     );
 
-    if (queryTbale === "Student") {
-      setCurrentItems(filtredData);
-      setPageCount1(Math.ceil(filtredData.length / itemsPerPage));
-    } else {
-      setCurrentItems2(filtredData);
-      setPageCount2(Math.ceil(filtredData.length / itemsPerPage));
-    }
+    setCurrentItems(filtredData);
+    setPageCount1(Math.ceil(filtredData.length / itemsPerPage));
+    // if (queryTbale === "Student") {
+    // } else {
+    //   setCurrentItems2(filtredData);
+    //   setPageCount2(Math.ceil(filtredData.length / itemsPerPage));
+    // }
 
     setSearchValue(fistName);
   };
 
-  useEffect(() => {
-    const endOffset = itemOffset1 + itemsPerPage;
-    setCurrentItems(data.slice(itemOffset1, endOffset));
-    setPageCount1(Math.ceil(data.length / itemsPerPage));
-  }, [data, itemOffset1, itemsPerPage]);
+  // useEffect(() => {
+  //   const endOffset = itemOffset1 + itemsPerPage;
+  //   setCurrentItems(data.slice(itemOffset1, endOffset));
+  //   setPageCount1(Math.ceil(data.length / itemsPerPage));
+  // }, [data, itemOffset1, itemsPerPage]);
+
+  // useEffect(() => {
+  //   const endOffset = itemOffset2 + itemsPerPage;
+  //   // setCurrentItems2(currentItems2.slice(itemOffset2, endOffset));
+  //   setPageCount2(Math.ceil(currentItems2.length / itemsPerPage));
+  // }, [currentItems2, itemOffset2, itemsPerPage]);
 
   useEffect(() => {
-    const endOffset = itemOffset2 + itemsPerPage;
-    // setCurrentItems2(currentItems2.slice(itemOffset2, endOffset));
-    setPageCount2(Math.ceil(currentItems2.length / itemsPerPage));
-  }, [currentItems2, itemOffset2, itemsPerPage]);
-
-  useEffect(() => {
-    handleData();
+    setCurrentItems(studentsTablesData);
   }, []);
   const BasicSpinner = () => {
     return (
@@ -133,7 +124,6 @@ const Students = ({ queryTbale }) => {
       </Spinner>
     );
   };
-
   return (
     <div className="container d-flex align-items-center justify-content-center">
       <div className="mt-4 w-100" style={{ maxWidth: 1280 }}>
@@ -158,32 +148,32 @@ const Students = ({ queryTbale }) => {
         )}
         {queryTbale === "Absence" && (
           <Suspense fallback={<BasicSpinner />}>
-            <ATable data={currentItems3} />
+            <ATable />
           </Suspense>
         )}
         {queryTbale === "nisfdakhil" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={nisfDakhili} />
+            <STable data={currentItems} />
           </Suspense>
         )}
         {queryTbale === "wafidin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={wafidin} tableName="wafidin" />
+            <STable data={currentItems} tableName="wafidin" />
           </Suspense>
         )}
         {queryTbale === "moghadirin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={moghadirin} tableName="moghadirin" />
+            <STable data={currentItems} tableName="moghadirin" />
           </Suspense>
         )}
         {queryTbale === "machtobin" && (
           <Suspense fallback={<BasicSpinner />}>
-            <STable data={machtobin} tableName="machtobin" />
+            <STable data={currentItems} tableName="machtobin" />
           </Suspense>
         )}
         {queryTbale === "otlaMaradiya" && (
           <Suspense fallback={<BasicSpinner />}>
-            <OTable data={otlaMaradiya} />
+            <OTable data={currentItems} />
           </Suspense>
         )}
         {error && (

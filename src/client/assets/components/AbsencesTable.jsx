@@ -3,8 +3,8 @@ import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
 import _ from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
-
-const AbsencesTable = ({ data }) => {
+import { absents } from "../contexts/dbconnect";
+const AbsencesTable = () => {
   const options11 = {
     hour: "numeric",
     minute: "numeric",
@@ -14,12 +14,13 @@ const AbsencesTable = ({ data }) => {
     month: "2-digit",
     year: "numeric",
   };
+  console.log(absents);
 
   const generateRapportTableData = () => {
     let result = [];
     let i = 0;
 
-    data.map((student) => {
+    absents.map((student) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
