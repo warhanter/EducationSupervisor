@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
 import _ from "lodash";
@@ -14,12 +14,11 @@ const AbsencesTable = ({ data, itemOffset }) => {
     month: "2-digit",
     year: "numeric",
   };
-
   const generateRapportTableData = () => {
     let result = [];
     let i = 0;
 
-    data.map((student) => {
+    data?.map((student) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
@@ -107,7 +106,7 @@ const AbsencesTable = ({ data, itemOffset }) => {
           <Badge
             className="ml-4"
             bg="danger"
-          >{`عدد الغيابات : ${absents.length}`}</Badge>
+          >{`عدد الغيابات : ${absents?.length}`}</Badge>
         </h4>
       </div>
       <table id="studentsTable">
@@ -127,7 +126,6 @@ const AbsencesTable = ({ data, itemOffset }) => {
         <tbody>
           {absencesData &&
             absencesData.map((student, i) => {
-              console.log(student);
               return (
                 <tr key={i}>
                   <td>{itemOffset + i + 1}</td>

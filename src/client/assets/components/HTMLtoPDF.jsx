@@ -162,7 +162,6 @@ const MyDocument = () => {
         const weekday = new Intl.DateTimeFormat("fr", {
           weekday: "long",
         }).format(startDate);
-        console.log(weekday);
         return (weekday === "mardi") & (daysOfAbcence >= 1)
           ? `4  -  0`
           : (weekday === "mardi" ||

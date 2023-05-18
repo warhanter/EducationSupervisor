@@ -19,49 +19,49 @@ const Dashboard = () => {
         <Suspense fallback={<LoadingSpinner />}>
           <DashboardCard
             bgcolor="#28536b"
-            title={students.length}
+            title={students?.length}
             subtitle="المتمدرسون"
             link="/students"
             // className="studentCard"
           />
           <DashboardCard
             bgcolor="#6b4e71"
-            title={nisfDakhili.length}
+            title={nisfDakhili?.length}
             subtitle="نصف داخلي"
-            link="/nisfdakhil"
+            link="/nisfdakhili"
             // className="nisfdakhiliCard"
           />
           <DashboardCard
             bgcolor="#922d50"
-            title={absents.length}
+            title={absents?.length}
             subtitle="الغيابات"
             link="/absences"
             // className="ghiyabatCard"
           />
           <DashboardCard
             bgcolor="#45b69c"
-            title={wafidin.length}
+            title={wafidin?.length}
             subtitle="الوافدون"
             link="/wafidin"
             // className="wafidinCard"
           />
           <DashboardCard
             bgcolor="#e6af2e"
-            title={moghadirin.length}
+            title={moghadirin?.length}
             subtitle="المغادرين"
             link="/moghadirin"
             // className="moghadirinCard"
           />
           <DashboardCard
             bgcolor="#191716"
-            title={machtobin.length}
+            title={machtobin?.length}
             subtitle="المشطوبين"
             link="/machtobin"
             // className="machtobinCard"
           />
           <DashboardCard
             bgcolor="#3f88c5"
-            title={otlaMaradiya.length}
+            title={otlaMaradiya?.length}
             subtitle="العطل المرضية"
             link="/otlaMaradiya"
             // className="leaveCard"

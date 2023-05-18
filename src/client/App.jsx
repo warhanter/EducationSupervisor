@@ -61,11 +61,11 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "/nisfdakhil",
+      path: "/nisfdakhili",
       element: (
         <PrivateRoute>
           <NavigationBar />
-          <Students queryTbale="nisfdakhil" />
+          <Students queryTbale="nisfdakhili" />
         </PrivateRoute>
       ),
       errorElement: <ErrorPage />,
