@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
 import _ from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
-import { absents } from "../contexts/dbconnect";
-const AbsencesTable = ({ data, itemOffset }) => {
+
+const AbsencesTable = ({
+  data,
+  rapportDate,
+  itemOffset,
+  fullDataForCounting,
+}) => {
   const options11 = {
     hour: "numeric",
     minute: "numeric",
@@ -20,15 +25,13 @@ const AbsencesTable = ({ data, itemOffset }) => {
 
     data?.map((student) => {
       let studentObject = {};
-      if (student.is_absent === false) {
-        return;
-      }
       i += 1;
-      const dateOfAbsence = new Date(student.absence_date);
-      const date1 = Date.now();
-      // const date2 = student.absence_date.getTime();
-      const date2 = new Date(student.absence_date);
-      const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
+      const dateOfAbsence = new Date(student.date_of_absence);
+      const date1 = rapportDate;
+      // const date2 = new Date(student.date_of_absence);
+      const daysOfAbcence = Math.round(
+        (date1 - dateOfAbsence) / (1000 * 60 * 60 * 24)
+      );
       const missedHours = () => {
         const start = parseInt(
           new Intl.DateTimeFormat("fr", options11)
@@ -42,7 +45,7 @@ const AbsencesTable = ({ data, itemOffset }) => {
           ? `4  -  0`
           : (weekday === "mardi") & (daysOfAbcence < 1)
           ? `${12 - start}  -  0`
-          : daysOfAbcence >= 1
+          : daysOfAbcence > 1
           ? `4  -  3`
           : start > 12
           ? `0  -  ${16 - start}`
@@ -63,8 +66,8 @@ const AbsencesTable = ({ data, itemOffset }) => {
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
       studentObject.student_status = student.student_status;
-      studentObject.medical_leave = student.medical_leave;
-      studentObject.class = `${student.level} ${student.class_name} ${student.class_number}`;
+      // studentObject.medical_leave = student.medical_leave;
+      studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
         date_format2
@@ -86,12 +89,15 @@ const AbsencesTable = ({ data, itemOffset }) => {
   absencesData = _.orderBy(absencesData, ["class", "absence_days"], ["asc"]);
 
   const filterData = (filterName) => {
-    return _.filter(absents, (item) => item.student_status === filterName);
+    return _.filter(
+      fullDataForCounting,
+      (item) => item.student_status === filterName
+    );
   };
 
   return (
     <div>
-      <div className="my-3 w-100 d-flex justify-content-end">
+      <div className="my-3 w-100 d-flex justify-content-end align-content-center">
         <h4>
           <Badge bg="danger">{`نصف داخلي : ${
             filterData("نصف داخلي").length
@@ -106,7 +112,7 @@ const AbsencesTable = ({ data, itemOffset }) => {
           <Badge
             className="ml-4"
             bg="danger"
-          >{`عدد الغيابات : ${absents?.length}`}</Badge>
+          >{`عدد الغيابات : ${fullDataForCounting?.length}`}</Badge>
         </h4>
       </div>
       <table id="studentsTable">

@@ -3,6 +3,7 @@ import { Container } from "react-bootstrap";
 import DashboardCard from "./DashboardCard";
 import { Suspense } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { filter } from "lodash";
 import {
   students,
   wafidin,
@@ -11,8 +12,16 @@ import {
   nisfDakhili,
   absents,
   otlaMaradiya,
+  dataAbsences,
 } from "../contexts/dbconnect";
 const Dashboard = () => {
+  const rapportDate = new Date().setHours(23);
+  let absencesByDate = filter(
+    dataAbsences,
+    (i) =>
+      (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
+      new Date(i.date_of_absence) <= rapportDate
+  );
   return (
     <Container className="container d-flex justify-content-center w-100 parentContainer">
       <div className="d-flex flex-row-reverse flex-wrap  justify-content-between w-75 align-content-center cards">
@@ -33,7 +42,7 @@ const Dashboard = () => {
           />
           <DashboardCard
             bgcolor="#922d50"
-            title={absents?.length}
+            title={absencesByDate?.length}
             subtitle="الغيابات"
             link="/absences"
             // className="ghiyabatCard"

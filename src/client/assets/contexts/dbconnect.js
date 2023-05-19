@@ -2,6 +2,7 @@ import * as Realm from "realm-web";
 import _ from "lodash";
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
+const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
 const app = Realm.getApp(appID);
 const accessToken = app.currentUser?.accessToken;
 let headers = new Headers({
@@ -14,6 +15,12 @@ const getDataStudent = async () => {
     headers: headers,
   }).then((res) => (res.ok ? res.json() : undefined));
 };
+const getDataAbsence = async () => {
+  return fetch(dbAPIAbsences, {
+    method: "GET",
+    headers: headers,
+  }).then((res) => (res.ok ? res.json() : undefined));
+};
 let data,
   wafidin,
   moghadirin,
@@ -21,9 +28,11 @@ let data,
   nisfDakhili,
   absents,
   students,
-  otlaMaradiya;
+  otlaMaradiya,
+  dataAbsences;
 try {
   data = await getDataStudent();
+  dataAbsences = await getDataAbsence();
   students = _.filter(data, (i) => !i.is_fired && !i.switched_school);
   wafidin = _.filter(data, (i) => i.is_new);
   moghadirin = _.filter(data, (i) => i.switched_school);
@@ -44,4 +53,5 @@ export {
   nisfDakhili,
   absents,
   otlaMaradiya,
+  dataAbsences,
 };
