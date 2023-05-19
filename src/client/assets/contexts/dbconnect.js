@@ -26,7 +26,6 @@ let data,
   moghadirin,
   machtobin,
   nisfDakhili,
-  absents,
   students,
   otlaMaradiya,
   dataAbsences;
@@ -38,7 +37,6 @@ try {
   moghadirin = _.filter(data, (i) => i.switched_school);
   machtobin = _.filter(data, (i) => i.is_fired);
   nisfDakhili = _.filter(data, (i) => i.student_status === "نصف داخلي");
-  absents = _.filter(data, (i) => i.is_absent);
   otlaMaradiya = _.filter(data, (i) => i.medical_leave);
 } catch (error) {
   console.log(error);
@@ -51,7 +49,6 @@ export {
   moghadirin,
   machtobin,
   nisfDakhili,
-  absents,
   otlaMaradiya,
   dataAbsences,
 };

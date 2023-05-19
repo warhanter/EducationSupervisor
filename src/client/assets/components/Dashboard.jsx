@@ -10,7 +10,6 @@ import {
   moghadirin,
   machtobin,
   nisfDakhili,
-  absents,
   otlaMaradiya,
   dataAbsences,
 } from "../contexts/dbconnect";
