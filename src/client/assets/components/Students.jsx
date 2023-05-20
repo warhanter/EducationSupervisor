@@ -1,10 +1,18 @@
-import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import React, {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useState,
+  forwardRef,
+} from "react";
 import "../styles/Students.css";
 import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
 import Pagination from "./Pagination";
 import { filter, orderBy } from "lodash";
 import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import DatePicker from "react-datepicker";
 
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
@@ -27,6 +35,12 @@ const Students = ({ queryTbale }) => {
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
   const [error, setError] = useState();
   const searchRef = useRef();
+
+  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button className="btn btn-primary me-4" onClick={onClick} ref={ref}>
+      {value}
+    </button>
+  ));
 
   let absenceByDate = useCallback(() => {
     return filter(
@@ -139,14 +153,14 @@ const Students = ({ queryTbale }) => {
         <div>
           <InputGroup className="mb-4 d-flex flex-row-reverse">
             {queryTbale === "Absence" && (
-              <input
-                className="btn btn-primary me-4"
-                defaultValue={new Date(rapportDate).toLocaleDateString("af")}
-                type="date"
-                onChange={(e) =>
-                  setRapportDate(new Date(e.target.value).setHours(23))
-                }
-              />
+              <div>
+                <DatePicker
+                  showIcon
+                  selected={rapportDate}
+                  onChange={(date) => setRapportDate(date.setHours(23))}
+                  customInput={<ExampleCustomInput />}
+                />
+              </div>
             )}
             <InputGroup.Text id="btnGroupAddon2">@</InputGroup.Text>
             <Form.Control
