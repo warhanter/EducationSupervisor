@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import "../styles/Students.css";
 import { Badge } from "react-bootstrap";
-import _ from "lodash";
+import { filter } from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
 
 const AbsencesTable = ({
@@ -27,10 +27,10 @@ const AbsencesTable = ({
       let studentObject = {};
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
-      const date1 = rapportDate;
-      // const date2 = new Date(student.date_of_absence);
+      // const date1 = rapportDate;
+
       const daysOfAbcence = Math.round(
-        (date1 - dateOfAbsence) / (1000 * 60 * 60 * 24)
+        (rapportDate - dateOfAbsence) / (1000 * 60 * 60 * 24)
       );
       const missedHours = () => {
         const start = parseInt(
@@ -86,10 +86,9 @@ const AbsencesTable = ({
   };
 
   let absencesData = generateRapportTableData();
-  absencesData = _.orderBy(absencesData, ["class", "absence_days"], ["asc"]);
 
   const filterData = (filterName) => {
-    return _.filter(
+    return filter(
       fullDataForCounting,
       (item) => item.student_status === filterName
     );

@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 import "../styles/Students.css";
 import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
 import Pagination from "./Pagination";
-import _ from "lodash";
+import { filter, orderBy } from "lodash";
 import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -29,7 +29,7 @@ const Students = ({ queryTbale }) => {
   const searchRef = useRef();
 
   let absenceByDate = useCallback(() => {
-    return _.filter(
+    return filter(
       dataAbsences,
       (i) =>
         (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
@@ -46,7 +46,11 @@ const Students = ({ queryTbale }) => {
       return queryTbale === "Student"
         ? students
         : queryTbale === "Absence"
-        ? absenceByDate()
+        ? orderBy(
+            absenceByDate(),
+            ["class_level", "class_name", "class_number", "date_of_absence"],
+            ["desc"]
+          )
         : queryTbale === "nisfdakhili"
         ? nisfDakhili
         : queryTbale === "wafidin"
@@ -82,7 +86,7 @@ const Students = ({ queryTbale }) => {
       setPageCount(Math.ceil(studentsTablesData().length / itemsPerPage));
       return;
     }
-    const filtredData = _.filter(
+    const filtredData = filter(
       studentsTablesData(),
       (i) =>
         i.first_name.search(fistName) >= 0 ||

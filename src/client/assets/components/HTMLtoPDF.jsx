@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, forwardRef } from "react";
 import jsPDF from "jspdf";
-import { PDFViewer, StyleSheet } from "@react-pdf/renderer";
+import { PDFViewer } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
 import TableView from "./TableView.jsx";
