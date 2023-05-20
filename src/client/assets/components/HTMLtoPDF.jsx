@@ -6,9 +6,10 @@ import { Button, Container } from "react-bootstrap";
 import TableView from "./TableView.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { filter } from "lodash";
 
 const appID = "supervisorapp-nlsbq";
-const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
+const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
 
 // Create Document Component
 const MyDocument = () => {
@@ -18,6 +19,15 @@ const MyDocument = () => {
   const [currentItems2, setCurrentItems2] = useState([]);
   const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
+  const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
+
+  let data11 = filter(
+    data,
+    (i) =>
+      (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
+      new Date(i.date_of_absence) <= rapportDate
+  );
+
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="w-100 mb-3 btn btn-primary" onClick={onClick} ref={ref}>
       {value}
@@ -143,15 +153,15 @@ const MyDocument = () => {
     let result = [];
     let i = 0;
 
-    data.map((student, index) => {
+    data11.map((student, index) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
       }
       i += 1;
-      const dateOfAbsence = new Date(student.absence_date);
-      const date1 = startDate.getTime();
-      const date2 = new Date(student.absence_date);
+      const dateOfAbsence = new Date(student.date_of_absence);
+      const date1 = rapportDate;
+      const date2 = new Date(student.date_of_absence);
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
         const start = parseInt(
@@ -161,7 +171,7 @@ const MyDocument = () => {
         );
         const weekday = new Intl.DateTimeFormat("fr", {
           weekday: "long",
-        }).format(startDate);
+        }).format(rapportDate);
         return (weekday === "mardi") & (daysOfAbcence >= 1)
           ? `4  -  0`
           : (weekday === "mardi" ||
@@ -169,7 +179,7 @@ const MyDocument = () => {
               weekday === "Tuesday") &
             (daysOfAbcence < 1)
           ? `${12 - start}  -  0`
-          : daysOfAbcence >= 1
+          : daysOfAbcence > 1
           ? `4  -  3`
           : start > 12
           ? `0  -  ${16 - start}`
@@ -190,8 +200,8 @@ const MyDocument = () => {
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
-      studentObject.medical_leave = student.medical_leave ? "ش طبية" : "";
-      studentObject.class = `${student.level} ${student.class_name} ${student.class_number}`;
+      // studentObject.medical_leave = student.medical_leave ? "ش طبية" : "";
+      studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
         date_format2
@@ -220,8 +230,8 @@ const MyDocument = () => {
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
         <DatePicker
           showIcon
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
+          selected={rapportDate}
+          onChange={(date) => setRapportDate(date.setHours(23))}
           customInput={<ExampleCustomInput />}
         />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
@@ -250,7 +260,7 @@ const MyDocument = () => {
       )} */}
       <div className="w-100 vh-100 mt-4">
         <PDFViewer style={{ height: "100%", width: "100%" }}>
-          <TableView data={absencesData} date={startDate}></TableView>
+          <TableView data={absencesData} date={rapportDate}></TableView>
         </PDFViewer>
       </div>
     </Container>

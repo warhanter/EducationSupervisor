@@ -68,8 +68,8 @@ const TableView = ({ data, date }) => {
     <Document>
       <Page>
         <Text style={styles.header}>
-          {reverseString(date.toLocaleDateString("fr"), "/")} غيابات التلاميذ
-          ليوم
+          {reverseString(new Date(date).toLocaleDateString("fr"), "/")} غيابات
+          التلاميذ ليوم
         </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
