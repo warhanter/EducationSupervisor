@@ -62,6 +62,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 35,
   },
+  spacing: {
+    height: 40,
+    borderColor: "black",
+    borderStyle: "solid",
+    borderBottomWidth: 1,
+  },
 });
 const TableView = ({ data, date }) => {
   return (
@@ -104,44 +110,54 @@ const TableView = ({ data, date }) => {
 
           {data &&
             data.map((student, index) => {
+              let spacing = 1;
               return (
-                <View key={index} style={styles.tableRow}>
-                  <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>
-                      {student.medical_leave}
-                    </Text>
+                <>
+                  <View key={index} style={styles.tableRow}>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>
+                        {student.medical_leave}
+                      </Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>{student.noticeName}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "30px" }]}>
+                      <Text style={styles.tableCell}>
+                        {student.absence_days}
+                      </Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>
+                        {reverseString(student.missed_hours)}
+                      </Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "65px" }]}>
+                      <Text style={styles.tableCell}>
+                        {reverseString(student.absence_date, "/")}
+                      </Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "130px" }]}>
+                      <Text style={styles.tableCell}>{student.class}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "80px" }]}>
+                      <Text style={styles.tableCell}>{student.first_name}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "70px" }]}>
+                      <Text style={styles.tableCell}>{student.last_name}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "30px" }]}>
+                      <Text style={styles.tableCell}>
+                        {data.indexOf(student) + 1}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>{student.noticeName}</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "30px" }]}>
-                    <Text style={styles.tableCell}>{student.absence_days}</Text>
-                  </View>
-                  <View style={styles.tableCol}>
-                    <Text style={styles.tableCell}>
-                      {reverseString(student.missed_hours)}
-                    </Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "65px" }]}>
-                    <Text style={styles.tableCell}>
-                      {reverseString(student.absence_date, "/")}
-                    </Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "130px" }]}>
-                    <Text style={styles.tableCell}>{student.class}</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "80px" }]}>
-                    <Text style={styles.tableCell}>{student.first_name}</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "70px" }]}>
-                    <Text style={styles.tableCell}>{student.last_name}</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "30px" }]}>
-                    <Text style={styles.tableCell}>
-                      {data.indexOf(student) + 1}
-                    </Text>
-                  </View>
-                </View>
+                  {index == 31 && <View style={styles.spacing} />}
+                  {index == 31 + 34 && <View style={styles.spacing} />}
+                  {index == 31 + 68 && <View style={styles.spacing} />}
+                  {index == 31 + 102 && <View style={styles.spacing} />}
+                  {index == 31 + 136 && <View style={styles.spacing} />}
+                </>
               );
             })}
         </View>

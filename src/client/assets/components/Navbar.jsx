@@ -45,7 +45,7 @@ const NavigationBar = () => {
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate("/pdf")}>طباعة</Nav.Link>
             <Nav.Link onClick={() => navigate("/absences")}>الغيابات</Nav.Link>
-            <Nav.Link onClick={() => navigate("/students")}>التلاميذ</Nav.Link>
+            {/* <Nav.Link onClick={() => navigate("/students")}>التلاميذ</Nav.Link> */}
             <Nav.Link onClick={() => navigate("/")}>الرئيسية</Nav.Link>
           </Nav>
         </Navbar.Collapse>
