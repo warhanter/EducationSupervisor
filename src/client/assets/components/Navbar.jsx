@@ -27,24 +27,24 @@ const NavigationBar = () => {
     <Navbar bg="light" expand="lg">
       <Container>
         <NavDropdown
-          title={app?.currentUser?.profile.email + " بروفايل  "}
+          title={app?.currentUser?.profile.email}
           id="basic-nav-dropdown"
         >
-          <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+          {/* <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
           <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-          <NavDropdown.Divider />
+          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item> */}
+          {/* <NavDropdown.Divider /> */}
           <NavDropdown.Item onClick={handleLogout}>
             تسجيل الخروج
           </NavDropdown.Item>
         </NavDropdown>
-        <Navbar.Brand href="/EducationSupervisor/">Edu-Supervisor</Navbar.Brand>
+        <Navbar.Brand href="/EducationSupervisor/">مساعد المشرف</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate("/pdf")}>طباعة</Nav.Link>
-            <Nav.Link onClick={() => navigate("/absences")}>الغيابات</Nav.Link>
+            {/* <Nav.Link onClick={() => navigate("/absences")}>الغيابات</Nav.Link> */}
             {/* <Nav.Link onClick={() => navigate("/students")}>التلاميذ</Nav.Link> */}
             <Nav.Link onClick={() => navigate("/")}>الرئيسية</Nav.Link>
           </Nav>

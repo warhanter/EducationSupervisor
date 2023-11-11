@@ -36,8 +36,8 @@ try {
   wafidin = _.filter(data, (i) => i.is_new);
   moghadirin = _.filter(data, (i) => i.switched_school);
   machtobin = _.filter(data, (i) => i.is_fired);
-  nisfDakhili = _.filter(data, (i) => i.student_status === "نصف داخلي");
-  otlaMaradiya = _.filter(data, (i) => i.medical_leave);
+  nisfDakhili = _.filter(students, (i) => i.student_status === "نصف داخلي");
+  otlaMaradiya = _.filter(students, (i) => i.medical_leave);
 } catch (error) {
   console.log(error);
 }

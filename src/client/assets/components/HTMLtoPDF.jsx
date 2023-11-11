@@ -7,15 +7,18 @@ import TableView from "./TableView.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { filter } from "lodash";
+import _ from "lodash";
 
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
+const StudentsAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
 
 // Create Document Component
 const MyDocument = () => {
   const app = Realm.getApp(appID);
   const [accessToken, setAccessToken] = useState(app.currentUser?.accessToken);
   const [data, setData] = useState([]);
+  const [allStudent, setAllStudents] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
   const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
@@ -140,13 +143,21 @@ const MyDocument = () => {
       headers: headers,
     }).then((res) => (res.ok ? res.json() : undefined));
   }, []);
+  const getAllStudentsData = useCallback(async () => {
+    return fetch(StudentsAPI, {
+      method: "GET",
+      headers: headers,
+    }).then((res) => (res.ok ? res.json() : undefined));
+  }, []);
   const handleData = async () => {
     const data1 = await getDataStudent();
-    if (data1 === undefined) {
+    const data2 = await getAllStudentsData();
+    if ((data1 || data2) === undefined) {
       setError("Error loading Data, please logout and login again...   ");
       return;
     }
     setData(data1);
+    setAllStudents(data2);
   };
 
   const generateRapportTableData = () => {
@@ -186,7 +197,9 @@ const MyDocument = () => {
           : `${12 - start}  -  3`;
       };
       const noticeName = () => {
-        return daysOfAbcence < 3
+        return student?.medical_leave
+          ? "ش طبية"
+          : daysOfAbcence < 3
           ? "/"
           : (daysOfAbcence >= 3) & (daysOfAbcence < 7)
           ? "إشعار 1"
