@@ -114,7 +114,7 @@ const TableLuncheAbsenceView = ({ data, date }) => {
                   <View key={index} style={styles.tableRow}>
                     <View style={[styles.tableCol, { width: "100px" }]}>
                       <Text style={styles.tableCell}>
-                        {student?.justification}
+                        {student.justification}
                       </Text>
                     </View>
                     <View style={[styles.tableCol, { width: "50px" }]}>

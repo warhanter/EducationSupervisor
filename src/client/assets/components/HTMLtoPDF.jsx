@@ -262,7 +262,10 @@ const MyDocument = () => {
       studentObject.last_name = studentdataobject[0]?.last_name;
       studentObject.first_name = studentdataobject[0]?.first_name;
       studentObject.tableNumber = studentdataobject[0]?.lunch_table_number;
-      studentObject.justification = studentdataobject[0]?.justification;
+      studentObject.justification =
+        studentdataobject[0]?.lunch_absence_justification == true
+          ? "تصريـــح شرفي"
+          : "";
       studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
       result.push(Object.assign({}, studentObject));
     });
