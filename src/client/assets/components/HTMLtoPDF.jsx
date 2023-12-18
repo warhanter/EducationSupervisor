@@ -4,11 +4,12 @@ import { PDFViewer } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
 import TableView from "./TableView.jsx";
+import TableLuncheAbsenceView from "./TableLuncheAbsenceView.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { filter } from "lodash";
 import _ from "lodash";
-
+import { lunchAbsences } from "../contexts/dbconnect.js";
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
 const StudentsAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
@@ -23,6 +24,11 @@ const MyDocument = () => {
   const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
+  const [nisfdakhiliRapportDate, setNisfdakhiliRapportDate] = useState(
+    new Date()
+  );
+  const [dailyRapport, setDailyRapport] = useState(true);
+  const [nisfdakhiliRapport, setNisfdakhiliRapport] = useState(false);
 
   let data11 = filter(
     data,
@@ -117,6 +123,81 @@ const MyDocument = () => {
     doc.setLineHeightFactor(0.5);
     doc.text(
       `غيابات التلاميذ ليوم: ${new Date().toLocaleDateString("fr")}`,
+      190,
+      13,
+      null,
+      null,
+      "right"
+    );
+    doc.table(20, 20, generateData(), headers, {
+      autoSize: true,
+      fontSize: 10,
+      printHeaders: true,
+    });
+    // doc.save();
+
+    setAttribute(doc.output("bloburl"));
+  };
+  const handleGenerateLunchAbsencePdf = () => {
+    const lunchabsencesData = generateLunchAbsenceTableData();
+    lunchabsencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
+    var generateData = function () {
+      var result = [];
+      for (var i = 0; i < lunchabsencesData.length; i += 1) {
+        lunchabsencesData[i]._id = (i + 1).toString();
+        result.push(Object.assign({}, lunchabsencesData[i]));
+      }
+      return result;
+    };
+
+    function createHeaders(keys) {
+      var result = [];
+      for (var i = 0; i < keys.length; i += 1) {
+        result.push({
+          id: keys[i],
+          name: keys[i],
+          prompt: headersTitle[keys[i]],
+          width: 80,
+          align: "right",
+          padding: 0,
+          height: 40,
+        });
+      }
+      return result;
+    }
+
+    const headersTitle = {
+      _id: "الرقم",
+      last_name: "اللقب",
+      first_name: "الإسم",
+      class: "القسم",
+      tableNumber: "رقم الطاولة",
+    };
+    var headers = createHeaders([
+      "tableNumber",
+      "class",
+      "first_name",
+      "last_name",
+      "_id",
+    ]);
+
+    currentItems2.forEach((student) => {
+      Object.entries(student).forEach(([key, value]) => {
+        student[key] = value.toString();
+      });
+    });
+
+    var doc = new jsPDF({
+      precision: 10,
+      putOnlyUsedFonts: true,
+      orientation: "p",
+    });
+    doc.setFont("Janna LT Bold");
+    doc.setLanguage("ar");
+    doc.setFontSize(14);
+    doc.setLineHeightFactor(0.5);
+    doc.text(
+      `غيابات نصف داخلي ليوم: ${new Date().toLocaleDateString("fr")}`,
       190,
       13,
       null,
@@ -231,20 +312,77 @@ const MyDocument = () => {
     });
     return result;
   };
+  const generateLunchAbsenceTableData = () => {
+    let result = [];
+    let i = 0;
+    const date1 = nisfdakhiliRapportDate.setHours(7);
+    const date2 = nisfdakhiliRapportDate.setHours(23);
+    let filteredAbsenceData = _.filter(
+      lunchAbsences,
+      (i) =>
+        new Date(lunchAbsences[0].absence_date).getTime() > date1 &&
+        new Date(lunchAbsences[0].absence_date).getTime() < date2
+    );
+    filteredAbsenceData.map((student, index) => {
+      let studentdataobject = _.filter(
+        allStudent,
+        (i) => i?._id === student?.student
+      );
+      let studentObject = {};
+      i += 1;
+
+      studentObject.number = index.toString();
+      studentObject.id = i.toString();
+      studentObject.absence_date = student.absence_date;
+      studentObject.last_name = studentdataobject[0]?.last_name;
+      studentObject.first_name = studentdataobject[0]?.first_name;
+      studentObject.tableNumber = studentdataobject[0]?.lunch_table_number;
+      studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
+      result.push(Object.assign({}, studentObject));
+    });
+    return result;
+  };
 
   const absencesData = generateRapportTableData();
+  const lunchabsenceData = generateLunchAbsenceTableData();
   absencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
-
+  lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
   return (
     <Container
       style={{ fontFamily: "serif" }}
       className="d-flex flex-row-reverse"
     >
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
+        <Button
+          variant="dark"
+          className="w-100 mb-3"
+          onClick={() => {
+            setDailyRapport(true);
+            setNisfdakhiliRapport(false);
+          }}
+        >
+          غيابات التلاميذ
+        </Button>
         <DatePicker
           showIcon
           selected={rapportDate}
           onChange={(date) => setRapportDate(date.setHours(23))}
+          customInput={<ExampleCustomInput />}
+        />
+        <Button
+          variant="dark"
+          className="w-100 mb-3"
+          onClick={() => {
+            setDailyRapport(false);
+            setNisfdakhiliRapport(true);
+          }}
+        >
+          غيابات ن داخلي
+        </Button>
+        <DatePicker
+          showIcon
+          selected={nisfdakhiliRapportDate}
+          onChange={(date) => setNisfdakhiliRapportDate(date)}
           customInput={<ExampleCustomInput />}
         />
         <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
@@ -272,9 +410,19 @@ const MyDocument = () => {
         </div>
       )} */}
       <div className="w-100 vh-100 mt-4">
-        <PDFViewer style={{ height: "100%", width: "100%" }}>
-          <TableView data={absencesData} date={rapportDate}></TableView>
-        </PDFViewer>
+        {dailyRapport && (
+          <PDFViewer style={{ height: "100%", width: "100%" }}>
+            <TableView data={absencesData} date={rapportDate} />
+          </PDFViewer>
+        )}
+        {nisfdakhiliRapport && (
+          <PDFViewer style={{ height: "100%", width: "100%" }}>
+            <TableLuncheAbsenceView
+              data={lunchabsenceData}
+              date={rapportDate}
+            />
+          </PDFViewer>
+        )}
       </div>
     </Container>
   );

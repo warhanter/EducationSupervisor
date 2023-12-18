@@ -3,6 +3,7 @@ import _ from "lodash";
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
 const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
+const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=LunchAbsence`;
 const app = Realm.getApp(appID);
 const accessToken = app.currentUser?.accessToken;
 let headers = new Headers({
@@ -21,6 +22,12 @@ const getDataAbsence = async () => {
     headers: headers,
   }).then((res) => (res.ok ? res.json() : undefined));
 };
+const getDataLunchAbsence = async () => {
+  return fetch(dbAPILunchAbsences, {
+    method: "GET",
+    headers: headers,
+  }).then((res) => (res.ok ? res.json() : undefined));
+};
 let data,
   wafidin,
   moghadirin,
@@ -28,10 +35,12 @@ let data,
   nisfDakhili,
   students,
   otlaMaradiya,
-  dataAbsences;
+  dataAbsences,
+  lunchAbsences;
 try {
   data = await getDataStudent();
   dataAbsences = await getDataAbsence();
+  lunchAbsences = await getDataLunchAbsence();
   students = _.filter(data, (i) => !i.is_fired && !i.switched_school);
   wafidin = _.filter(data, (i) => i.is_new);
   moghadirin = _.filter(data, (i) => i.switched_school);
@@ -51,4 +60,5 @@ export {
   nisfDakhili,
   otlaMaradiya,
   dataAbsences,
+  lunchAbsences,
 };
