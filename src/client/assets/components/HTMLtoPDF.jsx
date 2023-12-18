@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, forwardRef } from "react";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
@@ -21,7 +21,7 @@ const MyDocument = () => {
   const [data, setData] = useState([]);
   const [allStudent, setAllStudents] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
-  const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
+  // const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
   const [nisfdakhiliRapportDate, setNisfdakhiliRapportDate] = useState(
@@ -57,162 +57,87 @@ const MyDocument = () => {
     year: "numeric",
   };
 
-  const handleGeneratePdf = () => {
-    const absencesData = generateRapportTableData();
-    absencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
-    var generateData = function () {
-      var result = [];
-      for (var i = 0; i < absencesData.length; i += 1) {
-        absencesData[i]._id = (i + 1).toString();
-        result.push(Object.assign({}, absencesData[i]));
-      }
-      return result;
-    };
+  // const handleGeneratePdf = () => {
+  //   const absencesData = generateRapportTableData();
+  //   absencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
+  //   var generateData = function () {
+  //     var result = [];
+  //     for (var i = 0; i < absencesData.length; i += 1) {
+  //       absencesData[i]._id = (i + 1).toString();
+  //       result.push(Object.assign({}, absencesData[i]));
+  //     }
+  //     return result;
+  //   };
 
-    function createHeaders(keys) {
-      var result = [];
-      for (var i = 0; i < keys.length; i += 1) {
-        result.push({
-          id: keys[i],
-          name: keys[i],
-          prompt: headersTitle[keys[i]],
-          width: 80,
-          align: "right",
-          padding: 0,
-          height: 40,
-        });
-      }
-      return result;
-    }
+  //   function createHeaders(keys) {
+  //     var result = [];
+  //     for (var i = 0; i < keys.length; i += 1) {
+  //       result.push({
+  //         id: keys[i],
+  //         name: keys[i],
+  //         prompt: headersTitle[keys[i]],
+  //         width: 80,
+  //         align: "right",
+  //         padding: 0,
+  //         height: 40,
+  //       });
+  //     }
+  //     return result;
+  //   }
 
-    const headersTitle = {
-      _id: "الرقم",
-      last_name: "اللقب",
-      first_name: "الإسم",
-      class: "القسم",
-      absence_date: "تاريخ الغياب",
-      missed_hours: "سا/غ",
-      absence_days: "الأيام",
-      noticeName: "الإجراء",
-    };
-    var headers = createHeaders([
-      "noticeName",
-      "absence_days",
-      "missed_hours",
-      "absence_date",
-      "class",
-      "first_name",
-      "last_name",
-      "_id",
-    ]);
+  //   const headersTitle = {
+  //     _id: "الرقم",
+  //     last_name: "اللقب",
+  //     first_name: "الإسم",
+  //     class: "القسم",
+  //     absence_date: "تاريخ الغياب",
+  //     missed_hours: "سا/غ",
+  //     absence_days: "الأيام",
+  //     noticeName: "الإجراء",
+  //   };
+  //   var headers = createHeaders([
+  //     "noticeName",
+  //     "absence_days",
+  //     "missed_hours",
+  //     "absence_date",
+  //     "class",
+  //     "first_name",
+  //     "last_name",
+  //     "_id",
+  //   ]);
 
-    currentItems2.forEach((student) => {
-      Object.entries(student).forEach(([key, value]) => {
-        student[key] = value.toString();
-      });
-    });
+  //   currentItems2.forEach((student) => {
+  //     Object.entries(student).forEach(([key, value]) => {
+  //       student[key] = value.toString();
+  //     });
+  //   });
 
-    var doc = new jsPDF({
-      precision: 10,
-      putOnlyUsedFonts: true,
-      orientation: "p",
-    });
-    doc.setFont("Janna LT Bold");
-    doc.setLanguage("ar");
-    doc.setFontSize(14);
-    doc.setLineHeightFactor(0.5);
-    doc.text(
-      `غيابات التلاميذ ليوم: ${new Date().toLocaleDateString("fr")}`,
-      190,
-      13,
-      null,
-      null,
-      "right"
-    );
-    doc.table(20, 20, generateData(), headers, {
-      autoSize: true,
-      fontSize: 10,
-      printHeaders: true,
-    });
-    // doc.save();
+  //   var doc = new jsPDF({
+  //     precision: 10,
+  //     putOnlyUsedFonts: true,
+  //     orientation: "p",
+  //   });
+  //   doc.setFont("Janna LT Bold");
+  //   doc.setLanguage("ar");
+  //   doc.setFontSize(14);
+  //   doc.setLineHeightFactor(0.5);
+  //   doc.text(
+  //     `غيابات التلاميذ ليوم: ${new Date().toLocaleDateString("fr")}`,
+  //     190,
+  //     13,
+  //     null,
+  //     null,
+  //     "right"
+  //   );
+  //   doc.table(20, 20, generateData(), headers, {
+  //     autoSize: true,
+  //     fontSize: 10,
+  //     printHeaders: true,
+  //   });
+  //   // doc.save();
 
-    setAttribute(doc.output("bloburl"));
-  };
-  const handleGenerateLunchAbsencePdf = () => {
-    const lunchabsencesData = generateLunchAbsenceTableData();
-    lunchabsencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
-    var generateData = function () {
-      var result = [];
-      for (var i = 0; i < lunchabsencesData.length; i += 1) {
-        lunchabsencesData[i]._id = (i + 1).toString();
-        result.push(Object.assign({}, lunchabsencesData[i]));
-      }
-      return result;
-    };
-
-    function createHeaders(keys) {
-      var result = [];
-      for (var i = 0; i < keys.length; i += 1) {
-        result.push({
-          id: keys[i],
-          name: keys[i],
-          prompt: headersTitle[keys[i]],
-          width: 80,
-          align: "right",
-          padding: 0,
-          height: 40,
-        });
-      }
-      return result;
-    }
-
-    const headersTitle = {
-      _id: "الرقم",
-      last_name: "اللقب",
-      first_name: "الإسم",
-      class: "القسم",
-      tableNumber: "رقم الطاولة",
-    };
-    var headers = createHeaders([
-      "tableNumber",
-      "class",
-      "first_name",
-      "last_name",
-      "_id",
-    ]);
-
-    currentItems2.forEach((student) => {
-      Object.entries(student).forEach(([key, value]) => {
-        student[key] = value.toString();
-      });
-    });
-
-    var doc = new jsPDF({
-      precision: 10,
-      putOnlyUsedFonts: true,
-      orientation: "p",
-    });
-    doc.setFont("Janna LT Bold");
-    doc.setLanguage("ar");
-    doc.setFontSize(14);
-    doc.setLineHeightFactor(0.5);
-    doc.text(
-      `غيابات نصف داخلي ليوم: ${new Date().toLocaleDateString("fr")}`,
-      190,
-      13,
-      null,
-      null,
-      "right"
-    );
-    doc.table(20, 20, generateData(), headers, {
-      autoSize: true,
-      fontSize: 10,
-      printHeaders: true,
-    });
-    // doc.save();
-
-    setAttribute(doc.output("bloburl"));
-  };
+  //   setAttribute(doc.output("bloburl"));
+  // };
 
   useEffect(() => {
     handleData();
@@ -337,6 +262,7 @@ const MyDocument = () => {
       studentObject.last_name = studentdataobject[0]?.last_name;
       studentObject.first_name = studentdataobject[0]?.first_name;
       studentObject.tableNumber = studentdataobject[0]?.lunch_table_number;
+      studentObject.justification = studentdataobject[0]?.justification;
       studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
       result.push(Object.assign({}, studentObject));
     });
@@ -345,7 +271,7 @@ const MyDocument = () => {
 
   const absencesData = generateRapportTableData();
   const lunchabsenceData = generateLunchAbsenceTableData();
-  absencesData.sort((a, b) => (a.class > b.class ? 1 : -1));
+  absencesData.sort((a, b) => (a.class > b.class ? -1 : 1));
   lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
   return (
     <Container
@@ -385,15 +311,9 @@ const MyDocument = () => {
           onChange={(date) => setNisfdakhiliRapportDate(date)}
           customInput={<ExampleCustomInput />}
         />
-        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
-          استدعاء
-        </Button>
-        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
-          تقرير بتلميذ
-        </Button>
-        <Button className="w-100 mb-3" onClick={() => handleGeneratePdf()}>
-          التقرير اليومي
-        </Button>
+        <Button className="w-100 mb-3">استدعاء</Button>
+        <Button className="w-100 mb-3">تقرير بتلميذ</Button>
+        <Button className="w-100 mb-3">التقرير اليومي</Button>
       </div>
       {/* {attribute && (
         <div className="w-100 vh-100 mt-4">
@@ -415,11 +335,12 @@ const MyDocument = () => {
             <TableView data={absencesData} date={rapportDate} />
           </PDFViewer>
         )}
+
         {nisfdakhiliRapport && (
           <PDFViewer style={{ height: "100%", width: "100%" }}>
             <TableLuncheAbsenceView
               data={lunchabsenceData}
-              date={rapportDate}
+              date={nisfdakhiliRapportDate}
             />
           </PDFViewer>
         )}

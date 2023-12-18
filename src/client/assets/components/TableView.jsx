@@ -62,6 +62,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginRight: 35,
   },
+  footer: {
+    fontFamily: "arabic",
+    fontSize: 16,
+    textAlign: "left",
+    marginTop: 20,
+    marginLeft: 70,
+  },
   spacing: {
     height: 40,
     borderColor: "black",
@@ -92,7 +99,7 @@ const TableView = ({ data, date }) => {
               <Text style={styles.tableCell}>سا/غ</Text>
             </View>
             <View style={[styles.tableColHeader, { width: "65px" }]}>
-              <Text style={styles.tableCell}>ت/الغياب</Text>
+              <Text style={styles.tableCell}>غائب منذ</Text>
             </View>
             <View style={[styles.tableColHeader, { width: "130px" }]}>
               <Text style={styles.tableCell}>القسم</Text>
@@ -161,6 +168,7 @@ const TableView = ({ data, date }) => {
               );
             })}
         </View>
+        <Text style={styles.footer}>{"مستشار التربيـــــة"}</Text>
       </Page>
     </Document>
   );

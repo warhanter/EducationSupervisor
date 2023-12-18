@@ -68,6 +68,13 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderBottomWidth: 1,
   },
+  footer: {
+    fontFamily: "arabic",
+    fontSize: 16,
+    textAlign: "left",
+    marginTop: 20,
+    marginLeft: 70,
+  },
 });
 const TableLuncheAbsenceView = ({ data, date }) => {
   return (
@@ -79,19 +86,22 @@ const TableLuncheAbsenceView = ({ data, date }) => {
         </Text>
         <View style={styles.table}>
           <View style={styles.tableRow}>
-            <View style={[styles.tableColHeader, { width: "70px" }]}>
-              <Text style={styles.tableCell}>رقم الطاولة</Text>
-            </View>
-            <View style={[styles.tableColHeader, { width: "170px" }]}>
-              <Text style={styles.tableCell}>القسم</Text>
-            </View>
-            <View style={[styles.tableColHeader, { width: "120px" }]}>
-              <Text style={styles.tableCell}>الاسم</Text>
-            </View>
-            <View style={[styles.tableColHeader, { width: "110px" }]}>
-              <Text style={styles.tableCell}>اللقب</Text>
+            <View style={[styles.tableColHeader, { width: "100px" }]}>
+              <Text style={styles.tableCell}>المبرر</Text>
             </View>
             <View style={[styles.tableColHeader, { width: "50px" }]}>
+              <Text style={styles.tableCell}>رقم الطاولة</Text>
+            </View>
+            <View style={[styles.tableColHeader, { width: "150px" }]}>
+              <Text style={styles.tableCell}>القسم</Text>
+            </View>
+            <View style={[styles.tableColHeader, { width: "90px" }]}>
+              <Text style={styles.tableCell}>الاسم</Text>
+            </View>
+            <View style={[styles.tableColHeader, { width: "90px" }]}>
+              <Text style={styles.tableCell}>اللقب</Text>
+            </View>
+            <View style={[styles.tableColHeader, { width: "40px" }]}>
               <Text style={styles.tableCell}>الرقم</Text>
             </View>
           </View>
@@ -102,21 +112,26 @@ const TableLuncheAbsenceView = ({ data, date }) => {
               return (
                 <>
                   <View key={index} style={styles.tableRow}>
-                    <View style={[styles.tableCol, { width: "70px" }]}>
+                    <View style={[styles.tableCol, { width: "100px" }]}>
+                      <Text style={styles.tableCell}>
+                        {student?.justification}
+                      </Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "50px" }]}>
                       <Text style={styles.tableCell}>
                         {student.tableNumber}
                       </Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "170px" }]}>
+                    <View style={[styles.tableCol, { width: "150px" }]}>
                       <Text style={styles.tableCell}>{student.class}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "120px" }]}>
+                    <View style={[styles.tableCol, { width: "90px" }]}>
                       <Text style={styles.tableCell}>{student.first_name}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "110px" }]}>
+                    <View style={[styles.tableCol, { width: "90px" }]}>
                       <Text style={styles.tableCell}>{student.last_name}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "50px" }]}>
+                    <View style={[styles.tableCol, { width: "40px" }]}>
                       <Text style={styles.tableCell}>
                         {data.indexOf(student) + 1}
                       </Text>
@@ -131,6 +146,7 @@ const TableLuncheAbsenceView = ({ data, date }) => {
               );
             })}
         </View>
+        <Text style={styles.footer}>{"مستشار التربيـــــة"}</Text>
       </Page>
     </Document>
   );
