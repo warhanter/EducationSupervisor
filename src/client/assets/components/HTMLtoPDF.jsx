@@ -245,8 +245,8 @@ const MyDocument = () => {
     let filteredAbsenceData = _.filter(
       lunchAbsences,
       (i) =>
-        new Date(lunchAbsences[0].absence_date).getTime() > date1 &&
-        new Date(lunchAbsences[0].absence_date).getTime() < date2
+        new Date(i.absence_date).getTime() > date1 &&
+        new Date(i.absence_date).getTime() < date2
     );
     filteredAbsenceData.map((student, index) => {
       let studentdataobject = _.filter(
