@@ -12,9 +12,19 @@ import {
   nisfDakhili,
   otlaMaradiya,
   dataAbsences,
+  lunchAbsences,
+  maafiyin,
 } from "../contexts/dbconnect";
 const Dashboard = () => {
   const rapportDate = new Date().setHours(23);
+  const date1 = new Date().setHours(7);
+  const date2 = new Date().setHours(23);
+  let filteredAbsenceData = filter(
+    lunchAbsences,
+    (i) =>
+      new Date(i.absence_date).getTime() > date1 &&
+      new Date(i.absence_date).getTime() < date2
+  );
   let absencesByDate = filter(
     dataAbsences,
     (i) =>
@@ -33,20 +43,6 @@ const Dashboard = () => {
             // className="studentCard"
           />
           <DashboardCard
-            bgcolor="#6b4e71"
-            title={nisfDakhili?.length}
-            subtitle="نصف داخلي"
-            link="/nisfdakhili"
-            // className="nisfdakhiliCard"
-          />
-          <DashboardCard
-            bgcolor="#922d50"
-            title={absencesByDate?.length}
-            subtitle="الغيابات"
-            link="/absences"
-            // className="ghiyabatCard"
-          />
-          <DashboardCard
             bgcolor="#45b69c"
             title={wafidin?.length}
             subtitle="الوافدون"
@@ -60,12 +56,27 @@ const Dashboard = () => {
             link="/moghadirin"
             // className="moghadirinCard"
           />
+
           <DashboardCard
-            bgcolor="#191716"
-            title={machtobin?.length}
-            subtitle="المشطوبين"
-            link="/machtobin"
-            // className="machtobinCard"
+            bgcolor="#6b4e71"
+            title={nisfDakhili?.length}
+            subtitle="نصف داخلي"
+            link="/nisfdakhili"
+            // className="nisfdakhiliCard"
+          />
+          <DashboardCard
+            bgcolor="#922d50"
+            title={absencesByDate?.length}
+            subtitle="غيابات التلاميذ"
+            link="/absences"
+            // className="ghiyabatCard"
+          />
+          <DashboardCard
+            bgcolor="#922d50"
+            title={filteredAbsenceData?.length}
+            subtitle="غيابات  المطعم"
+            // link="/absences"
+            // className="ghiyabatCard"
           />
           <DashboardCard
             bgcolor="#3f88c5"
@@ -73,6 +84,20 @@ const Dashboard = () => {
             subtitle="العطل المرضية"
             link="/otlaMaradiya"
             // className="leaveCard"
+          />
+          <DashboardCard
+            bgcolor="#3f88c5"
+            title={maafiyin?.length}
+            subtitle="المعفيين من الرياضة"
+            // link="/otlaMaradiya"
+            // className="leaveCard"
+          />
+          <DashboardCard
+            bgcolor="#191716"
+            title={machtobin?.length}
+            subtitle="المشطوبين"
+            link="/machtobin"
+            // className="machtobinCard"
           />
         </Suspense>
       </div>

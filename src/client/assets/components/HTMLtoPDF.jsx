@@ -9,10 +9,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { filter } from "lodash";
 import _ from "lodash";
-import { lunchAbsences } from "../contexts/dbconnect.js";
 const appID = "supervisorapp-nlsbq";
 const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
 const StudentsAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
+const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=LunchAbsence`;
 
 // Create Document Component
 const MyDocument = () => {
@@ -20,6 +20,7 @@ const MyDocument = () => {
   const [accessToken, setAccessToken] = useState(app.currentUser?.accessToken);
   const [data, setData] = useState([]);
   const [allStudent, setAllStudents] = useState([]);
+  const [lunchData, setLunchData] = useState([]);
   const [currentItems2, setCurrentItems2] = useState([]);
   // const [attribute, setAttribute] = useState(new jsPDF().output("bloburl"));
   const [startDate, setStartDate] = useState(new Date());
@@ -155,15 +156,23 @@ const MyDocument = () => {
       headers: headers,
     }).then((res) => (res.ok ? res.json() : undefined));
   }, []);
+  const getDataLunchAbsence = async () => {
+    return fetch(dbAPILunchAbsences, {
+      method: "GET",
+      headers: headers,
+    }).then((res) => (res.ok ? res.json() : undefined));
+  };
   const handleData = async () => {
     const data1 = await getDataStudent();
     const data2 = await getAllStudentsData();
-    if ((data1 || data2) === undefined) {
+    const data3 = await getDataLunchAbsence();
+    if ((data1 || data2 || data3) === undefined) {
       setError("Error loading Data, please logout and login again...   ");
       return;
     }
     setData(data1);
     setAllStudents(data2);
+    setLunchData(data3);
   };
 
   const generateRapportTableData = () => {
@@ -243,7 +252,7 @@ const MyDocument = () => {
     const date1 = nisfdakhiliRapportDate.setHours(7);
     const date2 = nisfdakhiliRapportDate.setHours(23);
     let filteredAbsenceData = _.filter(
-      lunchAbsences,
+      lunchData,
       (i) =>
         new Date(i.absence_date).getTime() > date1 &&
         new Date(i.absence_date).getTime() < date2

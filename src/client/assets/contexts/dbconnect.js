@@ -36,6 +36,7 @@ let data,
   students,
   otlaMaradiya,
   dataAbsences,
+  maafiyin,
   lunchAbsences;
 try {
   data = await getDataStudent();
@@ -47,6 +48,7 @@ try {
   machtobin = _.filter(data, (i) => i.is_fired);
   nisfDakhili = _.filter(students, (i) => i.student_status === "نصف داخلي");
   otlaMaradiya = _.filter(students, (i) => i.medical_leave);
+  maafiyin = _.filter(students, (i) => i.sport_inapt);
 } catch (error) {
   console.log(error);
 }
@@ -61,4 +63,5 @@ export {
   otlaMaradiya,
   dataAbsences,
   lunchAbsences,
+  maafiyin,
 };
