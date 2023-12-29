@@ -7,7 +7,15 @@ import React, {
   forwardRef,
 } from "react";
 import "../styles/Students.css";
-import { Alert, Form, InputGroup, Spinner } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  DropdownButton,
+  Form,
+  InputGroup,
+  Spinner,
+} from "react-bootstrap";
 import Pagination from "./Pagination";
 import { filter, orderBy } from "lodash";
 import { useRef } from "react";
@@ -17,34 +25,58 @@ import DatePicker from "react-datepicker";
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
 const OTable = lazy(() => import("./MedialLeaveTable.jsx"));
-import {
-  students,
-  wafidin,
-  moghadirin,
-  machtobin,
-  nisfDakhili,
-  otlaMaradiya,
-  dataAbsences,
-} from "../contexts/dbconnect";
+// import {
+//   students,
+//   wafidin,
+//   moghadirin,
+//   machtobin,
+//   nisfDakhili,
+//   otlaMaradiya,
+//   dataAbsences,
+// } from "../contexts/dbconnect";
+import { useStudents } from "../../providers/StudentProvider";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Students = ({ queryTbale }) => {
+  const {
+    students,
+    wafidin,
+    moghadirin,
+    machtobin,
+    nisfDakhili,
+    otlaMaradiya,
+    absences,
+  } = useStudents();
   const itemsPerPage = 10;
   const [itemOffset, setItemOffset] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [currentItems, setCurrentItems] = useState();
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
+  const [selectedClass, setSelectedClass] = useState();
   const [error, setError] = useState();
   const searchRef = useRef();
-
+  const allClasses = [...new Set(students.map((s) => s.full_className))].sort();
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="btn btn-primary me-4" onClick={onClick} ref={ref}>
       {value}
     </button>
   ));
 
+  const handleSelectClass = useCallback(
+    (value) => {
+      setSelectedClass(value);
+      setCurrentItems(
+        studentsTablesData().filter(
+          (student) => student.full_className === value
+        )
+      );
+    },
+    [currentItems]
+  );
+
   let absenceByDate = useCallback(() => {
     return filter(
-      dataAbsences,
+      absences,
       (i) =>
         (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
         new Date(i.date_of_absence) <= rapportDate
@@ -134,6 +166,7 @@ const Students = ({ queryTbale }) => {
       case "Absence":
         return (
           <ATable
+            selectedClass={selectedClass}
             data={currentItems}
             itemOffset={itemOffset}
             rapportDate={rapportDate}
@@ -146,12 +179,66 @@ const Students = ({ queryTbale }) => {
         break;
     }
   };
-
+  const navigate = useNavigate();
   return (
     <div className="container d-flex align-items-center justify-content-center">
       <div className="mt-4 w-100" style={{ maxWidth: 1280 }}>
         <div>
           <InputGroup className="mb-4 d-flex flex-row-reverse">
+            <div className="me-4">
+              <DropdownButton
+                dir="ltr"
+                variant="primary"
+                id="dropdown-basic-button"
+                title="الفوج"
+              >
+                {allClasses &&
+                  allClasses.map((student) => (
+                    <Dropdown.Item
+                      onClick={(value) =>
+                        handleSelectClass(value.currentTarget.innerText)
+                      }
+                      className="h-100"
+                    >
+                      {student}
+                    </Dropdown.Item>
+                  ))}
+                {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+          <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+          <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
+              </DropdownButton>
+            </div>
+            {selectedClass && (
+              <>
+                <div className="me-4">
+                  <Button disabled variant="secondary">
+                    {selectedClass}
+                  </Button>
+                </div>
+                <div className="me-4">
+                  <Button
+                    onClick={() => {
+                      const endOffset = itemOffset + itemsPerPage;
+                      setSelectedClass(null);
+                      setCurrentItems(
+                        studentsTablesData().slice(itemOffset, endOffset)
+                      );
+                    }}
+                    variant="primary"
+                  >
+                    الكل
+                  </Button>
+                </div>
+                <div className="me-4">
+                  <Button variant="danger">
+                    {"التعداد:  " + currentItems?.length}
+                  </Button>
+                </div>
+              </>
+            )}
+            {/* {currentItems?.length > 10 && (
+              
+            )} */}
             {queryTbale === "Absence" && (
               <div>
                 <DatePicker
@@ -183,9 +270,16 @@ const Students = ({ queryTbale }) => {
             <Alert variant="danger">{error}</Alert>
           </div>
         )}
-        <div className="d-flex justify-content-center my-5">
-          <Pagination handlePageClick={handlePageClick} pageCount={pageCount} />
-        </div>
+        {!selectedClass ? (
+          <div className="d-flex justify-content-center my-5">
+            <Pagination
+              handlePageClick={handlePageClick}
+              pageCount={pageCount}
+            />
+          </div>
+        ) : (
+          <div className="mt-5"></div>
+        )}
       </div>
     </div>
   );

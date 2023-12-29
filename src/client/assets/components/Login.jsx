@@ -17,6 +17,7 @@ const Login = () => {
       await loginApp(emailRef.current.value, passwordRef.current.value);
       setLoading(true);
       setError();
+      location.reload();
       navigate("/");
     } catch (error) {
       setError(error.error);
@@ -24,11 +25,9 @@ const Login = () => {
     setLoading(false);
   };
 
-  if (currentUser) {
-    return <Navigate to={"/"} replace />;
-  }
-
-  return (
+  return currentUser ? (
+    <Navigate to={"/"} replace />
+  ) : (
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}

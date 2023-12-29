@@ -6,6 +6,7 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import app from "../../realm";
+import { Link } from "@react-pdf/renderer";
 
 const NavigationBar = () => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,9 @@ const NavigationBar = () => {
             تسجيل الخروج
           </NavDropdown.Item>
         </NavDropdown>
-        <Navbar.Brand href="/EducationSupervisor/">مساعد المشرف</Navbar.Brand>
+        <Navbar.Brand onClick={() => navigate("/")} href="#">
+          مساعد المشرف
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav">

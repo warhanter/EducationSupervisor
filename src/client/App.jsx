@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import { AuthProvider } from "./assets/contexts/AuthContext";
+import StudentProvider from "./providers/StudentProvider";
 import { Container } from "react-bootstrap";
 import Login from "./assets/components/Login";
 import ErrorPage from "./assets/components/Error-page";
@@ -117,14 +118,16 @@ function App() {
 
   return (
     <AuthProvider>
-      <Container
-        style={{ minHeight: "100vh" }}
-        className="d-flex  justify-content-center"
-      >
-        <div style={{ minWidth: 1280 }} className="w-100">
-          <RouterProvider router={router} />
-        </div>
-      </Container>
+      <StudentProvider>
+        <Container
+          style={{ minHeight: "100vh" }}
+          className="d-flex  justify-content-center"
+        >
+          <div style={{ minWidth: 1280 }} className="w-100">
+            <RouterProvider router={router} />
+          </div>
+        </Container>
+      </StudentProvider>
     </AuthProvider>
   );
 }

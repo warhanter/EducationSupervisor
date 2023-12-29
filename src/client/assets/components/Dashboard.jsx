@@ -1,21 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import DashboardCard from "./DashboardCard";
 import { Suspense } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { filter } from "lodash";
-import {
-  students,
-  wafidin,
-  moghadirin,
-  machtobin,
-  nisfDakhili,
-  otlaMaradiya,
-  dataAbsences,
-  lunchAbsences,
-  maafiyin,
-} from "../contexts/dbconnect";
+import { useStudents } from "../../providers/StudentProvider";
+import app from "../../realm";
 const Dashboard = () => {
+  const {
+    motamadrisin,
+    wafidin,
+    moghadirin,
+    machtobin,
+    nisfDakhili,
+    otlaMaradiya,
+    maafiyin,
+    absences,
+    lunchAbsences,
+  } = useStudents();
   const rapportDate = new Date().setHours(23);
   const date1 = new Date().setHours(7);
   const date2 = new Date().setHours(23);
@@ -26,18 +28,19 @@ const Dashboard = () => {
       new Date(i.absence_date).getTime() < date2
   );
   let absencesByDate = filter(
-    dataAbsences,
+    absences,
     (i) =>
       (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
       new Date(i.date_of_absence) <= rapportDate
   );
+  const [user] = useState(app.currentUser);
   return (
     <Container className="container d-flex justify-content-center w-100 parentContainer">
       <div className="d-flex flex-row-reverse flex-wrap  justify-content-between w-75 align-content-center cards">
         <Suspense fallback={<LoadingSpinner />}>
           <DashboardCard
             bgcolor="#28536b"
-            title={students?.length}
+            title={motamadrisin?.length}
             subtitle="المتمدرسون"
             link="/students"
             // className="studentCard"

@@ -6,6 +6,16 @@ const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervi
 const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=LunchAbsence`;
 const app = Realm.getApp(appID);
 const accessToken = app.currentUser?.accessToken;
+
+const getCollectionData = async (collection) => {
+  const user = app.currentUser;
+  const data = user?.functions["hello"]({
+    query: { arg1: collection },
+  });
+  return data;
+};
+const aaaa = await getCollectionData("LunchAbsence");
+// console.log(aaaa);
 let headers = new Headers({
   "Content-Type": "application/json",
   Authorization: "Bearer " + accessToken,

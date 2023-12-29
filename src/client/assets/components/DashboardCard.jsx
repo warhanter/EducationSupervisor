@@ -11,11 +11,12 @@ const DashboardCard = ({
   link,
   className,
   chidldren,
+  bgimage,
 }) => {
   const navigate = useNavigate();
   return (
     <div
-      style={{ backgroundColor: bgcolor }}
+      style={{ backgroundColor: bgcolor, backgroundImage: bgimage }}
       className={`cardContainer ${className}`}
     >
       <MdPeopleAlt className="icon" color="white" size={60} />
