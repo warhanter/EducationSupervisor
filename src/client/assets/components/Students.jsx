@@ -22,25 +22,15 @@ import { filter, orderBy } from "lodash";
 import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import DatePicker from "react-datepicker";
+import { useStudents } from "../../providers/StudentProvider";
 
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
 const OTable = lazy(() => import("./MedialLeaveTable.jsx"));
-// import {
-//   students,
-//   wafidin,
-//   moghadirin,
-//   machtobin,
-//   nisfDakhili,
-//   otlaMaradiya,
-//   dataAbsences,
-// } from "../contexts/dbconnect";
-import { useStudents } from "../../providers/StudentProvider";
-import { Navigate, useNavigate } from "react-router-dom";
 
 const Students = ({ queryTbale }) => {
   const {
-    students,
+    motamadrisin,
     wafidin,
     moghadirin,
     machtobin,
@@ -56,7 +46,9 @@ const Students = ({ queryTbale }) => {
   const [selectedClass, setSelectedClass] = useState();
   const [error, setError] = useState();
   const searchRef = useRef();
-  const allClasses = [...new Set(students.map((s) => s.full_className))].sort();
+  const allClasses = [
+    ...new Set(motamadrisin.map((s) => s.full_className)),
+  ].sort();
 
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="btn btn-primary me-4" onClick={onClick} ref={ref}>
@@ -89,14 +81,14 @@ const Students = ({ queryTbale }) => {
     [rapportDate]
   );
   const studentsTablesData = () => {
-    if (students?.length === 0 || !students) {
+    if (motamadrisin?.length === 0 || !motamadrisin) {
       setError(
         "..... لايمكن الاتصال بقاعدة البيانات، من فضلك قم بتسجيل الخروج وإعادة تسجيل الدخول مرة ثانية"
       );
       return [];
     } else {
       return queryTbale === "Student"
-        ? students
+        ? motamadrisin
         : queryTbale === "Absence"
         ? orderBy(
             absenceByDate(),
@@ -185,7 +177,7 @@ const Students = ({ queryTbale }) => {
         break;
     }
   };
-  const navigate = useNavigate();
+
   return (
     <div className="container d-flex align-items-center justify-content-center">
       <div className="mt-4 w-100" style={{ maxWidth: 1280 }}>
