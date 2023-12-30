@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useState,
   forwardRef,
+  useMemo,
 } from "react";
 import "../styles/Students.css";
 import {
@@ -56,6 +57,7 @@ const Students = ({ queryTbale }) => {
   const [error, setError] = useState();
   const searchRef = useRef();
   const allClasses = [...new Set(students.map((s) => s.full_className))].sort();
+
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="btn btn-primary me-4" onClick={onClick} ref={ref}>
       {value}
@@ -82,6 +84,10 @@ const Students = ({ queryTbale }) => {
         new Date(i.date_of_absence) <= rapportDate
     );
   }, [rapportDate]);
+  const allAbsenceClasses = useMemo(
+    () => [...new Set(absenceByDate().map((s) => s.full_className))].sort(),
+    [rapportDate]
+  );
   const studentsTablesData = () => {
     if (students?.length === 0 || !students) {
       setError(
@@ -192,20 +198,29 @@ const Students = ({ queryTbale }) => {
                 id="dropdown-basic-button"
                 title="الفوج"
               >
-                {allClasses &&
-                  allClasses.map((student) => (
-                    <Dropdown.Item
-                      onClick={(value) =>
-                        handleSelectClass(value.currentTarget.innerText)
-                      }
-                      className="h-100"
-                    >
-                      {student}
-                    </Dropdown.Item>
-                  ))}
-                {/* <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-          <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-          <Dropdown.Item href="#/action-3">Something else</Dropdown.Item> */}
+                {location.href.includes("absences")
+                  ? allAbsenceClasses.map((student) => (
+                      <>
+                        <Dropdown.Item
+                          onClick={(value) =>
+                            handleSelectClass(value.currentTarget.innerText)
+                          }
+                          className="h-100"
+                        >
+                          {student}
+                        </Dropdown.Item>
+                      </>
+                    ))
+                  : allClasses.map((student) => (
+                      <Dropdown.Item
+                        onClick={(value) =>
+                          handleSelectClass(value.currentTarget.innerText)
+                        }
+                        className="h-100"
+                      >
+                        {student}
+                      </Dropdown.Item>
+                    ))}
               </DropdownButton>
             </div>
             {selectedClass && (
