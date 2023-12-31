@@ -23,7 +23,7 @@ import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import DatePicker from "react-datepicker";
 import { useStudents } from "../../providers/StudentProvider";
-import { watchForCollectionChanges } from "../../functions/watchChanges";
+// import { watchForCollectionChanges } from "../../functions/watchChanges";
 
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
