@@ -12,11 +12,11 @@ import { filter } from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
 import app from "../../realm";
 import * as Realm from "realm-web";
-const holidays = await app.currentUser
-  .mongoClient("mongodb-atlas")
-  .db("todo")
-  .collection("Holidays")
-  .find();
+
+const mongo = app.currentUser?.mongoClient("mongodb-atlas");
+const holidaysCollection = mongo.db("todo").collection("Holidays");
+const holidays = await holidaysCollection.find();
+
 Date.prototype.between = function (a, b) {
   let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
   let max = Math.max.apply(Math, [a.getTime(), b.getTime()]);

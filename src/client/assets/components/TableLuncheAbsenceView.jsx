@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   View,
   Page,
@@ -110,7 +110,7 @@ const TableLuncheAbsenceView = ({ data, date }) => {
             data.map((student, index) => {
               let spacing = 1;
               return (
-                <>
+                <Fragment key={student.id}>
                   <View key={index} style={styles.tableRow}>
                     <View style={[styles.tableCol, { width: "100px" }]}>
                       <Text style={styles.tableCell}>
@@ -142,7 +142,7 @@ const TableLuncheAbsenceView = ({ data, date }) => {
                   {index == 31 + 68 && <View style={styles.spacing} />}
                   {index == 31 + 102 && <View style={styles.spacing} />}
                   {index == 31 + 136 && <View style={styles.spacing} />}
-                </>
+                </Fragment>
               );
             })}
         </View>

@@ -23,6 +23,7 @@ import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import DatePicker from "react-datepicker";
 import { useStudents } from "../../providers/StudentProvider";
+import { watchForCollectionChanges } from "../../functions/watchChanges";
 
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
@@ -55,7 +56,7 @@ const Students = ({ queryTbale }) => {
       {value}
     </button>
   ));
-
+  // watchForCollectionChanges("Holidays");
   const handleSelectClass = useCallback(
     (value) => {
       setSelectedClass(value);
@@ -192,8 +193,9 @@ const Students = ({ queryTbale }) => {
               >
                 {location.href.includes("absences")
                   ? allAbsenceClasses.map((student) => (
-                      <>
+                      <div key={student}>
                         <Dropdown.Item
+                          key={student}
                           onClick={(value) =>
                             handleSelectClass(value.currentTarget.innerText)
                           }
@@ -201,10 +203,11 @@ const Students = ({ queryTbale }) => {
                         >
                           {student}
                         </Dropdown.Item>
-                      </>
+                      </div>
                     ))
                   : allClasses.map((student) => (
                       <Dropdown.Item
+                        key={student}
                         onClick={(value) =>
                           handleSelectClass(value.currentTarget.innerText)
                         }
@@ -216,7 +219,7 @@ const Students = ({ queryTbale }) => {
               </DropdownButton>
             </div>
             {selectedClass && (
-              <>
+              <div>
                 <div className="me-4">
                   <Button disabled variant="secondary">
                     {selectedClass}
@@ -241,7 +244,7 @@ const Students = ({ queryTbale }) => {
                     {"التعداد:  " + currentItems?.length}
                   </Button>
                 </div>
-              </>
+              </div>
             )}
             {/* {currentItems?.length > 10 && (
               
