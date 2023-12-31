@@ -219,7 +219,7 @@ const Students = ({ queryTbale }) => {
               </DropdownButton>
             </div>
             {selectedClass && (
-              <div>
+              <>
                 <div className="me-4">
                   <Button disabled variant="secondary">
                     {selectedClass}
@@ -244,7 +244,7 @@ const Students = ({ queryTbale }) => {
                     {"التعداد:  " + currentItems?.length}
                   </Button>
                 </div>
-              </div>
+              </>
             )}
             {/* {currentItems?.length > 10 && (
               
