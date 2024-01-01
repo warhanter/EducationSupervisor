@@ -10,29 +10,19 @@ type StudentContextType = {
   nisfDakhili: Record<string, any>[];
   otlaMaradiya: Record<string, any>[];
   maafiyin: Record<string, any>[];
-  students: Record<string, any>[];
-  absences: Record<string, any>[];
-  lunchAbsences: Record<string, any>[];
+  students: Record<string, any>[] | undefined;
+  absences: Record<string, any>[] | undefined;
+  lunchAbsences: Record<string, any>[] | undefined;
 };
 
 type StudentsProviderProps = {
   children: ReactNode;
 };
-/**
- * a function to fetch data from the mongo database.
- * @param collection the name of the collection in the database.
- * @returns Promise<any>
- */
-const getCollectionData = async (collection: string) => {
-  const user = app.currentUser;
-  const data = user?.functions["hello"]({
-    query: { arg1: collection },
-  });
-  return data;
-};
-const students = await getCollectionData("Student");
-const absences = await getCollectionData("Absence");
-const lunchAbsences = await getCollectionData("LunchAbsence");
+
+const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
+const students = await mongo?.collection("Student").find();
+const absences = await mongo?.collection("Absence").find();
+const lunchAbsences = await mongo?.collection("LunchAbsence").find();
 
 const defaultValues = {
   motamadrisin: [],

@@ -114,13 +114,12 @@ const TableView = ({ data, date }) => {
               <Text style={styles.tableCell}>الرقم</Text>
             </View>
           </View>
-
           {data &&
             data.map((student, index) => {
               let spacing = 1;
               return (
-                <Fragment key={student.id}>
-                  <View key={index} style={styles.tableRow}>
+                <Fragment key={index}>
+                  <View style={styles.tableRow}>
                     <View style={styles.tableCol}>
                       <Text style={styles.tableCell}>
                         {student.medical_leave}
@@ -163,6 +162,10 @@ const TableView = ({ data, date }) => {
                   {index == 31 + 34 && <View style={styles.spacing} />}
                   {index == 31 + 68 && <View style={styles.spacing} />}
                   {index == 31 + 102 && <View style={styles.spacing} />}
+                  {index == 31 + 136 && <View style={styles.spacing} />}
+                  {index == 31 + 136 && <View style={styles.spacing} />}
+                  {index == 31 + 136 && <View style={styles.spacing} />}
+                  {index == 31 + 136 && <View style={styles.spacing} />}
                   {index == 31 + 136 && <View style={styles.spacing} />}
                 </Fragment>
               );

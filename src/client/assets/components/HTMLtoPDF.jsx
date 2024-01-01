@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState, forwardRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  forwardRef,
+  useMemo,
+} from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
@@ -22,12 +28,14 @@ const MyDocument = () => {
   const [dailyRapport, setDailyRapport] = useState(true);
   const [nisfdakhiliRapport, setNisfdakhiliRapport] = useState(false);
 
-  let data11 = filter(
-    absences,
-    (i) =>
-      (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
-      new Date(i.date_of_absence) <= rapportDate
-  );
+  const data11 = useMemo(() => {
+    return _.filter(
+      absences,
+      (i) =>
+        (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
+        new Date(i.date_of_absence) <= rapportDate
+    );
+  }, [rapportDate]);
 
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button className="w-100 mb-3 btn btn-primary" onClick={onClick} ref={ref}>
@@ -49,7 +57,7 @@ const MyDocument = () => {
     let result = [];
     let i = 0;
 
-    data11.map((student, index) => {
+    data11?.map((student, index) => {
       let studentObject = {};
       if (student.is_absent === false) {
         return;
