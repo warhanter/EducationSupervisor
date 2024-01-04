@@ -1,6 +1,14 @@
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import _ from "lodash";
 import app from "../realm";
+
+type CollectionType = Realm.Services.MongoDB.MongoDBCollection<any> | undefined;
 
 type StudentContextType = {
   motamadrisin: Record<string, any>[];
@@ -13,12 +21,20 @@ type StudentContextType = {
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
+  notification: {
+    fullDocument: Record<string, any> | undefined;
+    operationType: string | undefined;
+  };
 };
 
 type StudentsType = {
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
+  notification: {
+    fullDocument: Record<string, any> | undefined;
+    operationType: string | undefined;
+  };
 };
 
 type StudentsProviderProps = {
@@ -42,19 +58,61 @@ const defaultValues = {
   absences: [],
   lunchAbsences: [],
   notification: {
-    document: undefined,
-    operationType: null,
+    fullDocument: undefined,
+    operationType: undefined,
   },
 };
 
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
 const StudentProvider = ({ children }: StudentsProviderProps) => {
-  const [{ students, absences, lunchAbsences }] = useState<StudentsType>({
-    students: studentsCollection,
-    absences: absencesCollection,
-    lunchAbsences: lunchAbsencesCollection,
-  });
+  const [{ students, absences, lunchAbsences, notification }, setStudents] =
+    useState<StudentsType>({
+      students: studentsCollection,
+      absences: absencesCollection,
+      lunchAbsences: lunchAbsencesCollection,
+      notification: {
+        fullDocument: undefined,
+        operationType: undefined,
+      },
+    });
+  const watchforCollectionChanges = async (collection: CollectionType) => {
+    if (!!collection) {
+      for await (const change of collection.watch()) {
+        let documentOBJ, operation;
+        switch (change.operationType) {
+          case "insert": {
+            const { fullDocument, operationType } = change;
+            documentOBJ = fullDocument;
+            operation = operationType;
+            break;
+          }
+          case "update": {
+            const { fullDocument, operationType } = change;
+            documentOBJ = fullDocument;
+            operation = operationType;
+            break;
+          }
+        }
+        setStudents({
+          students,
+          absences: await mongo?.collection("Absence").find(),
+          lunchAbsences,
+          notification: {
+            fullDocument: documentOBJ,
+            operationType: operation,
+          },
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    watchforCollectionChanges(mongo?.collection("Absence"));
+  }, []);
+
+  console.log(students?.length);
+  console.log("Rendring....");
 
   const motamadrisin = _.filter(
     students,
@@ -80,6 +138,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     students,
     absences,
     lunchAbsences,
+    notification,
   };
   return (
     <StudentContext.Provider value={contextValue}>
