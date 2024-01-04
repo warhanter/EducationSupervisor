@@ -21,20 +21,24 @@ type StudentContextType = {
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
-  notification: {
-    fullDocument: Record<string, any> | undefined;
-    operationType: string | undefined;
-  };
+  notification:
+    | {
+        fullDocument: Record<string, any> | undefined;
+        operationType: string | undefined;
+      }
+    | undefined;
 };
 
 type StudentsType = {
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
-  notification: {
-    fullDocument: Record<string, any> | undefined;
-    operationType: string | undefined;
-  };
+  notification:
+    | {
+        fullDocument: Record<string, any> | undefined;
+        operationType: string | undefined;
+      }
+    | undefined;
 };
 
 type StudentsProviderProps = {
@@ -71,10 +75,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
       students: studentsCollection,
       absences: absencesCollection,
       lunchAbsences: lunchAbsencesCollection,
-      notification: {
-        fullDocument: undefined,
-        operationType: undefined,
-      },
+      notification: undefined,
     });
   const watchforCollectionChanges = async (collection: CollectionType) => {
     if (!!collection) {

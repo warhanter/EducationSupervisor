@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../styles/Students.css";
 import {
   Alert,
@@ -11,7 +11,6 @@ import {
 import { filter } from "lodash";
 import { reverseString } from "../contexts/AppFunctions";
 import app from "../../realm";
-import * as Realm from "realm-web";
 
 const mongo = app.currentUser?.mongoClient("mongodb-atlas");
 const holidaysCollection = mongo.db("todo").collection("Holidays");
@@ -190,8 +189,7 @@ const AbsencesTable = ({
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
       studentObject.student_status = student.student_status;
-      // studentObject.medical_leave = student.medical_leave;
-      // studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
+      studentObject.absence_status = student.absence_status;
       studentObject.full_className = student.full_className;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
@@ -210,8 +208,7 @@ const AbsencesTable = ({
     });
     return result;
   };
-
-  let absencesData = generateRapportTableData();
+  const absencesData = generateRapportTableData();
 
   const filterData = (filterName) => {
     return filter(
@@ -338,24 +335,28 @@ const AbsencesTable = ({
                   <td>{student.absence_days}</td>
                   <td>{student.noticeName}</td>
                   <td>{student.medical_leave ? "ش طبية" : ""}</td>
-                  <td className="d-flex justify-content-center align-items-center">
-                    <Button
-                      onClick={
-                        () =>
-                          handleOpenModal(
-                            student.student_id,
-                            student.absence_id,
-                            student.calculated_missed_hours,
-                            student.last_name,
-                            student.first_name
-                          )
-                        // console.log(student.calculated_missed_hours)
-                      }
-                      variant="danger"
-                    >
-                      حذف
-                    </Button>
-                  </td>
+                  {student.absence_status ? (
+                    <td className="d-flex justify-content-center align-items-center">
+                      <Button
+                        onClick={
+                          () =>
+                            handleOpenModal(
+                              student.student_id,
+                              student.absence_id,
+                              student.calculated_missed_hours,
+                              student.last_name,
+                              student.first_name
+                            )
+                          // console.log(student.calculated_missed_hours)
+                        }
+                        variant="danger"
+                      >
+                        حذف
+                      </Button>
+                    </td>
+                  ) : (
+                    <td></td>
+                  )}
                 </tr>
               );
             })}

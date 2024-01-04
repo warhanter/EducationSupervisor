@@ -76,7 +76,7 @@ const Students = ({ queryTbale }) => {
         (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
         new Date(i.date_of_absence) <= rapportDate
     );
-  }, [rapportDate]);
+  }, [rapportDate, absences]);
   const allAbsenceClasses = useMemo(
     () => [...new Set(absenceByDate().map((s) => s.full_className))].sort(),
     [rapportDate]
@@ -114,7 +114,7 @@ const Students = ({ queryTbale }) => {
     const endOffset = itemOffset + itemsPerPage;
     setCurrentItems(studentsTablesData().slice(itemOffset, endOffset));
     setPageCount(Math.ceil(studentsTablesData().length / itemsPerPage));
-  }, [itemOffset, itemsPerPage, rapportDate]);
+  }, [itemOffset, itemsPerPage, rapportDate, absences]);
 
   // Here we use item offsets; we could also use page offsets
   // following the API or data you're working with.
