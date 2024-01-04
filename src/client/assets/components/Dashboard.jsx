@@ -6,6 +6,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { filter } from "lodash";
 import { useStudents } from "../../providers/StudentProvider";
 import app from "../../realm";
+import useInterval from "../../hooks/useInterval";
 const Dashboard = () => {
   const {
     motamadrisin,
@@ -18,6 +19,7 @@ const Dashboard = () => {
     absences,
     lunchAbsences,
   } = useStudents();
+
   const rapportDate = new Date().setHours(23);
   const date1 = new Date().setHours(7);
   const date2 = new Date().setHours(23);
@@ -41,14 +43,14 @@ const Dashboard = () => {
           <DashboardCard
             bgcolor="#28536b"
             title={motamadrisin?.length}
-            subtitle="المتمدرسون"
+            subtitle="التلاميذ"
             link="/students"
             // className="studentCard"
           />
           <DashboardCard
             bgcolor="#45b69c"
             title={wafidin?.length}
-            subtitle="الوافدون"
+            subtitle="الوافدين"
             link="/wafidin"
             // className="wafidinCard"
           />

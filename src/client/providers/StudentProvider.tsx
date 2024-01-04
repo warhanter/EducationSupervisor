@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext } from "react";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 import _ from "lodash";
 import app from "../realm";
 
@@ -15,14 +15,20 @@ type StudentContextType = {
   lunchAbsences: Record<string, any>[] | undefined;
 };
 
+type StudentsType = {
+  students: Record<string, any>[] | undefined;
+  absences: Record<string, any>[] | undefined;
+  lunchAbsences: Record<string, any>[] | undefined;
+};
+
 type StudentsProviderProps = {
   children: ReactNode;
 };
 
 const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
-const students = await mongo?.collection("Student").find();
-const absences = await mongo?.collection("Absence").find();
-const lunchAbsences = await mongo?.collection("LunchAbsence").find();
+const studentsCollection = await mongo?.collection("Student").find();
+const absencesCollection = await mongo?.collection("Absence").find();
+const lunchAbsencesCollection = await mongo?.collection("LunchAbsence").find();
 
 const defaultValues = {
   motamadrisin: [],
@@ -35,10 +41,21 @@ const defaultValues = {
   students: [],
   absences: [],
   lunchAbsences: [],
+  notification: {
+    document: undefined,
+    operationType: null,
+  },
 };
+
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
 const StudentProvider = ({ children }: StudentsProviderProps) => {
+  const [{ students, absences, lunchAbsences }] = useState<StudentsType>({
+    students: studentsCollection,
+    absences: absencesCollection,
+    lunchAbsences: lunchAbsencesCollection,
+  });
+
   const motamadrisin = _.filter(
     students,
     (i) => !i.is_fired && !i.switched_school
