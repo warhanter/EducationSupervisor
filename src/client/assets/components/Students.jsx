@@ -21,10 +21,10 @@ import Pagination from "./Pagination";
 import { filter, orderBy } from "lodash";
 import { useRef } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import { useStudents } from "../../providers/StudentProvider";
-// import { watchForCollectionChanges } from "../../functions/watchChanges";
-
+import ar from "date-fns/locale/ar-DZ";
+registerLocale("ar", ar);
 const STable = lazy(() => import("./StudentTable.jsx"));
 const ATable = lazy(() => import("./AbsencesTable.jsx"));
 const OTable = lazy(() => import("./MedialLeaveTable.jsx"));
@@ -252,10 +252,12 @@ const Students = ({ queryTbale }) => {
             {queryTbale === "Absence" && (
               <div>
                 <DatePicker
+                  locale="ar"
                   showIcon
                   selected={rapportDate}
                   onChange={(date) => setRapportDate(date.setHours(23))}
                   customInput={<ExampleCustomInput />}
+                  dateFormat="yyyy/MM/dd"
                 />
               </div>
             )}

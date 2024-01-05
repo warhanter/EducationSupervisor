@@ -10,21 +10,22 @@ import * as Realm from "realm-web";
 import { Button, Container } from "react-bootstrap";
 import TableView from "./TableView.jsx";
 import TableLuncheAbsenceView from "./TableLuncheAbsenceView.jsx";
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { filter } from "lodash";
 import _ from "lodash";
 import { useStudents } from "../../providers/StudentProvider";
+import ar from "date-fns/locale/ar-DZ";
+registerLocale("ar", ar);
 
 // Create Document Component
 const MyDocument = () => {
   const { absences, lunchAbsences, students } = useStudents();
+  const [isSelected, setIsSelected] = useState(true);
+  const [isSelected2, setIsSelected2] = useState(false);
   const [currentItems2, setCurrentItems2] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
-  const [nisfdakhiliRapportDate, setNisfdakhiliRapportDate] = useState(
-    new Date()
-  );
   const [dailyRapport, setDailyRapport] = useState(true);
   const [nisfdakhiliRapport, setNisfdakhiliRapport] = useState(false);
 
@@ -38,8 +39,12 @@ const MyDocument = () => {
   }, [rapportDate]);
 
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-    <button className="w-100 mb-3 btn btn-primary" onClick={onClick} ref={ref}>
-      {value}
+    <button
+      className="w-100 mb-3 btn btn-secondary bold"
+      onClick={onClick}
+      ref={ref}
+    >
+      <strong>{value}</strong>
     </button>
   ));
 
@@ -125,8 +130,8 @@ const MyDocument = () => {
   const generateLunchAbsenceTableData = () => {
     let result = [];
     let i = 0;
-    const date1 = nisfdakhiliRapportDate.setHours(7);
-    const date2 = nisfdakhiliRapportDate.setHours(23);
+    const date1 = new Date(rapportDate).setHours(7);
+    const date2 = new Date(rapportDate).setHours(23);
     let filteredAbsenceData = _.filter(
       lunchAbsences,
       (i) =>
@@ -167,38 +172,41 @@ const MyDocument = () => {
       className="d-flex flex-row-reverse"
     >
       <div className="d-flex flex-column align-items-end mt-4 pe-4 w-25">
+        <DatePicker
+          locale="ar"
+          showIcon
+          selected={rapportDate}
+          onChange={(date) => {
+            setRapportDate(date.setHours(23));
+          }}
+          customInput={<ExampleCustomInput />}
+          dateFormat="yyyy/MM/dd"
+        />
         <Button
-          variant="dark"
+          variant={isSelected ? "danger" : "primary"}
           className="w-100 mb-3"
           onClick={() => {
             setDailyRapport(true);
             setNisfdakhiliRapport(false);
+            setIsSelected(true);
+            setIsSelected2(false);
           }}
         >
           غيابات التلاميذ
         </Button>
-        <DatePicker
-          showIcon
-          selected={rapportDate}
-          onChange={(date) => setRapportDate(date.setHours(23))}
-          customInput={<ExampleCustomInput />}
-        />
         <Button
-          variant="dark"
+          variant={isSelected2 ? "danger" : "primary"}
           className="w-100 mb-3"
           onClick={() => {
             setDailyRapport(false);
             setNisfdakhiliRapport(true);
+            setIsSelected(false);
+            setIsSelected2(true);
           }}
         >
           غيابات ن داخلي
         </Button>
-        <DatePicker
-          showIcon
-          selected={nisfdakhiliRapportDate}
-          onChange={(date) => setNisfdakhiliRapportDate(date)}
-          customInput={<ExampleCustomInput />}
-        />
+
         <Button className="w-100 mb-3">استدعاء</Button>
         <Button className="w-100 mb-3">تقرير بتلميذ</Button>
         <Button className="w-100 mb-3">التقرير اليومي</Button>
@@ -214,7 +222,7 @@ const MyDocument = () => {
           <PDFViewer style={{ height: "100%", width: "100%" }}>
             <TableLuncheAbsenceView
               data={lunchabsenceData}
-              date={nisfdakhiliRapportDate}
+              date={rapportDate}
             />
           </PDFViewer>
         )}
