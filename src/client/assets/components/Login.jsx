@@ -49,11 +49,11 @@ const Login = () => {
                 />
               </Form.Group>
               <Form.Group id="password" className="my-2">
-                <Form.Label>الرقم السري</Form.Label>
+                <Form.Label>كلمة المرور</Form.Label>
                 <Form.Control
                   style={{ textAlign: "right" }}
                   type="password"
-                  placeholder="الرقم السري"
+                  placeholder="كلمة المرور"
                   required
                   ref={passwordRef}
                 />
