@@ -130,8 +130,8 @@ const MyDocument = () => {
   const generateLunchAbsenceTableData = () => {
     let result = [];
     let i = 0;
-    const date1 = new Date(rapportDate).setHours(7);
-    const date2 = new Date(rapportDate).setHours(23);
+    const date1 = new Date(rapportDate).setHours(1);
+    const date2 = new Date(rapportDate).setHours(24);
     let filteredAbsenceData = _.filter(
       lunchAbsences,
       (i) =>
