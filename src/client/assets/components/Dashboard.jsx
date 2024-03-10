@@ -40,72 +40,78 @@ const Dashboard = () => {
   return (
     <Container className="container d-flex justify-content-center w-100 parentContainer">
       <div className="d-flex flex-row-reverse flex-wrap  justify-content-between w-75 align-content-center cards">
-        <Suspense fallback={<LoadingSpinner />}>
-          <DashboardCard
-            bgcolor="#28536b"
-            title={motamadrisin?.length}
-            subtitle="التلاميذ"
-            link="/students"
-            // className="studentCard"
-          />
-          <DashboardCard
-            bgcolor="#45b69c"
-            title={wafidin?.length}
-            subtitle="الوافدين"
-            link="/wafidin"
-            // className="wafidinCard"
-          />
-          <DashboardCard
-            bgcolor="#e6af2e"
-            title={moghadirin?.length}
-            subtitle="المغادرين"
-            link="/moghadirin"
-            // className="moghadirinCard"
-          />
+        {/* <Suspense fallback={<LoadingSpinner />}> */}
+        {motamadrisin === 0 ? (
+          <LoadingSpinner />
+        ) : (
+          <>
+            <DashboardCard
+              bgcolor="#28536b"
+              title={motamadrisin?.length}
+              subtitle="التلاميذ"
+              link="/students"
+              // className="studentCard"
+            />
+            <DashboardCard
+              bgcolor="#45b69c"
+              title={wafidin?.length}
+              subtitle="الوافدين"
+              link="/wafidin"
+              // className="wafidinCard"
+            />
+            <DashboardCard
+              bgcolor="#e6af2e"
+              title={moghadirin?.length}
+              subtitle="المغادرين"
+              link="/moghadirin"
+              // className="moghadirinCard"
+            />
 
-          <DashboardCard
-            bgcolor="#6b4e71"
-            title={nisfDakhili?.length}
-            subtitle="نصف داخلي"
-            link="/nisfdakhili"
-            // className="nisfdakhiliCard"
-          />
-          <DashboardCard
-            bgcolor="#922d50"
-            title={absencesByDate?.length}
-            subtitle="غيابات التلاميذ"
-            link="/absences"
-            // className="ghiyabatCard"
-          />
-          <DashboardCard
-            bgcolor="#922d50"
-            title={filteredAbsenceData?.length}
-            subtitle="غيابات  المطعم"
-            // link="/absences"
-            // className="ghiyabatCard"
-          />
-          <DashboardCard
-            bgcolor="#3f88c5"
-            title={otlaMaradiya?.length}
-            subtitle="العطل المرضية"
-            link="/otlaMaradiya"
-            // className="leaveCard"
-          />
-          <DashboardCard
-            bgcolor="#3f88c5"
-            title={maafiyin?.length}
-            subtitle="المعفيين من الرياضة"
-            // link="/otlaMaradiya"
-            // className="leaveCard"
-          />
-          <DashboardCard
-            bgcolor="#191716"
-            title={machtobin?.length}
-            subtitle="المشطوبين"
-            link="/machtobin"
-            // className="machtobinCard"
-          />
-        </Suspense>
+            <DashboardCard
+              bgcolor="#6b4e71"
+              title={nisfDakhili?.length}
+              subtitle="نصف داخلي"
+              link="/nisfdakhili"
+              // className="nisfdakhiliCard"
+            />
+            <DashboardCard
+              bgcolor="#922d50"
+              title={absencesByDate?.length}
+              subtitle="غيابات التلاميذ"
+              link="/absences"
+              // className="ghiyabatCard"
+            />
+            <DashboardCard
+              bgcolor="#922d50"
+              title={filteredAbsenceData?.length}
+              subtitle="غيابات  المطعم"
+              // link="/absences"
+              // className="ghiyabatCard"
+            />
+            <DashboardCard
+              bgcolor="#3f88c5"
+              title={otlaMaradiya?.length}
+              subtitle="العطل المرضية"
+              link="/otlaMaradiya"
+              // className="leaveCard"
+            />
+            <DashboardCard
+              bgcolor="#3f88c5"
+              title={maafiyin?.length}
+              subtitle="المعفيين من الرياضة"
+              // link="/otlaMaradiya"
+              // className="leaveCard"
+            />
+            <DashboardCard
+              bgcolor="#191716"
+              title={machtobin?.length}
+              subtitle="المشطوبين"
+              link="/machtobin"
+              // className="machtobinCard"
+            />
+          </>
+        )}
+        {/* </Suspense> */}
       </div>
     </Container>
   );

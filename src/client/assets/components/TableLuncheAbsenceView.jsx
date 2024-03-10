@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import {
   View,
   Page,
@@ -18,14 +18,23 @@ Font.register({
   ],
 });
 const styles = StyleSheet.create({
+  paging: {
+    // alignSelf: "center",
+    fontSize: 12,
+    // textAlign: "center",
+    borderStyle: "solid",
+    borderTopWidth: 1,
+    width: "100%",
+  },
   table: {
     fontFamily: "arabic",
     display: "table",
     width: "auto",
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderRight: 0,
-    borderBottom: 0,
+    // borderStyle: "solid",
+    // borderWidth: 1,
+    // borderRight: 0,
+    // borderBottom: 0,
+    // borderColor: "white",
     marginLeft: "auto",
     marginRight: "auto",
     marginTop: 5,
@@ -33,6 +42,10 @@ const styles = StyleSheet.create({
   tableRow: {
     margin: "auto",
     flexDirection: "row",
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderBottom: 0,
+    borderRight: 0,
   },
   tableCol: {
     width: "7%",
@@ -40,19 +53,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderLeftWidth: 0,
     borderTopWidth: 0,
+    borderBottom: 0,
   },
   tableColHeader: {
     width: "7%",
     borderStyle: "solid",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
+    borderRight: 1,
     backgroundColor: "#dddddd",
   },
   tableCell: {
     marginRight: 5,
     marginTop: 5,
-    fontSize: 10,
+    fontSize: 8,
     textAlign: "right",
   },
   header: {
@@ -64,9 +76,9 @@ const styles = StyleSheet.create({
   },
   spacing: {
     height: 40,
-    borderColor: "black",
-    borderStyle: "solid",
-    borderBottomWidth: 1,
+    // borderColor: "black",
+    // borderStyle: "solid",
+    // borderBottomWidth: 1,
   },
   footer: {
     fontFamily: "arabic",
@@ -77,6 +89,18 @@ const styles = StyleSheet.create({
   },
 });
 const TableLuncheAbsenceView = ({ data, date }) => {
+  const [paging, setPaging] = useState(data.length);
+  const spacingMargin = (index, page) => {
+    if (index === 36 + 40) {
+      return (
+        <View style={styles.spacing}>
+          <Text style={styles.paging}>الصفحة 1</Text>
+        </View>
+      );
+    } else {
+      return null;
+    }
+  };
   return (
     <Document>
       <Page>
@@ -137,16 +161,56 @@ const TableLuncheAbsenceView = ({ data, date }) => {
                       </Text>
                     </View>
                   </View>
-                  {index == 31 && <View style={styles.spacing} />}
-                  {index == 31 + 34 && <View style={styles.spacing} />}
-                  {index == 31 + 68 && <View style={styles.spacing} />}
-                  {index == 31 + 102 && <View style={styles.spacing} />}
-                  {index == 31 + 170 && <View style={styles.spacing} />}
-                  {index == 31 + 204 && <View style={styles.spacing} />}
-                  {index == 31 + 238 && <View style={styles.spacing} />}
-                  {index == 31 + 272 && <View style={styles.spacing} />}
-                  {index == 31 + 306 && <View style={styles.spacing} />}
-                  {index == 31 + 340 && <View style={styles.spacing} />}
+                  {index == 36 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 1</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 2</Text>
+                    </View>
+                  )}
+                  {index == 36 + 80 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 3</Text>
+                    </View>
+                  )}
+                  {index == 36 + 108 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 4</Text>
+                    </View>
+                  )}
+                  {index == 36 + 176 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 5</Text>
+                    </View>
+                  )}
+                  {index == 36 + 210 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 6</Text>
+                    </View>
+                  )}
+                  {index == 36 + 244 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 7</Text>
+                    </View>
+                  )}
+                  {index == 36 + 278 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 8</Text>
+                    </View>
+                  )}
+                  {index == 36 + 312 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 9</Text>
+                    </View>
+                  )}
+                  {index == 36 + 346 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 10</Text>
+                    </View>
+                  )}
                 </Fragment>
               );
             })}

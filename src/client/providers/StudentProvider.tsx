@@ -45,14 +45,12 @@ type StudentsProviderProps = {
   children: ReactNode;
 };
 
-const time1 = Date.now();
 const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
 const studentsPromise = mongo?.collection("Student").find();
 const absencesPromise = mongo?.collection("Absence").find();
 const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
 const [studentsCollection, absencesCollection, lunchAbsencesCollection] =
   await Promise.all([studentsPromise, absencesPromise, lunchAbsencesPromise]);
-console.log(Date.now() - time1);
 
 const defaultValues = {
   motamadrisin: [],
