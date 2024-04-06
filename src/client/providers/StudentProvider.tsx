@@ -10,42 +10,43 @@ import app from "../realm";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
 
 type CollectionType = Realm.Services.MongoDB.MongoDBCollection<any> | undefined;
-
-type StudentContextType = {
-  motamadrisin: Record<string, any>[];
-  wafidin: Record<string, any>[];
-  moghadirin: Record<string, any>[];
-  machtobin: Record<string, any>[];
-  nisfDakhili: Record<string, any>[];
-  otlaMaradiya: Record<string, any>[];
-  maafiyin: Record<string, any>[];
-  students: Record<string, any>[] | undefined;
-  absences: Record<string, any>[] | undefined;
-  addresses: Record<string, any>[] | undefined;
-  lunchAbsences: Record<string, any>[] | undefined;
-  notification:
-    | {
-        fullDocument: Record<string, any> | undefined;
-        operationType: string | undefined;
-      }
-    | undefined;
+type Notification = {
+  fullDocument: Record<string, any> | undefined;
+  operationType: string | undefined;
 };
-
+type Realm = Record<string, any>[] | undefined;
+type StudentList = Record<string, any>[];
 type StudentsType = {
-  students: Record<string, any>[] | undefined;
-  absences: Record<string, any>[] | undefined;
-  addresses: Record<string, any>[] | undefined;
-  lunchAbsences: Record<string, any>[] | undefined;
-  notification:
-    | {
-        fullDocument: Record<string, any> | undefined;
-        operationType: string | undefined;
-      }
-    | undefined;
+  students: Realm;
+  absences: Realm;
+  addresses: Realm;
+  lunchAbsences: Realm;
+  notification: Notification | undefined;
 };
-
 type StudentsProviderProps = {
   children: ReactNode;
+};
+
+type StudentContextType = {
+  motamadrisin: StudentList;
+  wafidin: StudentList;
+  moghadirin: StudentList;
+  machtobin: StudentList;
+  nisfDakhili: StudentList;
+  otlaMaradiya: StudentList;
+  maafiyin: StudentList;
+  students: Realm;
+  absences: Realm;
+  addresses: Realm;
+  lunchAbsences: Realm;
+  notification: Notification | undefined;
+  setStudents: ({
+    students,
+    absences,
+    addresses,
+    lunchAbsences,
+    notification,
+  }: StudentsType) => void;
 };
 
 const defaultValues = {
@@ -60,6 +61,7 @@ const defaultValues = {
   absences: [],
   addresses: [],
   lunchAbsences: [],
+  setStudents: () => {},
   notification: {
     fullDocument: undefined,
     operationType: undefined,
@@ -169,13 +171,13 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     addresses,
     lunchAbsences,
     notification,
+    setStudents,
   };
   return !loading ? (
     <StudentContext.Provider value={contextValue}>
       {children}
     </StudentContext.Provider>
   ) : (
-    // <Suspense fallback={<Loading />}>{children}</Suspense>
     <SkeletonCard />
   );
 };

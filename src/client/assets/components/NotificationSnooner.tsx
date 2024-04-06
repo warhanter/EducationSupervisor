@@ -67,13 +67,26 @@ const AbsencesAlert = ({ notification, title }: showAlertPros) => {
 };
 
 export function SonnerDemo() {
-  let { notification } = useStudents();
+  const {
+    notification,
+    setStudents,
+    absences,
+    students,
+    lunchAbsences,
+    addresses,
+  } = useStudents();
   const absenceStatus = notification?.fullDocument?.absence_status;
   const title = absenceStatus ? addtitle : returnTitle;
 
   useEffect(() => {
     showAlert({ notification, title, absenceStatus });
-    notification = undefined;
+    setStudents({
+      students,
+      absences,
+      addresses,
+      lunchAbsences,
+      notification: undefined,
+    });
   }, [notification]);
   return <Toaster visibleToasts={5} closeButton richColors />;
 }
