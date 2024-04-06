@@ -15,7 +15,7 @@ const PrivateRoute = ({ children }) => {
       <Suspense fallback={<Loading />}>{children}</Suspense>
     </StudentProvider>
   ) : (
-    <Navigate to="/newlogin" />
+    <Navigate to="/login" />
   );
 };
 
