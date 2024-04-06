@@ -15,6 +15,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { AlertDestructive } from "./Alert";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Loader } from "lucide-react";
+import { lowerCase } from "lodash";
 
 export default function LoginForm() {
   const emailRef = useRef();
@@ -25,13 +26,15 @@ export default function LoginForm() {
   const [passwodInputType, setPasswodInputType] = useState("password");
 
   const navigation = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setError(null);
       setLoading(true);
-      await loginApp(emailRef.current?.value, passwordRef.current?.value);
+      await loginApp(
+        emailRef.current?.value.toLowerCase(),
+        passwordRef.current?.value
+      );
       location.reload();
       navigation("/");
     } catch (error) {
