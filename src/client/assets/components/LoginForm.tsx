@@ -51,14 +51,20 @@ export default function LoginForm() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="username"
               required
               ref={emailRef}
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">كلمة المرور</Label>
-            <Input id="password" type="password" required ref={passwordRef} />
+            <Input
+              id="password"
+              type="password"
+              placeholder="password"
+              required
+              ref={passwordRef}
+            />
           </div>
         </CardContent>
         <CardFooter>
