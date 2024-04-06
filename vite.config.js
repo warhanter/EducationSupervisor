@@ -14,7 +14,7 @@ export default defineConfig({
       promiseImportName: (i) => `__tla_${i}`,
     }),
   ],
-  // base: "/EducationSupervisor/",
+  base: "/EducationSupervisor/",
   base: "/",
   resolve: {
     alias: {
