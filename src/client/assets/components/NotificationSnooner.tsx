@@ -16,7 +16,7 @@ type showAlertPros = {
   absenceStatus: boolean;
 };
 const showAlert = ({ notification, title, absenceStatus }: showAlertPros) => {
-  if (notification) {
+  if (notification && notification.fullDocument?.full_name) {
     if (absenceStatus) {
       toast.error(
         <AbsencesAlert
