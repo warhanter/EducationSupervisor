@@ -33,23 +33,19 @@ const Notice1Page = () => {
   }
   const notice1Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 4
-  );
+  )?.toLocaleDateString("en-ZA");
   const notice2Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 11
-  );
+  )?.toLocaleDateString("en-ZA");
   const notice3Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 18
-  );
-  const notice2Sub = `المرجع: الإشعـار الأول بالغيـاب بتاريخ : ${notice1Date?.toLocaleDateString(
-    "en-ZA"
-  )} رقم ..........`;
+  )?.toLocaleDateString("en-ZA");
+  const notice2Sub = `المرجع: الإشعـار الأول بالغيـاب بتاريخ : ${notice1Date} رقم ..........`;
   const notice3Sub = (
     <p>
-      المرجع: الإشعـار الأول بالغيـاب بتاريخ :
-      {notice1Date?.toLocaleDateString("en-ZA")} رقم ..........
+      المرجع: الإشعـار الأول بالغيـاب بتاريخ :{notice1Date} رقم ..........
       <br />
-      ---------- الإشعـار الثاني بالغيـاب بتاريخ :
-      {notice2Date?.toLocaleDateString("en-ZA")} رقم ...........
+      ---------- الإشعـار الثاني بالغيـاب بتاريخ :{notice2Date} رقم ...........
     </p>
   );
   const noticeHeader =
@@ -139,7 +135,14 @@ const Notice1Page = () => {
       </div>
       <div className="flex flex-col items-end py-10 font-bold">
         <div className="text-center">
-          <p>حرر في مروانة بتاريخ: 2024/3/20</p>
+          <p>
+            حرر في مروانة بتاريخ:{" "}
+            {noticeName === "notice2"
+              ? notice2Date
+              : noticeName === "notice3"
+              ? notice3Date
+              : notice1Date}
+          </p>
           <h3>المديـــــــــر</h3>
         </div>
       </div>
