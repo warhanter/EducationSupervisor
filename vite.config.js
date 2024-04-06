@@ -15,7 +15,7 @@ export default defineConfig({
     }),
   ],
   base: "/EducationSupervisor/",
-  base: "/",
+  // base: "/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
