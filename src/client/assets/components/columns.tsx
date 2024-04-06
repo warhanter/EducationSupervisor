@@ -48,7 +48,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="mr-4 dark:border-black"
+        className="mx-4 dark:border-black"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -86,7 +86,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -96,7 +96,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="ps-0 lg:ps-0 xl:ps-0 pe-0 py-0">
+        <div>
           <div className="flex items-center gap-x-3">
             {row.original.gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
             <div className="grow">
@@ -118,7 +118,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -146,7 +146,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -160,7 +160,11 @@ export const studentsColumns: ColumnDef<Student>[] = [
         : row.getValue("is_fired")
         ? "شطب غياب"
         : "متمدرس";
-      return <StatusBadge status={status} />;
+      return (
+        <div className="ml-10">
+          <StatusBadge status={status} />
+        </div>
+      );
     },
   },
   {
@@ -169,7 +173,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -181,7 +185,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       const date: Date = row.getValue("student_DOB");
 
       return (
-        <div className="text-right font-medium text-gray-500">
+        <div className="text-right font-medium text-gray-500 ml-10">
           {date?.toLocaleDateString("en-ZA")}
         </div>
       );
@@ -229,7 +233,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="mr-4 dark:border-black"
+        className="mx-4 dark:border-black"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -267,7 +271,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="m-5"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -278,7 +282,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const { students } = useStudents();
       return (
-        <div className="ps-0 lg:ps-0 xl:ps-0 pe-0 py-0">
+        <div>
           <div className="flex items-center gap-x-3">
             {filter(students, (a) => a._id === row.original.student_id)[0]
               .gender === "ذكر" ? (
@@ -305,7 +309,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="m-5"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -315,7 +319,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="p-0">
+        <div>
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
             {row.getValue("full_className")}
           </span>
@@ -422,7 +426,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="mr-4 dark:border-black"
+        className="mx-4 dark:border-black"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -460,7 +464,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -470,7 +474,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="ps-0 lg:ps-0 xl:ps-0 pe-0 py-0">
+        <div>
           <div className="flex items-center gap-x-3">
             {row.original.gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
             <div className="grow">
@@ -633,7 +637,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="mr-4 dark:border-black"
+        className="mx-4 dark:border-black"
         checked={
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -671,7 +675,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
+          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -682,7 +686,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const { students } = useStudents();
       return (
-        <div className="ps-0 lg:ps-0 xl:ps-0 pe-0 py-0">
+        <div>
           <div className="flex items-center gap-x-3">
             {filter(students, (a) => a._id === row.original.student_id)[0]
               .gender === "ذكر" ? (

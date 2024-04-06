@@ -275,7 +275,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
               {table.getColumn("full_className") && (
                 <DataTableFacetedFilter
                   column={table.getColumn("full_className")}
-                  title="السنة"
+                  title="القسم"
                   options={vals}
                 />
               )}
@@ -334,7 +334,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead
-                        className="bg-gray-50  text-gray-900 p-0 ps-4 text-right text-xs font-bold tracking-wide "
+                        className="bg-gray-50  text-gray-900 p-0  my-0 text-right text-xs font-bold tracking-wide "
                         key={header.id}
                       >
                         {header.isPlaceholder
@@ -358,7 +358,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
-                        className="py-2 pe-0 ps-4 whitespace-nowrap"
+                        className="py-2  pr-4 whitespace-nowrap"
                         key={cell.id}
                       >
                         {flexRender(

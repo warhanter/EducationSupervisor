@@ -271,7 +271,7 @@ function App() {
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <div className="container">
+        <div className="container px-3">
           <RouterProvider router={router} />
         </div>
       </ThemeProvider>
