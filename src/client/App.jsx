@@ -8,8 +8,16 @@ import ErrorPage from "./assets/components/Error-page";
 import PrivateRoute from "./assets/components/PrivateRoute";
 import NavigationBar from "./assets/components/Navbar";
 import MyDocument from "./assets/components/HTMLtoPDF";
-import "bootstrap/dist/css/bootstrap.rtl.min.css";
+// import "bootstrap/dist/css/bootstrap.rtl.min.css";
 import "./App.css";
+import NewTable from "./assets/components/NewTable";
+import { NewDashboard } from "./assets/components/NewDashboard";
+import PDFPrint from "./assets/components/PDFPrint";
+import { ThemeProvider } from "@/components/theme-provider";
+import LoginForm from "./assets/components/LoginForm";
+import { SkeletonCard } from "./assets/components/SkeletonCard";
+import { ComboboxPopover } from "./assets/components/Tests";
+import { CreatePDFNotice1 } from "./assets/pdf/Notice1";
 const Dashboard = lazy(() => import("./assets/components/Dashboard"));
 const Students = lazy(() => import("./assets/components/Students"));
 
@@ -30,6 +38,12 @@ function App() {
       element: <Login />,
       errorElement: <ErrorPage />,
     },
+    {
+      path: "/newlogin",
+      element: <LoginForm />,
+      errorElement: <ErrorPage />,
+    },
+
     {
       path: "/pdf",
       element: (
@@ -114,21 +128,157 @@ function App() {
     {
       errorElement: <ErrorPage />,
     },
+
+    // New  design #######################################
+    {
+      path: "/newtable",
+      element: (
+        <PrivateRoute>
+          <NewTable />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newdashboard",
+      element: (
+        <PrivateRoute>
+          <NewDashboard />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newnisfdakhili",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="nisfdakhili" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newwafidin",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="wafidin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newotlaMaradiya",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="otlaMaradiya" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newmotamadrisin",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="motamadrisin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newmoghadirin",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="moghadirin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newmachtobin",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="machtobin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newmaafiyin",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="maafiyin" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/newAbsence",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="Absence" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/sortedAbsences",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="sortedAbsences" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/studentAbsencesRecords",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="studentAbsencesRecords" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/allStudents",
+      element: (
+        <PrivateRoute>
+          <NewTable queryTbale="all" />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/print-pdf",
+      element: (
+        <PrivateRoute>
+          <PDFPrint />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/print-notice",
+      element: (
+        <PrivateRoute>
+          <CreatePDFNotice1 />
+        </PrivateRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    // New  design #######################################
   ]);
 
   return (
     <AuthProvider>
-      <StudentProvider>
-        <Container
-          style={{ minHeight: "100vh" }}
-          className="d-flex  justify-content-center"
-        >
-          <div style={{ minWidth: 1280 }} className="w-100">
-            <RouterProvider router={router} />
-          </div>
-        </Container>
-      </StudentProvider>
+      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+        <div className="container">
+          <RouterProvider router={router} />
+        </div>
+      </ThemeProvider>
     </AuthProvider>
+    // <SkeletonCard />
+    // <ComboboxPopover />
+    // <CreatePDFNotice1 />
   );
 }
 

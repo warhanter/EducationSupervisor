@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import topLevelAwait from "vite-plugin-top-level-await";
+import path from "path";
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -12,6 +14,11 @@ export default defineConfig({
       promiseImportName: (i) => `__tla_${i}`,
     }),
   ],
-  base: "/EducationSupervisor/",
-  // base: "/",
+  // base: "/EducationSupervisor/",
+  base: "/",
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
 });

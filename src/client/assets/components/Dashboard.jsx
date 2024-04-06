@@ -20,7 +20,6 @@ const Dashboard = () => {
     lunchAbsences,
     notification,
   } = useStudents();
-  console.log(notification);
   const rapportDate = new Date().setHours(23);
   const date1 = new Date().setHours(7);
   const date2 = new Date().setHours(23);

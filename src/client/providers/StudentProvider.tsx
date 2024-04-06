@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import _ from "lodash";
 import app from "../realm";
+import { SkeletonCard } from "../assets/components/SkeletonCard";
 
 type CollectionType = Realm.Services.MongoDB.MongoDBCollection<any> | undefined;
 
@@ -20,6 +21,7 @@ type StudentContextType = {
   maafiyin: Record<string, any>[];
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
+  addresses: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
   notification:
     | {
@@ -32,6 +34,7 @@ type StudentContextType = {
 type StudentsType = {
   students: Record<string, any>[] | undefined;
   absences: Record<string, any>[] | undefined;
+  addresses: Record<string, any>[] | undefined;
   lunchAbsences: Record<string, any>[] | undefined;
   notification:
     | {
@@ -45,13 +48,6 @@ type StudentsProviderProps = {
   children: ReactNode;
 };
 
-const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
-const studentsPromise = mongo?.collection("Student").find();
-const absencesPromise = mongo?.collection("Absence").find();
-const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
-const [studentsCollection, absencesCollection, lunchAbsencesCollection] =
-  await Promise.all([studentsPromise, absencesPromise, lunchAbsencesPromise]);
-
 const defaultValues = {
   motamadrisin: [],
   wafidin: [],
@@ -62,6 +58,7 @@ const defaultValues = {
   maafiyin: [],
   students: [],
   absences: [],
+  addresses: [],
   lunchAbsences: [],
   notification: {
     fullDocument: undefined,
@@ -72,13 +69,44 @@ const defaultValues = {
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
 const StudentProvider = ({ children }: StudentsProviderProps) => {
-  const [{ students, absences, lunchAbsences, notification }, setStudents] =
-    useState<StudentsType>({
+  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
+  const [loading, setLoading] = useState(true);
+  const [
+    { students, absences, lunchAbsences, addresses, notification },
+    setStudents,
+  ] = useState<StudentsType>({
+    students: undefined,
+    absences: undefined,
+    lunchAbsences: undefined,
+    addresses: undefined,
+    notification: undefined,
+  });
+  const fetchData = async () => {
+    const studentsPromise = mongo?.collection("Student").find();
+    const absencesPromise = mongo?.collection("Absence").find();
+    const addressesPromise = mongo?.collection("Adress").find();
+    const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
+    const [
+      studentsCollection,
+      absencesCollection,
+      addressesCollection,
+      lunchAbsencesCollection,
+    ] = await Promise.all([
+      studentsPromise,
+      absencesPromise,
+      addressesPromise,
+      lunchAbsencesPromise,
+    ]);
+    setStudents({
       students: studentsCollection,
       absences: absencesCollection,
+      addresses: addressesCollection,
       lunchAbsences: lunchAbsencesCollection,
       notification: undefined,
     });
+    setLoading(false);
+  };
+
   const watchforCollectionChanges = async (collection: CollectionType) => {
     if (!!collection) {
       for await (const change of collection.watch()) {
@@ -98,9 +126,10 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
           }
         }
         setStudents({
-          students,
+          students: await mongo?.collection("Student").find(),
           absences: await mongo?.collection("Absence").find(),
           lunchAbsences,
+          addresses,
           notification: {
             fullDocument: documentOBJ,
             operationType: operation,
@@ -112,11 +141,8 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
 
   useEffect(() => {
     watchforCollectionChanges(mongo?.collection("Absence"));
+    fetchData();
   }, []);
-
-  console.log(students?.length);
-  console.log("Rendring....");
-
   const motamadrisin = _.filter(
     students,
     (i) => !i.is_fired && !i.switched_school
@@ -140,13 +166,17 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     maafiyin,
     students,
     absences,
+    addresses,
     lunchAbsences,
     notification,
   };
-  return (
+  return !loading ? (
     <StudentContext.Provider value={contextValue}>
       {children}
     </StudentContext.Provider>
+  ) : (
+    // <Suspense fallback={<Loading />}>{children}</Suspense>
+    <SkeletonCard />
   );
 };
 

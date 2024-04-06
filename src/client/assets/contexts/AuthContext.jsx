@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import app, { emailPasswordCredentials } from "../../realm";
+import { SkeletonCard } from "../components/SkeletonCard";
 
 const AuthContext = React.createContext();
 
@@ -30,9 +31,9 @@ export function AuthProvider({ children }) {
     logOut,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
+  return !loading ? (
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  ) : (
+    <SkeletonCard />
   );
 }

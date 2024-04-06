@@ -3,13 +3,19 @@ import { Navigate } from "react-router-dom";
 import app from "../../realm";
 import { Suspense } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import StudentProvider from "@/client/providers/StudentProvider";
 
+function Loading() {
+  return <h1>🌀 Loading...</h1>;
+}
 const PrivateRoute = ({ children }) => {
   const [user, setUser] = useState(app.currentUser);
   return user && user.isLoggedIn ? (
-    <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+    <StudentProvider>
+      <Suspense fallback={<Loading />}>{children}</Suspense>
+    </StudentProvider>
   ) : (
-    <Navigate to="/login" />
+    <Navigate to="/newlogin" />
   );
 };
 

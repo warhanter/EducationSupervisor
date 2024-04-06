@@ -19,7 +19,6 @@ const holidays = await holidaysCollection.find();
 Date.prototype.between = function (a, b) {
   let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
   let max = Math.max.apply(Math, [a.getTime(), b.getTime()]);
-  // console.log(this, min, max, this >= min && this <= max);
   return this >= min && this <= max;
 };
 const hours = {
