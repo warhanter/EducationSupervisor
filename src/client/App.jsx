@@ -17,14 +17,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 import LoginForm from "./assets/components/LoginForm";
 import { SkeletonCard } from "./assets/components/SkeletonCard";
 import { ComboboxPopover } from "./assets/components/Tests";
-import { CreatePDFNotice1 } from "./assets/pdf/Notice1";
+import { CreatePDFNotice1 } from "./assets/pdf/Notice";
 const Dashboard = lazy(() => import("./assets/components/Dashboard"));
 const Students = lazy(() => import("./assets/components/Students"));
 
 function App() {
   const router = createHashRouter([
     {
-      path: "/",
+      path: "/old",
       element: (
         <PrivateRoute>
           <NavigationBar />
@@ -34,12 +34,12 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "/login",
+      path: "/oldlogin",
       element: <Login />,
       errorElement: <ErrorPage />,
     },
     {
-      path: "/newlogin",
+      path: "/login",
       element: <LoginForm />,
       errorElement: <ErrorPage />,
     },
@@ -140,7 +140,7 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "/newdashboard",
+      path: "/",
       element: (
         <PrivateRoute>
           <NewDashboard />
@@ -276,9 +276,6 @@ function App() {
         </div>
       </ThemeProvider>
     </AuthProvider>
-    // <SkeletonCard />
-    // <ComboboxPopover />
-    // <CreatePDFNotice1 />
   );
 }
 

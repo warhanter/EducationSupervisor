@@ -28,14 +28,14 @@ export default function LoginForm() {
       setLoading(true);
       // setError(null);
       location.reload();
-      navigation("/newdashboard");
+      navigation("/");
     } catch (error) {
       setError(error.error);
     }
     setLoading(false);
   };
   return currentUser ? (
-    <Navigate to={"/newdashboard"} replace />
+    <Navigate to={"/"} replace />
   ) : (
     <div className="flex  min-h-screen justify-center  items-center  ">
       <Card className="w-full max-w-sm">

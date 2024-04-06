@@ -41,7 +41,7 @@ function HeaderNavbar() {
           <School className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <AppLink to="/newdashboard" link="الرئيسية" />
+        <AppLink to="/" link="الرئيسية" />
         <AppLink to="/allStudents" link="كل التلاميذ" />
         <AppLink to="/newAbsence" link="الغيابات" />
         <AppLink to="#" link="اشعارات" />
@@ -57,13 +57,13 @@ function HeaderNavbar() {
         <SheetContent side="right" id="sheet">
           <nav dir="rtl" className="grid gap-6 text-lg font-medium">
             <Link
-              to="/newdashboard"
+              to="/"
               className="flex items-center gap-2 text-lg font-semibold"
             >
               <School className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
-            <AppLink to="/newdashboard" link="الرئيسية" />
+            <AppLink to="/" link="الرئيسية" />
             <AppLink to="/allStudents" link="كل التلاميذ" />
             <AppLink to="/newAbsence" link="الغيابات" />
             <AppLink to="#" link="اشعارات" />
