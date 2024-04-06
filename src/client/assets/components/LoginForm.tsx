@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "../contexts/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import { AlertDestructive } from "./Alert";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Loader } from "lucide-react";
@@ -25,29 +24,14 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [passwodInputType, setPasswodInputType] = useState("password");
 
-=======
-
-export default function LoginForm() {
-  const emailRef = useRef<React.Ref<HTMLInputElement> | undefined>();
-  const passwordRef = useRef<React.Ref<HTMLInputElement> | undefined>();
-  const { loginApp, currentUser } = useAuth();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
->>>>>>> f0054d65fd6ae45e0626f1914ad1aff73d0b039d
   const navigation = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
       setError(null);
       setLoading(true);
       await loginApp(emailRef.current?.value, passwordRef.current?.value);
-=======
-      await loginApp(emailRef.current.value, passwordRef.current.value);
-      setLoading(true);
-      // setError(null);
->>>>>>> f0054d65fd6ae45e0626f1914ad1aff73d0b039d
       location.reload();
       navigation("/");
     } catch (error) {
@@ -60,7 +44,6 @@ export default function LoginForm() {
   ) : (
     <div className="flex  min-h-screen justify-center  items-center  ">
       <Card className="w-full max-w-sm">
-<<<<<<< HEAD
         <form onSubmit={handleSubmit}>
           <CardHeader>
             <CardTitle className="text-2xl">تسجيل الدخول</CardTitle>
@@ -115,46 +98,6 @@ export default function LoginForm() {
             {error && <AlertDestructive error={error} />}
           </CardFooter>
         </form>
-=======
-        <CardHeader>
-          <CardTitle className="text-2xl">تسجيل الدخول</CardTitle>
-          <CardDescription>
-            أدخل الرقم السري واسم المستخدم الخاص بك.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">اسم المستخدم</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="username"
-              required
-              ref={emailRef}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">كلمة المرور</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="password"
-              required
-              ref={passwordRef}
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button
-            onClick={handleSubmit}
-            disabled={loading}
-            type="submit"
-            className="w-full"
-          >
-            دخول
-          </Button>
-        </CardFooter>
->>>>>>> f0054d65fd6ae45e0626f1914ad1aff73d0b039d
       </Card>
     </div>
   );
