@@ -817,7 +817,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
           سا/غ
