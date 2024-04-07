@@ -160,8 +160,8 @@ function PDFPrint() {
   return (
     <div className="flex flex-col min-h-screen w-full">
       <HeaderNavbar />
-      <main className="grid grid-cols-4 p-4 gap-4">
-        <div className="flex flex-col  gap-2">
+      <main className="grid grid-cols-1 md:grid-cols-4 p-4 md:gap-4">
+        <div className="flex flex-col gap-2  mb-4">
           <Popover>
             <PopoverTrigger asChild>
               <Button
