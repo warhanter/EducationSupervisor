@@ -44,7 +44,7 @@ function HeaderNavbar() {
         <AppLink to="/" link="الرئيسية" />
         <AppLink to="/allStudents" link="كل التلاميذ" />
         <AppLink to="/newAbsence" link="الغيابات" />
-        <AppLink to="#" link="اشعارات" />
+        <AppLink to="/newAbsence" link="اشعارات" />
         <AppLink to="/print-pdf" link="طباعة" />
       </nav>
       <Sheet>
@@ -66,7 +66,7 @@ function HeaderNavbar() {
             <AppLink to="/" link="الرئيسية" />
             <AppLink to="/allStudents" link="كل التلاميذ" />
             <AppLink to="/newAbsence" link="الغيابات" />
-            <AppLink to="#" link="اشعارات" />
+            <AppLink to="/newAbsence" link="اشعارات" />
             <AppLink to="/print-pdf" link="طباعة" />
           </nav>
         </SheetContent>
