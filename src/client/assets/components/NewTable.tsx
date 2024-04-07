@@ -248,6 +248,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
           <div className="flex flex-1 flex-row-reverse justify-between w-full">
             <div className="w-1/3 relative">
               <Input
+                type="search"
                 placeholder="بحث عن تلميذ"
                 value={
                   (table.getColumn("full_name")?.getFilterValue() as string) ??
@@ -260,16 +261,6 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                 }
                 className="max-w-full"
               />
-              {isFiltered1 && (
-                <Button
-                  variant="ghost"
-                  onClick={() => table.resetColumnFilters()}
-                  className="absolute top-0 left-0"
-                >
-                  حذف
-                  <Cross2Icon className="ml-2 h-4 w-4" />
-                </Button>
-              )}
             </div>
             <div className="flex content-center justify-center">
               {table.getColumn("full_className") && (
