@@ -18,6 +18,7 @@ import { StudentDialog } from "./StudentDetails";
 import { filter } from "lodash";
 import { useStudents } from "@/client/providers/StudentProvider";
 import { FemaleImage, MaleImage } from "./images";
+import { Badge } from "@/components/ui/badge";
 export type Student = {
   _id: number;
   student_id: number;
@@ -812,15 +813,27 @@ export const recordsColumns: ColumnDef<Student>[] = [
   },
   {
     accessorKey: "missed_hours",
-    header: "سا/غ",
-    cell: ({ row }) => {
-      const missedHours: number = row.getValue("missed_hours");
-
+    header: ({ column }) => {
       return (
-        <div className="text-right font-bold text-gray-900">{missedHours}</div>
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          سا/غ
+        </Button>
       );
     },
-    enableSorting: false,
+    cell: ({ row }) => {
+      const missedHours: number = row.getValue("missed_hours");
+      return (
+        missedHours >= 0 && (
+          <Badge className="px-4" variant={"destructive"}>
+            {missedHours + " سا"}
+          </Badge>
+        )
+      );
+    },
     enableColumnFilter: false,
   },
 ];
