@@ -17,6 +17,7 @@ import TableView from "./TableView";
 import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
 import { useStudents } from "@/client/providers/StudentProvider";
 import _ from "lodash";
+import { AlertInfo } from "./Alert";
 const date_format = {
   day: "2-digit",
   month: "2-digit",
@@ -162,6 +163,11 @@ function PDFPrint() {
       <HeaderNavbar />
       <main className="grid grid-cols-1 md:grid-cols-4 p-4 md:gap-4">
         <div className="flex flex-col gap-2  mb-4">
+          <AlertInfo
+            className="md:hidden"
+            title="كيفية التحميل بالنسبة للهاتف"
+            message="اختر التاريخ المراد طباعة تقريره وستم تحميل الملف بشكل تلقائي للهاتف."
+          />
           <Popover>
             <PopoverTrigger asChild>
               <Button
