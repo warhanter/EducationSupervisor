@@ -32,13 +32,13 @@ const Notice1Page = () => {
     absenceDate = new Date(absenceDate);
   }
   const notice1Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 4
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 3
   )?.toLocaleDateString("en-ZA");
   const notice2Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 11
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 10
   )?.toLocaleDateString("en-ZA");
   const notice3Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 18
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 17
   )?.toLocaleDateString("en-ZA");
   const notice2Sub = `المرجع: الإشعـار الأول بالغيـاب بتاريخ : ${notice1Date} رقم ..........`;
   const notice3Sub = (
