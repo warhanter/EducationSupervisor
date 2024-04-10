@@ -40,6 +40,7 @@ export type Student = {
   date_of_absence: Date;
   date_of_return: Date;
   missed_hours: number;
+  justified_missed_hours: number;
   absence_status: boolean;
 };
 

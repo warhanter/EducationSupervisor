@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Theme, useTheme } from "@/components/theme-provider";
+import { useTheme } from "@/components/theme-provider";
 import { ChangeAddress } from "../components/ChangeAddress";
 
 export type Address = {
@@ -112,7 +112,7 @@ const Notice1Page = () => {
           <h3>السنة الدراسية : 2023/2024</h3>
           <h3>الى السيد(ة):</h3>
           <h3 className="font-bold">{fatherName}</h3>
-          <h3 className="font-bold">العنوان: {address}</h3>
+          <h3 className="font-bold mb-4">العنوان: {address}</h3>
           <ChangeAddress
             setAddress={setAddress}
             setFatherName={setFatherName}

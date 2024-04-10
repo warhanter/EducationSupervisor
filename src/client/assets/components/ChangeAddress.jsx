@@ -28,12 +28,7 @@ export function ChangeAddress({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          className="flex print:hidden mt-10 py-1 px-3 rounded-md"
-          variant="default"
-        >
-          تغيير اسم الولي أو العنوان
-        </Button>
+        <Button className="print:hidden">تغيير اسم الولي أو العنوان</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <div className="grid gap-4 py-4">

@@ -29,13 +29,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { StudentRealm, useStudents } from "@/client/providers/StudentProvider";
+import { useStudents } from "@/client/providers/StudentProvider";
 import { filter } from "lodash";
 import HeaderNavbar from "./HeaderNavbar";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useLocation } from "react-router-dom";
 import { FemaleImage, MaleImage } from "./images";
+import StatusBadge from "./StatusBadge";
+import { Badge } from "@/components/ui/badge";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -123,9 +125,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       }
       i += 1;
       const dateOfAbsence = new Date(student.absence_date);
-      const date1 = rapportDate;
-      const date2 = new Date(student.absence_date).getTime();
-      const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
+      const daysOfAbcence = Math.round(
+        (rapportDate - dateOfAbsence.setHours(0)) / (1000 * 60 * 60 * 24)
+      );
       const missedHours = () => {
         const start = parseInt(
           new Intl.DateTimeFormat("fr", { hour: "numeric", minute: "numeric" })
@@ -198,6 +200,17 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   if (typeof location.state === "object" && location.state !== null) {
     data = location?.state;
   }
+
+  function calcTotalMissedHours() {
+    let total = 0;
+    data?.map(
+      (a) =>
+        (total +=
+          (a.missed_hours ? a.missed_hours : 0) +
+          (a.justified_missed_hours ? a.justified_missed_hours : 0))
+    );
+    return total;
+  }
   const table = useReactTable({
     data,
     columns,
@@ -224,7 +237,6 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   let vals: { label: string; value: string }[] = [];
   labels?.forEach((_, b) => vals.push({ label: b, value: b }));
   vals.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
-  const isFiltered1 = table.getColumn("full_name")?.getIsFiltered();
   const isFiltered2 = table.getColumn("full_className")?.getIsFiltered();
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -329,6 +341,13 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   {data[0].full_className}
                 </span>
               </div>
+            </div>
+            <div className="flex-1  text-center font-bold">
+              إجمالي الساعات الضائعة:
+              <Badge className="mx-2 px-4 text-base">
+                {calcTotalMissedHours()}
+              </Badge>
+              ساعة
             </div>
           </div>
         )}

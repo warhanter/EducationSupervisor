@@ -15,6 +15,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "../contexts/AuthContext";
 import { ModeToggle } from "./ModeToggle";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
+import { NavigationMenuTrigger } from "@radix-ui/react-navigation-menu";
+import { cn } from "@/lib/utils";
 
 function HeaderNavbar() {
   const { logOut } = useAuth();
@@ -46,6 +56,23 @@ function HeaderNavbar() {
         <AppLink to="/newAbsence" link="الغيابات" />
         <AppLink to="/newAbsence" link="اشعارات" />
         <AppLink to="/print-pdf" link="طباعة" />
+        <NavigationMenu className="text-right">
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <NavigationMenuTrigger className="text-muted-foreground transition-colors hover:text-foreground">
+                قوائم
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-1 p-4">
+                  <ListItem href="/#/newmaafiyin" title="المعفيين" />
+                  <ListItem href="/#/newmoghadirin" title="المغادرين" />
+                  <ListItem href="/#/newwafidin" title="الوافدين" />
+                  <ListItem href="/#/newotlaMaradiya" title="العطل المرضية" />
+                </ul>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -111,4 +138,29 @@ function HeaderNavbar() {
   );
 }
 
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
 export default HeaderNavbar;
