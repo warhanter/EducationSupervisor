@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Theme, useTheme } from "@/components/theme-provider";
+import { ChangeAddress } from "../components/ChangeAddress";
 
 export type Address = {
   address: string;
@@ -47,6 +48,10 @@ const Notice1Page = () => {
     absenceDate = new Date(absenceDate);
   }
   const [noticeDate, setNoticeDate] = useState<Date | null>(null);
+  const [fatherName, setFatherName] = useState(
+    studentAdress?.last_name + " " + studentAdress?.father_name
+  );
+  const [address, setAddress] = useState(studentAdress?.address);
   const notice1Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 3
   )?.toLocaleDateString("en-ZA");
@@ -103,13 +108,17 @@ const Notice1Page = () => {
           <h3>ثانوية : المختلطة مروانة</h3>
           <h3> الرقم : ...............</h3>
         </div>
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
           <h3>السنة الدراسية : 2023/2024</h3>
           <h3>الى السيد(ة):</h3>
-          <h3 className="font-bold">
-            {studentAdress?.last_name + " " + studentAdress?.father_name}
-          </h3>
-          <h3 className="font-bold">العنوان: {studentAdress?.address}</h3>
+          <h3 className="font-bold">{fatherName}</h3>
+          <h3 className="font-bold">العنوان: {address}</h3>
+          <ChangeAddress
+            setAddress={setAddress}
+            setFatherName={setFatherName}
+            address={address}
+            fatherName={fatherName}
+          />
         </div>
       </div>
       <div className="my-10">
@@ -165,16 +174,16 @@ const Notice1Page = () => {
             استلامكـم هـذا الإشعـار.
           </h3>
         )}
-      </div>
-      <div className="flex flex-col items-end  py-10 font-bold">
         <Button
-          className="absolute top-4 right-4 print:hidden"
+          className="absolute top-4 print:hidden"
           onClick={() => window.print()}
         >
           طبــــاعة
         </Button>
+      </div>
+      <div className="flex flex-col items-end  py-10 font-bold">
         <div className="flex items-center print:hidden mb-4 bg-primary p-1 rounded-md text-white">
-          <Label className="mx-2">تعديل تاريخ الارسال: </Label>
+          <Label className="mx-2">تغيير تاريخ الارسال: </Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button

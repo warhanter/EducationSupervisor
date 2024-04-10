@@ -149,7 +149,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
           : `${12 - start}  -  3`;
       };
       const noticeName = () => {
-        return daysOfAbcence < 3
+        return daysOfAbcence < 4
           ? "/"
           : daysOfAbcence >= 4 && daysOfAbcence < 10
           ? "إشعار 1"

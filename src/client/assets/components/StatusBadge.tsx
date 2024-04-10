@@ -3,7 +3,11 @@ import React from "react";
 function StatusBadge({ status }: { status: string }) {
   let statusColor;
   let statusIcon;
-  if (status === "تغيير مؤسسة" || status === "إشعار 2") {
+  if (
+    status === "تغيير مؤسسة" ||
+    status === "إشعار 1" ||
+    status === "إشعار 2"
+  ) {
     statusColor =
       "bg-yellow-100 text-yellow-800 rounded-full dark:bg-yellow-500/10 dark:text-yellow-500";
     statusIcon =
