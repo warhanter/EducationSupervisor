@@ -670,71 +670,71 @@ export const recordsColumns: ColumnDef<Student>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "full_name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="ml-10"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-          اللقب والاسم
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const { students } = useStudents();
-      return (
-        <div>
-          <div className="flex items-center gap-x-3">
-            {filter(students, (a) => a._id === row.original.student_id)[0]
-              .gender === "ذكر" ? (
-              <MaleImage />
-            ) : (
-              <FemaleImage />
-            )}
-            <div className="grow">
-              <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-                {row.getValue("full_name")}
-              </span>
-              <span className="block text-sm text-gray-500">
-                {row.original.student_status}
-              </span>
-            </div>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "full_className",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="p-0"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-          القسم
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return (
-        <div className="p-0">
-          <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_className")}
-          </span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
+  // {
+  //   accessorKey: "full_name",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         className="ml-10"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //         اللقب والاسم
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     const { students } = useStudents();
+  //     return (
+  //       <div>
+  //         <div className="flex items-center gap-x-3">
+  //           {filter(students, (a) => a._id === row.original.student_id)[0]
+  //             .gender === "ذكر" ? (
+  //             <MaleImage />
+  //           ) : (
+  //             <FemaleImage />
+  //           )}
+  //           <div className="grow">
+  //             <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+  //               {row.getValue("full_name")}
+  //             </span>
+  //             <span className="block text-sm text-gray-500">
+  //               {row.original.student_status}
+  //             </span>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   },
+  // },
+  // {
+  //   accessorKey: "full_className",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         className="p-0"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //         القسم
+  //       </Button>
+  //     );
+  //   },
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="p-0">
+  //         <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+  //           {row.getValue("full_className")}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  // },
   {
     accessorKey: "date_of_absence",
     header: ({ column }) => {
@@ -753,7 +753,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
       const date: Date = row.getValue("date_of_absence");
 
       return (
-        <div className="text-right font-medium text-gray-500">
+        <div className="text-right font-medium text-gray-500 py-1">
           {date.toLocaleString("ar-DZ", {
             weekday: "long",
           }) +

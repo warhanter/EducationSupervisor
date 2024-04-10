@@ -14,13 +14,13 @@ type Notification = {
   fullDocument: Record<string, any> | undefined;
   operationType: string | undefined;
 };
-type Realm = Record<string, any>[] | undefined;
+export type StudentRealm = Record<string, any>[] | undefined;
 type StudentList = Record<string, any>[];
 type StudentsType = {
-  students: Realm;
-  absences: Realm;
-  addresses: Realm;
-  lunchAbsences: Realm;
+  students: StudentRealm;
+  absences: StudentRealm;
+  addresses: StudentRealm;
+  lunchAbsences: StudentRealm;
   notification: Notification | undefined;
 };
 type StudentsProviderProps = {
@@ -35,10 +35,10 @@ type StudentContextType = {
   nisfDakhili: StudentList;
   otlaMaradiya: StudentList;
   maafiyin: StudentList;
-  students: Realm;
-  absences: Realm;
-  addresses: Realm;
-  lunchAbsences: Realm;
+  students: StudentRealm;
+  absences: StudentRealm;
+  addresses: StudentRealm;
+  lunchAbsences: StudentRealm;
   notification: Notification | undefined;
   setStudents: ({
     students,

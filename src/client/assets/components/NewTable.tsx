@@ -29,12 +29,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useStudents } from "@/client/providers/StudentProvider";
+import { StudentRealm, useStudents } from "@/client/providers/StudentProvider";
 import { filter } from "lodash";
 import HeaderNavbar from "./HeaderNavbar";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useLocation } from "react-router-dom";
+import { FemaleImage, MaleImage } from "./images";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -65,7 +66,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     setAbsencesData(generateRapportTableData());
   }, []);
   const [rapportDate, setRapportDate] = React.useState(new Date().setHours(23));
-  const studentsTablesData = () => {
+  const studentsTablesData: any = () => {
     switch (queryTbale) {
       case "all":
         return { title: "كل التلاميذ", data: students };
@@ -112,43 +113,34 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     );
   }, [rapportDate, absences]);
   const generateRapportTableData = () => {
-    let result = [];
+    let result: any = [];
     let i = 0;
 
-    const options11 = {
-      hour: "numeric",
-      minute: "numeric",
-    };
-    const date_format2 = {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    };
     absenceByDate()?.map((student, index) => {
-      let studentObject = {};
+      let studentObject: any = {};
       if (student.is_absent === false) {
         return;
       }
       i += 1;
       const dateOfAbsence = new Date(student.absence_date);
       const date1 = rapportDate;
-      const date2 = new Date(student.absence_date);
+      const date2 = new Date(student.absence_date).getTime();
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
         const start = parseInt(
-          new Intl.DateTimeFormat("fr", options11)
+          new Intl.DateTimeFormat("fr", { hour: "numeric", minute: "numeric" })
             .format(dateOfAbsence)
             .slice(0, 2)
         );
         const weekday = new Intl.DateTimeFormat("fr", {
           weekday: "long",
         }).format(rapportDate);
-        return (weekday === "mardi") & (daysOfAbcence >= 1)
+        return weekday === "mardi" && daysOfAbcence >= 1
           ? `4  -  0`
           : (weekday === "mardi" ||
               weekday === "tuesday" ||
-              weekday === "Tuesday") &
-            (daysOfAbcence < 1)
+              weekday === "Tuesday") &&
+            daysOfAbcence < 1
           ? `${12 - start}  -  0`
           : daysOfAbcence > 1
           ? `4  -  3`
@@ -159,11 +151,11 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       const noticeName = () => {
         return daysOfAbcence < 3
           ? "/"
-          : (daysOfAbcence >= 3) & (daysOfAbcence < 7)
+          : daysOfAbcence >= 4 && daysOfAbcence < 10
           ? "إشعار 1"
-          : (daysOfAbcence >= 7) & (daysOfAbcence < 15)
+          : daysOfAbcence >= 11 && daysOfAbcence < 18
           ? "إشعار 2"
-          : (daysOfAbcence >= 15) & (daysOfAbcence < 31)
+          : daysOfAbcence >= 18 && daysOfAbcence < 32
           ? "إعذار"
           : "شطب";
       };
@@ -179,10 +171,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         student.level + " " + student.class_name + " " + student.class_number;
       studentObject.gender = student.gender;
       studentObject.student_DOB = student.student_DOB;
-      studentObject.absence_date = new Intl.DateTimeFormat(
-        "en-ZA",
-        date_format2
-      ).format(dateOfAbsence);
+      studentObject.absence_date = new Intl.DateTimeFormat("en-ZA").format(
+        dateOfAbsence
+      );
       studentObject.missed_hours = missedHours();
       studentObject.absence_days =
         daysOfAbcence < 1
@@ -239,84 +230,108 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     <div className="flex min-h-screen w-full flex-col">
       <HeaderNavbar />
       <div className="bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
-        <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
-          <div>
+        {queryTbale !== "studentAbsencesRecords" ? (
+          <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                {tableTitle}
+              </h2>
+            </div>
+            <div className="flex flex-1 flex-row-reverse justify-between w-full">
+              <div className="w-1/3 relative">
+                <Input
+                  type="search"
+                  placeholder="بحث عن تلميذ"
+                  value={
+                    (table
+                      .getColumn("full_name")
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn("full_name")
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="max-w-full"
+                />
+              </div>
+              <div className="flex content-center justify-center">
+                {table.getColumn("full_className") && (
+                  <DataTableFacetedFilter
+                    column={table.getColumn("full_className")}
+                    title="القسم"
+                    options={vals}
+                  />
+                )}
+                {isFiltered2 && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => table.resetColumnFilters()}
+                    className="mx-2 lg:mx-3"
+                  >
+                    حذف
+                    <Cross2Icon className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="inline-flex gap-x-2">
+                <a
+                  className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  // href="#"
+                >
+                  عرض الكل
+                </a>
+
+                <a
+                  className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                  // href="#"
+                >
+                  <svg
+                    className="flex-shrink-0 size-3"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M2.63452 7.50001L13.6345 7.5M8.13452 13V2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  إضافة تلميذ
+                </a>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col md:flex-row gap-4 items-center px-6 py-4 ">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
               {tableTitle}
             </h2>
-          </div>
-          <div className="flex flex-1 flex-row-reverse justify-between w-full">
-            <div className="w-1/3 relative">
-              <Input
-                type="search"
-                placeholder="بحث عن تلميذ"
-                value={
-                  (table.getColumn("full_name")?.getFilterValue() as string) ??
-                  ""
-                }
-                onChange={(event) =>
-                  table
-                    .getColumn("full_name")
-                    ?.setFilterValue(event.target.value)
-                }
-                className="max-w-full"
-              />
-            </div>
-            <div className="flex content-center justify-center">
-              {table.getColumn("full_className") && (
-                <DataTableFacetedFilter
-                  column={table.getColumn("full_className")}
-                  title="القسم"
-                  options={vals}
-                />
+            <div className="flex items-center gap-x-3">
+              {filter(students, (a) => a._id === data[0].student_id)[0]
+                .gender === "ذكر" ? (
+                <MaleImage />
+              ) : (
+                <FemaleImage />
               )}
-              {isFiltered2 && (
-                <Button
-                  variant="ghost"
-                  onClick={() => table.resetColumnFilters()}
-                  className="mx-2 lg:mx-3"
-                >
-                  حذف
-                  <Cross2Icon className="ml-2 h-4 w-4" />
-                </Button>
-              )}
+              <div className="grow">
+                <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+                  {data[0].full_name}
+                </span>
+                <span className="block text-sm text-gray-500">
+                  {data[0].full_className}
+                </span>
+              </div>
             </div>
           </div>
-
-          <div>
-            <div className="inline-flex gap-x-2">
-              <a
-                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                // href="#"
-              >
-                عرض الكل
-              </a>
-
-              <a
-                className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
-                // href="#"
-              >
-                <svg
-                  className="flex-shrink-0 size-3"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <path
-                    d="M2.63452 7.50001L13.6345 7.5M8.13452 13V2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                إضافة تلميذ
-              </a>
-            </div>
-          </div>
-        </div>
-
+        )}
         <div className="border">
           <Table>
             <TableHeader>
