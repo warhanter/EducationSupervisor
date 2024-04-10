@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Student } from "../components/columns";
 import { useStudents } from "@/client/providers/StudentProvider";
+import { Label } from "@/components/ui/label";
+import { format } from "date-fns";
+import { arDZ } from "date-fns/locale/ar-DZ";
+import { cn } from "@/lib/utils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Theme, useTheme } from "@/components/theme-provider";
 
 export type Address = {
   address: string;
@@ -19,6 +32,8 @@ const notice3 =
   "و بنــاء على الاشعار الأول والثاني المشار إليهما في المرجع أعلاه.";
 
 const Notice1Page = () => {
+  const { theme, setTheme } = useTheme();
+  const baseTheme = theme;
   const { addresses } = useStudents();
   const location = useLocation();
   const state = location.state;
@@ -31,6 +46,7 @@ const Notice1Page = () => {
   if (typeof absenceDate === "string") {
     absenceDate = new Date(absenceDate);
   }
+  const [noticeDate, setNoticeDate] = useState<Date | null>(null);
   const notice1Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 3
   )?.toLocaleDateString("en-ZA");
@@ -40,6 +56,23 @@ const Notice1Page = () => {
   const notice3Date = new Date(
     absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 17
   )?.toLocaleDateString("en-ZA");
+
+  useEffect(() => {
+    setTheme("light");
+    return () => {
+      setTheme(baseTheme);
+    };
+  }, []);
+
+  const NoticeSendDate: any = {
+    notice1: notice1Date,
+    notice2: notice2Date,
+    notice3: notice3Date,
+  };
+  const sendDate = noticeDate
+    ? noticeDate.toLocaleDateString("en-ZA")
+    : NoticeSendDate[noticeName];
+
   const notice2Sub = `المرجع: الإشعـار الأول بالغيـاب بتاريخ : ${notice1Date} رقم ..........`;
   const notice3Sub = (
     <p>
@@ -133,16 +166,45 @@ const Notice1Page = () => {
           </h3>
         )}
       </div>
-      <div className="flex flex-col items-end py-10 font-bold">
+      <div className="flex flex-col items-end  py-10 font-bold">
+        <Button
+          className="absolute top-4 right-4 print:hidden"
+          onClick={() => window.print()}
+        >
+          طبــــاعة
+        </Button>
+        <div className="flex items-center print:hidden mb-4 bg-primary p-1 rounded-md text-white">
+          <Label className="mx-2">تعديل تاريخ الارسال: </Label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "justify-center text-center font-normal",
+                  sendDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="ml-4 h-4 w-4" />
+                {sendDate ? (
+                  format(sendDate, "PPPP", { locale: arDZ })
+                ) : (
+                  <span>اختر التاريخ</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[auto] p-0">
+              <Calendar
+                mode="single"
+                selected={noticeDate}
+                onSelect={setNoticeDate}
+                initialFocus
+                locale={arDZ}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
         <div className="text-center">
-          <p>
-            حرر في مروانة بتاريخ:{" "}
-            {noticeName === "notice2"
-              ? notice2Date
-              : noticeName === "notice3"
-              ? notice3Date
-              : notice1Date}
-          </p>
+          <p>حرر في مروانة بتاريخ: {sendDate}</p>
           <h3>المديـــــــــر</h3>
         </div>
       </div>
