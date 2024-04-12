@@ -74,7 +74,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
       </>
     ),
-    { basename: "/EducationSupervisor/" }
+    { basename: "/EducationSupervisor" }
   );
   return (
     <AuthProvider>

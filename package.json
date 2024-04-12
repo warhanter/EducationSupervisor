@@ -1,5 +1,6 @@
 {
   "name": "vite-react-starter",
+  "homepage": "https://warhanter.github.io/EducationSupervisor",
   "private": true,
   "version": "0.0.0",
   "type": "module",
