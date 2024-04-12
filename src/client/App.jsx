@@ -31,46 +31,50 @@ function App() {
           errorElement={<ErrorPage />}
         >
           <Route path="/" element={<NewDashboard />} />
-          <Route path="allStudents" element={<NewTable queryTbale="all" />} />
-          <Route path="students" element={<NewTable queryTbale="Student" />} />
-          <Route path="absences" element={<NewTable queryTbale="Absence" />} />
+          <Route path="/allStudents" element={<NewTable queryTbale="all" />} />
+          <Route path="/students" element={<NewTable queryTbale="Student" />} />
+          <Route path="/absences" element={<NewTable queryTbale="Absence" />} />
           <Route
-            path="motamadrisin"
+            path="/motamadrisin"
             element={<NewTable queryTbale="motamadrisin" />}
           />
           <Route
-            path="nisfdakhili"
+            path="/nisfdakhili"
             element={<NewTable queryTbale="nisfdakhili" />}
           />
-          <Route path="wafidin" element={<NewTable queryTbale="wafidin" />} />
+          <Route path="/wafidin" element={<NewTable queryTbale="wafidin" />} />
           <Route
-            path="moghadirin"
+            path="/moghadirin"
             element={<NewTable queryTbale="moghadirin" />}
           />
           <Route
-            path="machtobin"
+            path="/machtobin"
             element={<NewTable queryTbale="machtobin" />}
           />
-          <Route path="maafiyin" element={<NewTable queryTbale="maafiyin" />} />
           <Route
-            path="otlaMaradiya"
+            path="/maafiyin"
+            element={<NewTable queryTbale="maafiyin" />}
+          />
+          <Route
+            path="/otlaMaradiya"
             element={<NewTable queryTbale="otlaMaradiya" />}
           />
           <Route
-            path="sortedAbsences"
+            path="/sortedAbsences"
             element={<NewTable queryTbale="sortedAbsences" />}
           />
           <Route
-            path="studentAbsencesRecords"
+            path="/studentAbsencesRecords"
             element={<NewTable queryTbale="studentAbsencesRecords" />}
           />
-          <Route path="print-pdf" element={<PDFPrint />} />
-          <Route path="print-pdf" element={<PDFPrint />} />
-          <Route path="print-notice" element={<CreatePDFNotice1 />} />
+          <Route path="/print-pdf" element={<PDFPrint />} />
+          <Route path="/print-pdf" element={<PDFPrint />} />
+          <Route path="/print-notice" element={<CreatePDFNotice1 />} />
         </Route>
         <Route path="/login" element={<LoginForm />} />
       </>
-    )
+    ),
+    { basename: "/EducationSupervisor/" }
   );
   return (
     <AuthProvider>
