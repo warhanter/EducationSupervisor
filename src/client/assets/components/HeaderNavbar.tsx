@@ -50,8 +50,8 @@ function HeaderNavbar() {
         </Link>
         <AppLink to="/" link="الرئيسية" />
         <AppLink to="/allStudents" link="كل التلاميذ" />
-        <AppLink to="/newAbsence" link="الغيابات" />
-        <AppLink to="/newAbsence" link="اشعارات" />
+        <AppLink to="/absences" link="الغيابات" />
+        <AppLink to="/absences" link="اشعارات" />
         <AppLink to="/print-pdf" link="طباعة" />
         <NavigationMenu className="text-right">
           <NavigationMenuList>
@@ -61,10 +61,10 @@ function HeaderNavbar() {
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-1 p-4">
-                  <AppLink to="/newmaafiyin" link="المعفيين" subLink />
-                  <AppLink to="/newmoghadirin" link="المغادرين" subLink />
-                  <AppLink to="/newwafidin" link="الوافدين" subLink />
-                  <AppLink to="/newotlaMaradiya" link="العطل المرضية" subLink />
+                  <AppLink to="/maafiyin" link="المعفيين" subLink />
+                  <AppLink to="/moghadirin" link="المغادرين" subLink />
+                  <AppLink to="/wafidin" link="الوافدين" subLink />
+                  <AppLink to="/otlaMaradiya" link="العطل المرضية" subLink />
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -89,8 +89,8 @@ function HeaderNavbar() {
             </Link>
             <AppLink to="/" link="الرئيسية" />
             <AppLink to="/allStudents" link="كل التلاميذ" />
-            <AppLink to="/newAbsence" link="الغيابات" />
-            <AppLink to="/newAbsence" link="اشعارات" />
+            <AppLink to="/Absence" link="الغيابات" />
+            <AppLink to="/Absence" link="اشعارات" />
             <AppLink to="/print-pdf" link="طباعة" />
           </nav>
         </SheetContent>

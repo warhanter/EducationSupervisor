@@ -235,7 +235,7 @@ export function NewDashboard() {
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card
             className="cursor-pointer hover:bg-indigo-50 transition-all dark:hover:text-gray-800"
-            onClick={() => navigate("/newmotamadrisin")}
+            onClick={() => navigate("/motamadrisin")}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">المتمدرسون</CardTitle>
@@ -250,7 +250,7 @@ export function NewDashboard() {
           </Card>
           <Card
             className="cursor-pointer hover:bg-indigo-50 transition-all dark:hover:text-gray-800"
-            onClick={() => navigate("/newAbsence")}
+            onClick={() => navigate("/absences")}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">الغائبون</CardTitle>
@@ -265,7 +265,7 @@ export function NewDashboard() {
           </Card>
           <Card
             className="cursor-pointer hover:bg-indigo-50 transition-all dark:hover:text-gray-800"
-            onClick={() => navigate("/newnisfdakhili")}
+            onClick={() => navigate("/nisfdakhili")}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">نصف داخلي</CardTitle>
@@ -280,7 +280,7 @@ export function NewDashboard() {
           </Card>
           <Card
             className="cursor-pointer hover:bg-indigo-50 transition-all dark:hover:text-gray-800"
-            onClick={() => navigate("/newmachtobin")}
+            onClick={() => navigate("/machtobin")}
           >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">المشطوبين</CardTitle>
