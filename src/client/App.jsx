@@ -22,13 +22,14 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route errorElement={<ErrorPage />} />
+        {/* <Route errorElement={<ErrorPage />} /> */}
         <Route
           element={
             <PrivateRoute>
               <Outlet />
             </PrivateRoute>
           }
+          errorElement={<ErrorPage />}
         >
           <Route path="/" element={<NewDashboard />} />
           <Route path="allStudents" element={<NewTable queryTbale="all" />} />
