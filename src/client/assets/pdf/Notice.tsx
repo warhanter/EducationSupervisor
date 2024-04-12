@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Student } from "../components/columns";
 import { useStudents } from "@/client/providers/StudentProvider";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { arDZ } from "date-fns/locale/ar-DZ";
 import { cn } from "@/lib/utils";
-import { Calendar as CalendarIcon } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  CircleArrowLeft,
+  CircleArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -37,6 +41,7 @@ const Notice1Page = () => {
   const baseTheme = theme;
   const { addresses } = useStudents();
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state;
   const student: Student = state.student;
   const noticeName = state.notice;
@@ -174,12 +179,17 @@ const Notice1Page = () => {
             استلامكـم هـذا الإشعـار.
           </h3>
         )}
-        <Button
-          className="absolute top-4 print:hidden"
-          onClick={() => window.print()}
-        >
-          طبــــاعة
-        </Button>
+        <div className="absolute flex justify-center gap-4 top-4 print:hidden">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="rounded-full"
+            onClick={() => navigate(-1)}
+          >
+            <CircleArrowRight className="h-5 w-5" />
+          </Button>
+          <Button onClick={() => window.print()}>طبــــاعة</Button>
+        </div>
       </div>
       <div className="flex flex-col items-end  py-10 font-bold">
         <div className="flex items-center print:hidden mb-4 bg-primary p-1 rounded-md text-white">

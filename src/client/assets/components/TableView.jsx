@@ -163,10 +163,55 @@ const TableView = ({ data, date }) => {
                   {index == 31 + 68 && <View style={styles.spacing} />}
                   {index == 31 + 102 && <View style={styles.spacing} />}
                   {index == 31 + 136 && <View style={styles.spacing} />}
-                  {index == 31 + 136 && <View style={styles.spacing} />}
-                  {index == 31 + 136 && <View style={styles.spacing} />}
-                  {index == 31 + 136 && <View style={styles.spacing} />}
-                  {index == 31 + 136 && <View style={styles.spacing} />}
+                  {index == 31 + 136 + 34 && <View style={styles.spacing} />}
+                  {index == 31 + 136 + 34 * 2 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 3 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 4 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 5 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 6 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 7 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 8 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 9 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 10 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 11 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 12 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 13 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 14 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 15 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 16 && (
+                    <View style={styles.spacing} />
+                  )}
+                  {index == 31 + 136 + 34 * 17 && (
+                    <View style={styles.spacing} />
+                  )}
                 </Fragment>
               );
             })}
