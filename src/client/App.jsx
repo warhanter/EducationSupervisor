@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   Route,
   Outlet,
+  createHashRouter,
 } from "react-router-dom";
 import { AuthProvider } from "./assets/contexts/AuthContext";
 import StudentProvider from "./providers/StudentProvider";
@@ -19,10 +20,9 @@ import { CreatePDFNotice1 } from "./assets/pdf/Notice";
 import HeaderNavbar from "./assets/components/HeaderNavbar";
 
 function App() {
-  const router = createBrowserRouter(
+  const router = createHashRouter(
     createRoutesFromElements(
       <>
-        {/* <Route errorElement={<ErrorPage />} /> */}
         <Route
           element={
             <PrivateRoute>
