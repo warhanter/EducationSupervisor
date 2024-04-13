@@ -171,44 +171,94 @@ const TableLuncheAbsenceView = ({ data, date }) => {
                       <Text style={styles.paging}>الصفحة 2</Text>
                     </View>
                   )}
-                  {index == 36 + 80 && (
+                  {index == 36 + 40 * 2 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 3</Text>
                     </View>
                   )}
-                  {index == 36 + 108 && (
+                  {index == 36 + 40 * 3 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 4</Text>
                     </View>
                   )}
-                  {index == 36 + 176 && (
+                  {index == 36 + 40 * 4 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 5</Text>
                     </View>
                   )}
-                  {index == 36 + 210 && (
+                  {index == 36 + 40 * 5 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 6</Text>
                     </View>
                   )}
-                  {index == 36 + 244 && (
+                  {index == 36 + 40 * 6 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 7</Text>
                     </View>
                   )}
-                  {index == 36 + 278 && (
+                  {index == 36 + 40 * 7 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 8</Text>
                     </View>
                   )}
-                  {index == 36 + 312 && (
+                  {index == 36 + 40 * 8 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 9</Text>
                     </View>
                   )}
-                  {index == 36 + 346 && (
+                  {index == 36 + 40 * 9 && (
                     <View style={styles.spacing}>
                       <Text style={styles.paging}>الصفحة 10</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 10 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 11</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 11 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 12</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 12 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 13</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 13 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 14</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 14 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 15</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 15 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 16</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 16 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 17</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 17 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 18</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 18 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 19</Text>
+                    </View>
+                  )}
+                  {index == 36 + 40 * 19 && (
+                    <View style={styles.spacing}>
+                      <Text style={styles.paging}>الصفحة 20</Text>
                     </View>
                   )}
                 </Fragment>

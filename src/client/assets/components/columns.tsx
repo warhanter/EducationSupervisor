@@ -466,7 +466,6 @@ export const absencesColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="ml-10"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -498,7 +497,6 @@ export const absencesColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -525,7 +523,6 @@ export const absencesColumns: ColumnDef<Student>[] = [
       return (
         <Button
           variant="ghost"
-          className="p-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -534,27 +531,36 @@ export const absencesColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: string = row.getValue("absence_date");
-
-      return <div className="text-right font-medium text-gray-500">{date}</div>;
+      const absenceDate: string = row.getValue("absence_date");
+      return (
+        <div className="text-right font-medium text-gray-500">
+          {absenceDate}
+        </div>
+      );
     },
   },
   {
     accessorKey: "absence_days",
     header: "الأيام",
     cell: ({ row }) => {
-      const date: number = row.getValue("absence_days");
-
-      return <div className="text-right font-medium text-gray-500">{date}</div>;
+      const absencesDays: number = row.getValue("absence_days");
+      return (
+        <div className="text-right font-medium text-gray-500">
+          {absencesDays}
+        </div>
+      );
     },
   },
   {
     accessorKey: "missed_hours",
     header: "سا/غ",
     cell: ({ row }) => {
-      const date: number = row.getValue("missed_hours");
-
-      return <div className="text-right font-medium text-gray-500">{date}</div>;
+      const missedHours: number = row.getValue("missed_hours");
+      return (
+        <div className="text-right font-medium text-gray-500">
+          {missedHours}
+        </div>
+      );
     },
     enableSorting: false,
     enableColumnFilter: false,
