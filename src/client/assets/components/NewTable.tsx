@@ -36,8 +36,8 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useLocation } from "react-router-dom";
 import { FemaleImage, MaleImage } from "./images";
-import StatusBadge from "./StatusBadge";
 import { Badge } from "@/components/ui/badge";
+import { MonthlyAbsences } from "./MonthlyAbsences";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -318,6 +318,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   </svg>
                   إضافة تلميذ
                 </a>
+                {queryTbale === "Absence" && (
+                  <MonthlyAbsences data={absences} />
+                )}
               </div>
             </div>
           </div>

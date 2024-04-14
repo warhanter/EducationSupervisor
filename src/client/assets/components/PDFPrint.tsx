@@ -3,7 +3,6 @@ import HeaderNavbar from "./HeaderNavbar";
 import { format } from "date-fns";
 import { arDZ } from "date-fns/locale/ar-DZ";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -18,30 +17,24 @@ import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
 import { useStudents } from "@/client/providers/StudentProvider";
 import _ from "lodash";
 import { AlertInfo } from "./Alert";
-const date_format = {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-};
+
 function PDFPrint() {
-  const [date, setDate] = React.useState<Date>();
   const { absences, lunchAbsences, students } = useStudents();
   const [isSelected, setIsSelected] = useState(true);
   const [isSelected2, setIsSelected2] = useState(false);
-  const [currentItems2, setCurrentItems2] = useState([]);
-  const [startDate, setStartDate] = useState(new Date());
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
   const [dailyRapport, setDailyRapport] = useState(true);
   const [nisfdakhiliRapport, setNisfdakhiliRapport] = useState(false);
   const generateRapportTableData = () => {
-    let result = [];
+    let result: any = [];
     let i = 0;
     const data11 = useMemo(() => {
       return _.filter(
         absences,
         (i) =>
-          (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
-          new Date(i.date_of_absence) <= rapportDate
+          (new Date(i.date_of_return).getTime() > rapportDate ||
+            !i.date_of_return) &&
+          new Date(i.date_of_absence).getTime() <= rapportDate
       );
     }, [rapportDate]);
 
@@ -49,20 +42,20 @@ function PDFPrint() {
       hour: "numeric",
       minute: "numeric",
     };
-    const date_format2 = {
+    const date_format2: Date = {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     };
     data11?.map((student, index) => {
-      let studentObject = {};
+      let studentObject: any = {};
       if (student.is_absent === false) {
         return;
       }
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
       const date1 = rapportDate;
-      const date2 = new Date(student.date_of_absence);
+      const date2 = new Date(student.date_of_absence).getTime();
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
         const start = parseInt(
@@ -73,12 +66,12 @@ function PDFPrint() {
         const weekday = new Intl.DateTimeFormat("fr", {
           weekday: "long",
         }).format(rapportDate);
-        return (weekday === "mardi") & (daysOfAbcence >= 1)
+        return weekday === "mardi" && daysOfAbcence >= 1
           ? `4  -  0`
           : (weekday === "mardi" ||
               weekday === "tuesday" ||
-              weekday === "Tuesday") &
-            (daysOfAbcence < 1)
+              weekday === "Tuesday") &&
+            daysOfAbcence < 1
           ? `${12 - start}  -  0`
           : daysOfAbcence > 1
           ? `4  -  3`
@@ -89,11 +82,11 @@ function PDFPrint() {
       const noticeName = () => {
         return daysOfAbcence < 3
           ? "/"
-          : (daysOfAbcence >= 3) & (daysOfAbcence < 7)
+          : daysOfAbcence >= 3 && daysOfAbcence < 7
           ? "إشعار 1"
-          : (daysOfAbcence >= 7) & (daysOfAbcence < 15)
+          : daysOfAbcence >= 7 && daysOfAbcence < 15
           ? "إشعار 2"
-          : (daysOfAbcence >= 15) & (daysOfAbcence < 31)
+          : daysOfAbcence >= 15 && daysOfAbcence < 31
           ? "إعذار"
           : "شطب";
       };
@@ -120,7 +113,7 @@ function PDFPrint() {
     return result;
   };
   const generateLunchAbsenceTableData = () => {
-    let result = [];
+    let result: any = [];
     let i = 0;
     const date1 = new Date(rapportDate).setHours(1);
     const date2 = new Date(rapportDate).setHours(24);
@@ -135,7 +128,7 @@ function PDFPrint() {
         students,
         (i) => i?._id === student?.student
       );
-      let studentObject = {};
+      let studentObject: any = {};
       i += 1;
 
       studentObject.number = index.toString();
