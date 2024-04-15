@@ -16,6 +16,7 @@ import { PiePlot, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { ResponsiveChartContainer } from "@mui/x-charts";
 import HeaderNavbar from "./HeaderNavbar";
 import { SonnerDemo } from "./NotificationSnooner";
+import { calcAbsences } from "@/client/functions/calcAbsences";
 
 type DataProps = {
   id: number;
@@ -201,33 +202,42 @@ export function NewDashboard() {
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
   );
-  const removeDubs = [
+  // returns all students as {key: full_name, value: student_object}
+  // to remove dublicates by full_name later.
+  const allStudents = [
     ...new Map(
       filtredAbsences?.map((item) => [item["full_name"], item])
     ).values(),
   ];
-  let topStudents = removeDubs?.filter(
+  let removedDubs = allStudents?.filter(
     (value, index, array) => array.indexOf(value) === index
   );
   const newData = updateTotals()?.sort(
     (a, b) => b.total_missedH - a.total_missedH
   );
   function updateTotals() {
-    topStudents.map((student) => {
-      let total = 0;
+    removedDubs.map((student) => {
+      let total_justified = 0;
+      let total_nonJustified = 0;
       const totalAbsences = absences?.filter(
         (a) => a.full_name === student.full_name
       );
-      totalAbsences?.map(
-        (a) =>
-          (total +=
-            (a.missed_hours ? a.missed_hours : 0) +
-            (a.justified_missed_hours ? a.justified_missed_hours : 0))
-      );
-      Object.assign(student, { total_missedH: total });
+      totalAbsences?.map((a) => {
+        total_nonJustified += a.missed_hours ? a.missed_hours : 0;
+        total_justified += a.justified_missed_hours
+          ? a.justified_missed_hours
+          : 0;
+      });
+      Object.assign(student, {
+        total_missedH: total_justified + total_nonJustified,
+      });
+      Object.assign(student, { total_Justified: total_justified });
+      Object.assign(student, { total_NonJustified: total_nonJustified });
     });
-    return topStudents;
+    return removedDubs;
   }
+  // calcAbsences();
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <HeaderNavbar />

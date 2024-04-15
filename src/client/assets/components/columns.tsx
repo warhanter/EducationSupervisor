@@ -24,6 +24,8 @@ export type Student = {
   student_id: number;
   class_number: number;
   total_missedH: number;
+  total_Justified?: number;
+  total_NonJustified?: number;
   class_name: string;
   full_className: string;
   full_name: string;
@@ -353,6 +355,46 @@ export const sortedColumns: ColumnDef<Student>[] = [
     },
   },
   {
+    accessorKey: "total_Justified",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="p-0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          سا المبررة
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <span className="text-center font-bold m-0 px-3 rounded-2xl bg-teal-500 text-white">
+        {row.getValue("total_Justified")}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "total_NonJustified",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="p-0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          سا/غ المبررة
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <span className="items-center text-center font-bold m-0 px-3 rounded-2xl bg-rose-500 text-white">
+        {row.getValue("total_NonJustified")}
+      </span>
+    ),
+  },
+  {
     accessorKey: "total_missedH",
     header: ({ column }) => {
       return (
@@ -362,14 +404,14 @@ export const sortedColumns: ColumnDef<Student>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           <ArrowUpDown className="ml-2 h-4 w-4" />
-          ساعات الغياب
+          المجموع
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="text-base font-bold m-0 p-0">
+      <span className="text-center font-bold m-0 px-3 rounded-2xl bg-gray-800 text-white">
         {row.getValue("total_missedH")}
-      </div>
+      </span>
     ),
   },
   {
