@@ -453,6 +453,19 @@ export const sortedColumns: ColumnDef<Student>[] = [
               >
                 عرض سجل الغيابات للتلميذ
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigate("/studentMissedModules", {
+                    state: {
+                      studentID: row.original.student_id,
+                      studentClass: row.original.full_className,
+                      name: row.original.full_name,
+                    },
+                  });
+                }}
+              >
+                عرض سجل الحصص الضائعة
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel>وثائق</DropdownMenuLabel>
               <DropdownMenuItem>استدعاء الولي</DropdownMenuItem>

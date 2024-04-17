@@ -18,6 +18,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import LoginForm from "./assets/components/LoginForm";
 import { CreatePDFNotice1 } from "./assets/pdf/Notice";
 import HeaderNavbar from "./assets/components/HeaderNavbar";
+import MissedModules from "./assets/components/MissedModules";
 
 function App() {
   const router = createHashRouter(
@@ -68,6 +69,7 @@ function App() {
             path="/studentAbsencesRecords"
             element={<NewTable queryTbale="studentAbsencesRecords" />}
           />
+          <Route path="/studentMissedModules" element={<MissedModules />} />
           <Route path="/print-pdf" element={<PDFPrint />} />
           <Route path="/print-pdf" element={<PDFPrint />} />
           <Route path="/print-notice" element={<CreatePDFNotice1 />} />

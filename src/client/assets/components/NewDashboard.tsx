@@ -236,7 +236,7 @@ export function NewDashboard() {
     });
     return removedDubs;
   }
-  // calcAbsences();
+  // calcAbsences(334, "ثانية تسيير واقتصاد 1");
 
   return (
     <div className="flex min-h-screen w-full flex-col">

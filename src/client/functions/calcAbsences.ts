@@ -1,28 +1,98 @@
-import { StudentRealm, useStudents } from "../providers/StudentProvider";
 import app from "../realm";
-// export function canklcAbsences(absences: StudentRealm, students: StudentRealm) {
-export async function calcAbsences() {
+export async function calcAbsences(studentID, studentClass) {
+  Date.prototype.between = function (start: Date, end: Date) {
+    return this.getTime() >= start.getTime() && this.getTime() <= end.getTime();
+  };
   const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
-  const { absences, students, classrooms } = useStudents();
-  const ghiyab = absences?.filter((student) => student.absence_status);
+  const holidays = await mongo?.collection("Holidays").find();
+  const students = await mongo?.collection("Student").find();
+  const absences = await mongo?.collection("Absence").find();
 
   // remove Machtobin..
   const filtredAbsences = absences?.filter(
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
   );
-  const query = `{"$lookup": {
-    from: "ClassProgram",
-    localField: "class_program",
-    foreignField: "_id",
-    as: "classProgram",
-  }}`;
-  const classroom = await mongo
-    ?.collection("Classroom")
-    .find({ class_fullName: "ثانية تسيير واقتصاد 1" });
-  const classid = classroom[0]._id;
-  const classProgram = mongo?.collection("Classroom").find({ _id: classid });
-  // const program = classes[0].class_program;
+  const selectedClass = filtredAbsences?.filter(
+    (student) => student.student_id === studentID
+  );
+
+  const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
+    {
+      $lookup: {
+        from: "ClassProgram",
+        localField: "class_program",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $lookup: {
+              from: "Professor",
+              localField: "professor",
+              foreignField: "_id",
+              as: "module",
+            },
+          },
+        ],
+        as: "program",
+      },
+    },
+    {
+      $match: {
+        class_fullName: studentClass,
+      },
+    },
+  ]);
+  const weekProgram = selectedClassProgram[0].program;
+
+  function missed_Modules() {
+    let classMissedModules = [];
+    let globalmissed = [];
+    selectedClass?.map((student) => {
+      let missedModules = [];
+      const date1 = student.date_of_return
+        ? student.date_of_return.getTime()
+        : new Date().getTime();
+      const date2 = student.date_of_absence
+        ? student.date_of_absence.getTime()
+        : new Date().getTime();
+      const absenceHours = Math.round((date1 - date2) / (1000 * 60 * 60));
+      if (absenceHours) {
+        for (let i = 0; i < absenceHours; i++) {
+          const absenceTime = new Date(date2 + 1000 * 60 * 60 * i);
+          let isHoliday = false;
+          holidays?.map((holiday) => {
+            if (absenceTime.between(holiday.start_date, holiday.end_date)) {
+              isHoliday = true;
+              return;
+            }
+          });
+          const hourProgram = weekProgram.filter(
+            (module) =>
+              module.day ===
+                absenceTime.toLocaleString("ar-DZ", {
+                  weekday: "long",
+                }) && module.hour === absenceTime.getHours()
+          );
+          if (hourProgram[0] && !isHoliday) {
+            missedModules.push(hourProgram[0].module[0].module_name);
+            globalmissed.push(hourProgram[0].module[0].module_name);
+          }
+        }
+        classMissedModules.push({
+          [student.date_of_absence.toLocaleString("en-ZA") +
+          " --> " +
+          student?.date_of_return?.toLocaleString("en-ZA")]: missedModules,
+        });
+      }
+    });
+    return globalmissed;
+  }
+
+  const finalResult = missed_Modules();
+  const counts = {};
+  finalResult.forEach(function (x) {
+    counts[x] = (counts[x] || 0) + 1;
+  });
   function updateTotals() {
     removedDubs.map((student) => {
       let total_justified = 0;
@@ -54,8 +124,8 @@ export async function calcAbsences() {
   let removedDubs = allStudents?.filter(
     (value, index, array) => array.indexOf(value) === index
   );
-  const newData = updateTotals()?.sort(
-    (a, b) => b.total_missedH - a.total_missedH
-  );
-  return newData;
+  // const newData = updateTotals()?.sort(
+  //   (a, b) => b.total_missedH - a.total_missedH
+  // );
+  return counts;
 }
