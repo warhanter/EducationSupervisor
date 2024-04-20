@@ -1,7 +1,17 @@
-import { title } from "process";
 import React from "react";
+import { PDFPrintTablesProps } from "./PDFPrintTables";
 
-export default function MaafiyinPrintTable({ data, date, title }) {
+type MaafiyinPrintTableProps = PDFPrintTablesProps & {
+  title: string;
+  table?: string;
+};
+
+export default function MaafiyinPrintTable({
+  data,
+  date,
+  title,
+  table,
+}: MaafiyinPrintTableProps) {
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
@@ -42,9 +52,19 @@ export default function MaafiyinPrintTable({ data, date, title }) {
             <th className="border-separate border py-1 px-1 bg-gray-400">
               تاريخ الازدياد
             </th>
-            {/* <th className="border-separate border py-1 px-1 bg-gray-400">
-              تاريخ العودة
-            </th> */}
+            {table === "moghadirin" && (
+              <th className="border-separate border py-1 px-1 bg-gray-400">
+                تاريخ الخروج
+              </th>
+            )}
+            {table === "wafidin" && (
+              <th className="border-separate border py-1 px-1 bg-gray-400">
+                تاريخ الدخول
+              </th>
+            )}
+            <th className="border-separate border py-1 px-1 bg-gray-400">
+              الصفة
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -67,9 +87,19 @@ export default function MaafiyinPrintTable({ data, date, title }) {
                   <td className="border border-collapse py-1 px-1">
                     {student.student_DOB?.toLocaleDateString("en-ZA")}
                   </td>
-                  {/* <td className="border border-collapse py-1 px-1">
-                    {student.medical_leave_endDate.toLocaleDateString("en-ZA")}
-                  </td> */}
+                  {table === "moghadirin" && (
+                    <td className="border border-collapse py-1 px-1">
+                      {student?.createdAt?.toLocaleDateString("en-ZA")}
+                    </td>
+                  )}
+                  {table === "wafidin" && (
+                    <td className="border border-collapse py-1 px-1">
+                      {student?.student_DOI}
+                    </td>
+                  )}
+                  <td className="border border-collapse py-1 px-1">
+                    {student.student_status}
+                  </td>
                 </tr>
               );
             })}

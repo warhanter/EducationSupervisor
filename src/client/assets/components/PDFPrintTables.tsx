@@ -2,7 +2,7 @@ import React from "react";
 import { reverseString } from "../contexts/AppFunctions";
 import { Student } from "@/client/providers/StudentProvider";
 
-type PDFPrintTablesProps = {
+export type PDFPrintTablesProps = {
   data: Student[] | undefined;
   date: number;
 };

@@ -351,6 +351,7 @@ function PDFPrint() {
                     ? -1
                     : 0
                 )}
+                table="maafiyin"
                 date={rapportDate}
                 title="التلاميذ المعفيين من الرياضة"
               />
@@ -364,6 +365,7 @@ function PDFPrint() {
                     ? -1
                     : 0
                 )}
+                table="wafidin"
                 date={rapportDate}
                 title="التلاميذ الوافدين"
               />
@@ -371,12 +373,13 @@ function PDFPrint() {
             {table === "moghadirin" && !loading && (
               <MaafiyinPrintTable
                 data={moghadirin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.createdAt > b.createdAt
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.createdAt > a.createdAt
                     ? -1
                     : 0
                 )}
+                table="moghadirin"
                 date={rapportDate}
                 title="التلاميذ المغادرين"
               />
@@ -390,12 +393,14 @@ function PDFPrint() {
                     ? -1
                     : 0
                 )}
+                table="motamadrisin"
                 date={rapportDate}
                 title="الاسمية للتلاميذ"
               />
             )}
             {table === "tasrih_charafi" && !loading && (
               <MaafiyinPrintTable
+                table="tasrih_charafi"
                 data={tasrih_charafi.sort((a, b) =>
                   a.class_abbriviation > b.class_abbriviation
                     ? 1
