@@ -148,8 +148,12 @@ export default function Convocation({ data, title }: ConvocationProps) {
               </p>
             </div>
             <div className="flex flex-col  items-end m-8">
-              <p className="text-lg font-bold"> مروانة في : {fsendDate}</p>
-              <p className="font-bold text-xl mb-5 ">مستشــــار التربيـــــة</p>
+              <div className="text-center">
+                <p className="text-lg font-bold"> مروانة في : {fsendDate}</p>
+                <p className="font-bold text-xl mb-5 ">
+                  المديـــــــــــــــــر
+                </p>
+              </div>
               <Popover>
                 <PopoverTrigger className="print:hidden" asChild>
                   <Button>
