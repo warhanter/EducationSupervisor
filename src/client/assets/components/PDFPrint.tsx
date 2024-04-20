@@ -337,14 +337,14 @@ function PDFPrint() {
               <MaafiyinPrintTable
                 data={wafidin}
                 date={rapportDate}
-                title="التلاميذ المغادرين"
+                title="التلاميذ الوافدين"
               />
             )}
             {table === "moghadirin" && !loading && (
               <MaafiyinPrintTable
                 data={moghadirin}
                 date={rapportDate}
-                title="التلاميذ الوافدين"
+                title="التلاميذ المغادرين"
               />
             )}
             {table === "motamadrisin" && !loading && (
