@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChangeAddress } from "./ChangeAddress";
 import { DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useStudents } from "@/client/providers/StudentProvider";
+import { Student, useStudents } from "@/client/providers/StudentProvider";
 import {
   Popover,
   PopoverContent,
@@ -28,7 +28,12 @@ const actions = [
   "مقــــابلـــة الأستـــــــــــــاذ",
 ];
 
-export default function Convocation({ data, title }) {
+type ConvocationProps = {
+  data: Student;
+  title: string;
+};
+
+export default function Convocation({ data, title }: ConvocationProps) {
   const { addresses } = useStudents();
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
     (address) => address.student_id == data._id
@@ -37,8 +42,8 @@ export default function Convocation({ data, title }) {
     studentAdress?.last_name + " " + studentAdress?.father_name
   );
   const [address, setAddress] = useState(studentAdress?.address);
-  const [date, setDate] = useState(new Date());
-  const [sendDate, setSenddate] = useState(new Date());
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [sendDate, setSenddate] = useState<Date | undefined>(new Date());
   const fdate = date?.toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });

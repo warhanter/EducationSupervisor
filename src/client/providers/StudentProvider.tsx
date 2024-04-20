@@ -15,7 +15,8 @@ type Notification = {
   operationType: string | undefined;
 };
 export type StudentRealm = Record<string, any>[] | undefined;
-type StudentList = Record<string, any>[];
+export type StudentList = Record<string, any>[];
+export type Student = Record<string, any>;
 type StudentsType = {
   students: StudentRealm;
   absences: StudentRealm;

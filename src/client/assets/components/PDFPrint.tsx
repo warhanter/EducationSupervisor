@@ -1,8 +1,8 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderNavbar from "./HeaderNavbar";
 import { format } from "date-fns";
 import { arDZ } from "date-fns/locale/ar-DZ";
-import { Calendar as CalendarIcon, Loader } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,11 +11,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { PDFViewer } from "@react-pdf/renderer";
-import TableView from "./TableView";
-import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
-import { useStudents } from "@/client/providers/StudentProvider";
-import _, { set } from "lodash";
+// import { PDFViewer } from "@react-pdf/renderer";
+// import TableView from "./TableView";
+// import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
+import { Student, useStudents } from "@/client/providers/StudentProvider";
+import _ from "lodash";
 import { AlertInfo } from "./Alert";
 import LoadingSpinnerNew from "./LoadingSpinnerNew";
 import PDFPrintTables from "./PDFPrintTables";
@@ -35,10 +35,12 @@ function PDFPrint() {
     motamadrisin,
   } = useStudents();
   const [loading, setLoading] = useState(true);
-  const [absencesData, setabsencesData] = useState();
+  const [absencesData, setabsencesData] = useState<Student[]>();
   const [table, setTable] = useState("ghiyabat");
-  const [lunchabsenceData, setlunchabsenceData] = useState();
-  const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
+  const [lunchabsenceData, setlunchabsenceData] = useState<Student[]>();
+  const [rapportDate, setRapportDate] = useState<number>(
+    new Date().setHours(23)
+  );
   const filtredghiyabat = absences?.filter(
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
@@ -62,16 +64,6 @@ function PDFPrint() {
           !i.date_of_return) &&
         new Date(i.date_of_absence).getTime() <= rapportDate
     );
-
-    const options11 = {
-      hour: "numeric",
-      minute: "numeric",
-    };
-    const date_format2: Date = {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    };
     data11?.map((student, index) => {
       let studentObject: any = {};
       if (student.is_absent === false) {
@@ -84,7 +76,10 @@ function PDFPrint() {
       const daysOfAbcence = Math.round((date1 - date2) / (1000 * 60 * 60 * 24));
       const missedHours = () => {
         const start = parseInt(
-          new Intl.DateTimeFormat("fr", options11)
+          new Intl.DateTimeFormat("fr", {
+            hour: "numeric",
+            minute: "numeric",
+          })
             .format(dateOfAbsence)
             .slice(0, 2)
         );
@@ -121,10 +116,11 @@ function PDFPrint() {
       studentObject.first_name = student.first_name;
       studentObject.medical_leave = student.medical_leave ? "ش طبية" : "";
       studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
-      studentObject.absence_date = new Intl.DateTimeFormat(
-        "fr",
-        date_format2
-      ).format(dateOfAbsence);
+      studentObject.absence_date = new Intl.DateTimeFormat("fr", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }).format(dateOfAbsence);
       studentObject.missed_hours = missedHours();
       studentObject.absence_days =
         daysOfAbcence < 1
@@ -172,10 +168,10 @@ function PDFPrint() {
     return result;
   };
   async function getData() {
-    const absencesData = await generateRapportTableData();
-    const lunchabsenceData = await generateLunchAbsenceTableData();
-    await absencesData.sort((a, b) => (a.class > b.class ? -1 : 1));
-    await lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
+    const absencesData: Student[] = await generateRapportTableData();
+    const lunchabsenceData: Student[] = await generateLunchAbsenceTableData();
+    absencesData.sort((a, b) => (a.class > b.class ? -1 : 1));
+    lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
     setabsencesData(absencesData);
     setlunchabsenceData(lunchabsenceData);
     setLoading(false);
@@ -219,7 +215,7 @@ function PDFPrint() {
                 selected={new Date(rapportDate)}
                 onSelect={(value) => {
                   setLoading(true);
-                  setRapportDate(value?.setHours(23));
+                  setRapportDate(value.setHours(23));
                 }}
                 initialFocus
                 locale={arDZ}

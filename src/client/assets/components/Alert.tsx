@@ -16,13 +16,15 @@ export function AlertDestructive({ error }: { error: string | null }) {
 export function AlertInfo({
   title,
   message,
+  className,
   ...Props
 }: {
   title: string;
   message: string;
+  className: string;
 }) {
   return (
-    <Alert {...Props}>
+    <Alert className={className} {...Props}>
       <div className="flex items-center">
         <Info className="h-6 w-6 ml-4" />
         <AlertTitle className="py-2">{title}</AlertTitle>

@@ -1,7 +1,12 @@
 import React from "react";
 import { reverseString } from "../contexts/AppFunctions";
+import { Student } from "@/client/providers/StudentProvider";
 
-export default function PDFPrintTables({ data, date }) {
+type PDFPrintTablesProps = {
+  data: Student[] | undefined;
+  date: number;
+};
+export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
