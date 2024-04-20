@@ -51,8 +51,7 @@ function HeaderNavbar() {
         <AppLink to="/" link="الرئيسية" />
         <AppLink to="/allStudents" link="كل التلاميذ" />
         <AppLink to="/absences" link="الغيابات" />
-        <AppLink to="/absences" link="اشعارات" />
-        <AppLink to="/print-pdf" link="طباعة" />
+        {/* <AppLink to="/absences" link="اشعارات" /> */}
         <NavigationMenu className="text-right">
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -70,6 +69,7 @@ function HeaderNavbar() {
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
+        <AppLink to="/print-pdf" link="طباعة" />
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -89,8 +89,8 @@ function HeaderNavbar() {
             </Link>
             <AppLink to="/" link="الرئيسية" />
             <AppLink to="/allStudents" link="كل التلاميذ" />
-            <AppLink to="/Absence" link="الغيابات" />
-            <AppLink to="/Absence" link="اشعارات" />
+            <AppLink to="/absences" link="الغيابات" />
+            {/* <AppLink to="/Absence" link="اشعارات" /> */}
             <AppLink to="/print-pdf" link="طباعة" />
           </nav>
         </SheetContent>

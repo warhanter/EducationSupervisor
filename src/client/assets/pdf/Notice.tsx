@@ -102,7 +102,7 @@ const Notice1Page = () => {
       ? { name: "ابنتكم", birth: "المولودة", absence: "تغيبت" }
       : { name: "ابنكم", birth: "المولود", absence: "تغيب" };
   return (
-    <div className="chapter text-lg leading-8 m-0 p-0">
+    <div id="section-to-print" className="chapter text-lg leading-8 m-0 p-0">
       <div className="text-center">
         <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
         <h2>وزارة التربية الوطنية</h2>

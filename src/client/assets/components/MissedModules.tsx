@@ -1,11 +1,11 @@
 import { calcAbsences } from "@/client/functions/calcAbsences";
-import { Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import LoadingSpinnerNew from "./LoadingSpinnerNew";
 const ShowData = ({ module, value }) => {
   return (
     <tr>
-      <td className="border border-slate-700 px-5">{module}</td>
+      <td className="border border-slate-700 px-5 py-1">{module}</td>
       <td className="border border-slate-700 px-20">{value}</td>
     </tr>
   );
@@ -19,7 +19,6 @@ export default function MissedModules() {
   const studentID = state.studentID;
   const studentClass = state.studentClass;
   const name = state.name;
-  console.log(studentID, studentClass);
   useEffect(() => {
     const getData = async () => {
       const missed = await calcAbsences(studentID, studentClass);
@@ -28,20 +27,16 @@ export default function MissedModules() {
     };
     getData();
   }, []);
-  // let dataList = [];
-  // for (const [key, value] of Object.entries(data)) {
-  //   dataList.push(`${key}: ${value}`);
-  // }
-  console.log(data);
   return loading ? (
-    <div className="flex h-dvh justify-center content-center items-center">
-      <p className="p-5 text-xl font-bold">يرجى الانتضار...</p>
-      <Loader size={40} className="animate-spin" />
-    </div>
+    <LoadingSpinnerNew />
   ) : (
-    <div className="text-center p-16">
-      <p className="text-xl">جدول حساب الساعات الضائعة للتلميذ</p>
-      <p className="text-xl font-bold">{name}</p>
+    <div className="text-center p-10">
+      <p className="text-xl bg-secondary p-3 rounded-md w-fit m-auto">
+        جدول حساب مجموع الساعات الضائعة لكل مادة
+      </p>
+      <p className="text-xl font-bold p-2">
+        للتلميذ(ة): <span>{name}</span>
+      </p>
       <p className="text-xl font-medium">
         قسم: <span>{studentClass}</span>
       </p>
@@ -58,8 +53,8 @@ export default function MissedModules() {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(data).map((module) => (
-              <ShowData module={module[0]} value={module[1]} />
+            {Object.entries(data).map((module, index) => (
+              <ShowData key={index} module={module[0]} value={module[1]} />
             ))}
           </tbody>
         </table>

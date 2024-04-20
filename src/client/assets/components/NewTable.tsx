@@ -15,6 +15,7 @@ import {
 import {
   Student,
   absencesColumns,
+  nisfdakhiliColumns,
   recordsColumns,
   sortedColumns,
   studentsColumns,
@@ -48,6 +49,8 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       ? sortedColumns
       : queryTbale === "studentAbsencesRecords"
       ? recordsColumns
+      : queryTbale === "nisfdakhili"
+      ? nisfdakhiliColumns
       : studentsColumns;
   const [absencesData, setAbsencesData] = React.useState<Record<string, any>>(
     []
@@ -233,11 +236,32 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       rowSelection,
     },
   });
+  const mamnouhin = nisfDakhili?.filter(
+    (student) => student.student_status === "نصف داخلي" && student.is_mamnouh
+  ).length;
+  const mosadidin = nisfDakhili?.filter(
+    (student) => student.student_status === "نصف داخلي" && student.lunch_paid
+  ).length;
+  const ghayrMosadidin = nisfDakhili?.filter(
+    (student) =>
+      student.student_status === "نصف داخلي" &&
+      !student.lunch_paid &&
+      !student.is_mamnouh
+  ).length;
   const labels = table.getColumn("full_className")?.getFacetedUniqueValues();
+  const labels2 = new Map([
+    ["نصف داخلي", nisfDakhili.length],
+    ["الممنوحين", mamnouhin],
+    ["المسددين", mosadidin],
+    ["الغير مسددين", ghayrMosadidin],
+  ]);
+
   let vals: { label: string; value: string }[] = [];
+  let vals2: { label: string; value: string }[] = [];
   labels?.forEach((_, b) => vals.push({ label: b, value: b }));
+  labels2?.forEach((a, b) => vals2.push({ label: b + ": " + a, value: b }));
   vals.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
-  const isFiltered2 = table.getColumn("full_className")?.getIsFiltered();
+  const isFiltered1 = table.getColumn("full_className")?.getIsFiltered();
   return (
     <div className="flex min-h-screen w-full flex-col">
       <HeaderNavbar />
@@ -267,7 +291,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   className="max-w-full"
                 />
               </div>
-              <div className="flex content-center justify-center">
+              <div className="flex content-center justify-center gap-4">
                 {table.getColumn("full_className") && (
                   <DataTableFacetedFilter
                     column={table.getColumn("full_className")}
@@ -275,7 +299,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                     options={vals}
                   />
                 )}
-                {isFiltered2 && (
+                {isFiltered1 && (
                   <Button
                     variant="ghost"
                     onClick={() => table.resetColumnFilters()}
@@ -284,6 +308,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                     حذف
                     <Cross2Icon className="ml-2 h-4 w-4" />
                   </Button>
+                )}
+                {table.getColumn("is_mamnouh") && (
+                  <DataTableFacetedFilter title="التعداد" options={vals2} />
                 )}
               </div>
             </div>

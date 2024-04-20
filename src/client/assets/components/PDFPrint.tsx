@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import HeaderNavbar from "./HeaderNavbar";
 import { format } from "date-fns";
 import { arDZ } from "date-fns/locale/ar-DZ";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,28 +15,53 @@ import { PDFViewer } from "@react-pdf/renderer";
 import TableView from "./TableView";
 import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
 import { useStudents } from "@/client/providers/StudentProvider";
-import _ from "lodash";
+import _, { set } from "lodash";
 import { AlertInfo } from "./Alert";
+import LoadingSpinnerNew from "./LoadingSpinnerNew";
+import PDFPrintTables from "./PDFPrintTables";
+import LuncAbsencePrintTable from "./LuncAbsencePrintTable";
+import MedicalLeavePrintTable from "./MedicalLeavePrintTable";
+import MaafiyinPrintTable from "./MaafiyinPrintTale";
 
 function PDFPrint() {
-  const { absences, lunchAbsences, students } = useStudents();
-  const [isSelected, setIsSelected] = useState(true);
-  const [isSelected2, setIsSelected2] = useState(false);
+  const {
+    absences,
+    lunchAbsences,
+    students,
+    otlaMaradiya,
+    maafiyin,
+    moghadirin,
+    wafidin,
+    motamadrisin,
+  } = useStudents();
+  const [loading, setLoading] = useState(true);
+  const [absencesData, setabsencesData] = useState();
+  const [table, setTable] = useState("ghiyabat");
+  const [lunchabsenceData, setlunchabsenceData] = useState();
   const [rapportDate, setRapportDate] = useState(new Date().setHours(23));
-  const [dailyRapport, setDailyRapport] = useState(true);
-  const [nisfdakhiliRapport, setNisfdakhiliRapport] = useState(false);
-  const generateRapportTableData = () => {
+  const filtredghiyabat = absences?.filter(
+    (student) =>
+      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+  );
+  const generateRapportTableData = async () => {
     let result: any = [];
     let i = 0;
-    const data11 = useMemo(() => {
-      return _.filter(
-        absences,
-        (i) =>
-          (new Date(i.date_of_return).getTime() > rapportDate ||
-            !i.date_of_return) &&
-          new Date(i.date_of_absence).getTime() <= rapportDate
-      );
-    }, [rapportDate]);
+    // const data11 = useMemo(() => {
+    //   return _.filter(
+    //     absences,
+    //     (i) =>
+    //       (new Date(i.date_of_return).getTime() > rapportDate ||
+    //         !i.date_of_return) &&
+    //       new Date(i.date_of_absence).getTime() <= rapportDate
+    //   );
+    // }, [rapportDate]);
+    const data11 = _.filter(
+      filtredghiyabat,
+      (i) =>
+        (new Date(i.date_of_return).getTime() > rapportDate ||
+          !i.date_of_return) &&
+        new Date(i.date_of_absence).getTime() <= rapportDate
+    );
 
     const options11 = {
       hour: "numeric",
@@ -80,13 +105,13 @@ function PDFPrint() {
           : `${12 - start}  -  3`;
       };
       const noticeName = () => {
-        return daysOfAbcence < 3
+        return daysOfAbcence <= 3
           ? "/"
-          : daysOfAbcence >= 3 && daysOfAbcence < 7
+          : daysOfAbcence > 3 && daysOfAbcence <= 10
           ? "إشعار 1"
-          : daysOfAbcence >= 7 && daysOfAbcence < 15
+          : daysOfAbcence > 10 && daysOfAbcence <= 18
           ? "إشعار 2"
-          : daysOfAbcence >= 15 && daysOfAbcence < 31
+          : daysOfAbcence > 18 && daysOfAbcence <= 31
           ? "إعذار"
           : "شطب";
       };
@@ -112,7 +137,7 @@ function PDFPrint() {
     });
     return result;
   };
-  const generateLunchAbsenceTableData = () => {
+  const generateLunchAbsenceTableData = async () => {
     let result: any = [];
     let i = 0;
     const date1 = new Date(rapportDate).setHours(1);
@@ -146,12 +171,22 @@ function PDFPrint() {
     });
     return result;
   };
-
-  const absencesData = generateRapportTableData();
-  const lunchabsenceData = generateLunchAbsenceTableData();
-  absencesData.sort((a, b) => (a.class > b.class ? -1 : 1));
-  lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
-  return (
+  async function getData() {
+    const absencesData = await generateRapportTableData();
+    const lunchabsenceData = await generateLunchAbsenceTableData();
+    await absencesData.sort((a, b) => (a.class > b.class ? -1 : 1));
+    await lunchabsenceData.sort((a, b) => (a.class > b.class ? 1 : -1));
+    setabsencesData(absencesData);
+    setlunchabsenceData(lunchabsenceData);
+    setLoading(false);
+  }
+  useEffect(() => {
+    setLoading(true);
+    getData();
+  }, [rapportDate]);
+  return loading ? (
+    <LoadingSpinnerNew />
+  ) : (
     <div className="flex flex-col min-h-screen w-full">
       <HeaderNavbar />
       <main className="grid grid-cols-1 md:grid-cols-4 p-4 md:gap-4">
@@ -181,8 +216,11 @@ function PDFPrint() {
             <PopoverContent className="w-[auto] p-0">
               <Calendar
                 mode="single"
-                selected={rapportDate}
-                onSelect={setRapportDate}
+                selected={new Date(rapportDate)}
+                onSelect={(value) => {
+                  setLoading(true);
+                  setRapportDate(value?.setHours(23));
+                }}
                 initialFocus
                 locale={arDZ}
               />
@@ -190,46 +228,157 @@ function PDFPrint() {
           </Popover>
           <Button
             variant="outline"
-            className={cn(isSelected && "bg-accent text-accent-foreground")}
+            className={cn(
+              table === "ghiyabat" && "bg-accent text-accent-foreground"
+            )}
             onClick={() => {
-              setDailyRapport(true);
-              setNisfdakhiliRapport(false);
-              setIsSelected(true);
-              setIsSelected2(false);
+              setTable("ghiyabat");
             }}
           >
             غيابات التلاميذ
           </Button>
           <Button
             variant="outline"
-            className={cn(isSelected2 && "bg-accent text-accent-foreground")}
+            className={cn(
+              table === "nisfdakhili" && "bg-accent text-accent-foreground"
+            )}
             onClick={() => {
-              setDailyRapport(false);
-              setNisfdakhiliRapport(true);
-              setIsSelected(false);
-              setIsSelected2(true);
+              setTable("nisfdakhili");
             }}
           >
             غيابات المطعم
           </Button>
-          <Button variant="outline">اشعار</Button>
-          <Button variant="outline">تقرير</Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "motamadrisin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("motamadrisin");
+            }}
+          >
+            القائمة الاسمية للتلاميذ
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "wafidin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("wafidin");
+            }}
+          >
+            التلاميذ الوافدين
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "moghadirin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("moghadirin");
+            }}
+          >
+            التلاميذ المغادرين
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "otla" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("otla");
+            }}
+          >
+            العطل المرضية
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "maafiyin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("maafiyin");
+            }}
+          >
+            المعفيين من الرياضة
+          </Button>
+          <Button onClick={() => window.print()}>طبــــاعة</Button>
         </div>
         <div className="col-span-3 h-[50rem]">
-          {dailyRapport && (
-            <PDFViewer style={{ height: "100%", width: "100%" }}>
-              <TableView data={absencesData} date={rapportDate} />
-            </PDFViewer>
-          )}
-
-          {nisfdakhiliRapport && (
-            <PDFViewer style={{ height: "100%", width: "100%" }}>
-              <TableLuncheAbsenceView
+          <div
+            className="col-span-3 h-[50rem] overflow-scroll w-full"
+            // id="section-to-print"
+          >
+            {table === "ghiyabat" && !loading && (
+              <PDFPrintTables data={absencesData} date={rapportDate} />
+            )}
+            {table === "nisfdakhili" && !loading && (
+              <LuncAbsencePrintTable
                 data={lunchabsenceData}
                 date={rapportDate}
               />
-            </PDFViewer>
-          )}
+            )}
+            {table === "otla" && !loading && (
+              <MedicalLeavePrintTable
+                data={otlaMaradiya}
+                date={rapportDate}
+                title="العطل المرضية للتلاميذ"
+              />
+            )}
+            {table === "maafiyin" && !loading && (
+              <MaafiyinPrintTable
+                data={maafiyin}
+                date={rapportDate}
+                title="التلاميذ المعفيين من الرياضة"
+              />
+            )}
+            {table === "wafidin" && !loading && (
+              <MaafiyinPrintTable
+                data={wafidin}
+                date={rapportDate}
+                title="التلاميذ المغادرين"
+              />
+            )}
+            {table === "moghadirin" && !loading && (
+              <MaafiyinPrintTable
+                data={moghadirin}
+                date={rapportDate}
+                title="التلاميذ الوافدين"
+              />
+            )}
+            {table === "motamadrisin" && !loading && (
+              <MaafiyinPrintTable
+                data={motamadrisin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                date={rapportDate}
+                title="الاسمية للتلاميذ"
+              />
+            )}
+            {/* <iframe
+              width="100%"
+              height="100%"
+              src="/#/pdf-print-table"
+            ></iframe> */}
+            {/* {dailyRapport && !loading && (
+              <PDFViewer style={{ height: "100%", width: "100%" }}>
+                <TableView data={absencesData} date={rapportDate} />
+              </PDFViewer>
+            )}
+            {nisfdakhiliRapport && !loading && (
+              <PDFViewer style={{ height: "100%", width: "100%" }}>
+                <TableLuncheAbsenceView
+                  data={lunchabsenceData}
+                  date={rapportDate}
+                />
+              </PDFViewer>
+            )} */}
+          </div>
         </div>
       </main>
     </div>

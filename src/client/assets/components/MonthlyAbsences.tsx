@@ -96,39 +96,43 @@ export function MonthlyAbsences({ data }: { data: Record<string, any>[] }) {
             >
               <CircleArrowRight className="h-12 w-12" />
             </Button>
-            <table className="border-separate border border-slate-500 text">
-              <thead>
-                <tr>
-                  <th className="border border-slate-600 px-5">الرقم</th>
-                  <th className="border border-slate-600 px-5">الاسم واللقب</th>
-                  <th className="border border-slate-600 px-5">القسم</th>
-                  <th className="border border-slate-600 px-5">
-                    الساعات الضائعة
-                  </th>
-                </tr>
-              </thead>
-              {studentsData &&
-                studentsData.map((student, index) => {
-                  return (
-                    <tbody key={index}>
-                      <tr>
-                        <td className="border border-slate-700 px-5">
-                          {student.number}
-                        </td>
-                        <td className="border border-slate-700 px-5">
-                          {student.name}
-                        </td>
-                        <td className="border border-slate-700 px-5">
-                          {student.className}
-                        </td>
-                        <td className="border border-slate-700 px-5">
-                          {student.missedHours}
-                        </td>
-                      </tr>
-                    </tbody>
-                  );
-                })}
-            </table>
+            <div className="w-full overflow-scroll h-[500px] p-4">
+              <table className="border-separate border border-slate-500 text">
+                <thead>
+                  <tr>
+                    <th className="border border-slate-600 px-5">الرقم</th>
+                    <th className="border border-slate-600 px-5">
+                      الاسم واللقب
+                    </th>
+                    <th className="border border-slate-600 px-5">القسم</th>
+                    <th className="border border-slate-600 px-5">
+                      الساعات الضائعة
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentsData &&
+                    studentsData.map((student, index) => {
+                      return (
+                        <tr key={index}>
+                          <td className="border border-slate-700 px-5">
+                            {student.number}
+                          </td>
+                          <td className="border border-slate-700 px-5">
+                            {student.name}
+                          </td>
+                          <td className="border border-slate-700 px-5">
+                            {student.className}
+                          </td>
+                          <td className="border border-slate-700 px-5">
+                            {student.missedHours}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
             <Button
               size="icon"
               className="rounded-full"

@@ -202,6 +202,10 @@ export function NewDashboard() {
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
   );
+  const filtredghiyabat = ghiyab?.filter(
+    (student) =>
+      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+  );
   // returns all students as {key: full_name, value: student_object}
   // to remove dublicates by full_name later.
   const allStudents = [
@@ -236,7 +240,6 @@ export function NewDashboard() {
     });
     return removedDubs;
   }
-  // calcAbsences(334, "ثانية تسيير واقتصاد 1");
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -267,7 +270,9 @@ export function NewDashboard() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{ghiyab?.length}</div>
+              <div className="text-2xl font-bold">
+                {filtredghiyabat?.length}
+              </div>
               <p className="text-xs text-muted-foreground">
                 التلاميذ الغائبين حتى اليوم
               </p>

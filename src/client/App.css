@@ -308,3 +308,19 @@ body {
   padding: 30px;
   border-radius: 4px;
 }
+
+@media print {
+  body {
+    visibility: hidden;
+  }
+  /* @page {
+    size: A4 portrait;
+  } */
+  #section-to-print {
+    visibility: visible;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+  }
+}

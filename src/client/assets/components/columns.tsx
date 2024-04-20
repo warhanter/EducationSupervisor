@@ -19,6 +19,8 @@ import { filter } from "lodash";
 import { useStudents } from "@/client/providers/StudentProvider";
 import { FemaleImage, MaleImage } from "./images";
 import { Badge } from "@/components/ui/badge";
+import Convocation from "./Convocation";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 export type Student = {
   _id: number;
   student_id: number;
@@ -44,6 +46,8 @@ export type Student = {
   missed_hours: number;
   justified_missed_hours: number;
   absence_status: boolean;
+  is_mamnouh: boolean;
+  lunch_paid: boolean;
 };
 
 // const navigate = useNavigate();
@@ -169,6 +173,214 @@ export const studentsColumns: ColumnDef<Student>[] = [
           <StatusBadge status={status} />
         </div>
       );
+    },
+  },
+  {
+    accessorKey: "student_DOB",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="ml-10"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          تاريخ الازدياد
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date: Date = row.getValue("student_DOB");
+
+      return (
+        <div className="text-right font-medium text-gray-500 ml-10">
+          {date?.toLocaleDateString("en-ZA")}
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const student = row.original;
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <StudentDialog open={open} setOpen={setOpen} student={student} />
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">فتح القائمة</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent style={{ direction: "rtl" }}>
+                <DropdownMenuLabel>بيانات</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  عرض بيانات التلميذ
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel>وثائق</DropdownMenuLabel>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem>
+                    <span>استدعاء الولي</span>
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DropdownMenuItem>انذار مكتوب</DropdownMenuItem>
+                <DropdownMenuItem>توبيــــخ</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Convocation data={student} title={"استدعاء الولي"} />
+          </Dialog>
+        </>
+      );
+    },
+  },
+];
+export const nisfdakhiliColumns: ColumnDef<Student>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        className="mx-4 dark:border-black"
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        className="mr-4"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "student_id",
+    header: "الرقم",
+    cell: ({ row, table }) => (
+      <div className="text-base font-bold m-0 p-0">
+        {table
+          .getSortedRowModel()
+          ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) + 1 ||
+          0 + 1}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "full_name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="ml-10"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اللقب والاسم
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div>
+          <div className="flex items-center gap-x-3">
+            {row.original.gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
+            <div className="grow">
+              <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {row.getValue("full_name")}
+              </span>
+              <span className="block text-sm text-gray-500">
+                {row.original.student_status}
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "full_className",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="ml-10"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          القسم
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="p-0">
+          <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {row.getValue("full_className")}
+          </span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+
+  {
+    accessorKey: "is_mamnouh",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="ml-10"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          المنحة
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const status = row.original.is_mamnouh
+        ? "ممنوح"
+        : row.original.lunch_paid
+        ? "غير ممنوح"
+        : "عدم التجديد";
+      return (
+        <div className="ml-10">
+          <StatusBadge status={status} />
+        </div>
+      );
+    },
+    sortingFn: (rowA, rowB) => {
+      const statusA = rowA.original.is_mamnouh
+        ? "ممنوح"
+        : rowA.original.lunch_paid
+        ? "غير ممنوح"
+        : "عدم التجديد";
+      const statusB = rowB.original.is_mamnouh
+        ? "ممنوح"
+        : rowB.original.lunch_paid
+        ? "غير ممنوح"
+        : "عدم التجديد";
+      const numA = statusA;
+      const numB = statusB;
+
+      return numA < numB ? 1 : numA > numB ? -1 : 0;
     },
   },
   {
