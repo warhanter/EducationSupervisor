@@ -13,10 +13,12 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="flex justify-between">
-        <p className="text-lg font-bold mb-4">
+        <p className="text-base font-bold mb-4">
           التلاميذ الغائبين الى غاية نهاية يوم: {fdate}
         </p>
-        <p className="text-lg font-bold mb-4">عدد الغيابات : {data?.length}</p>
+        <p className="text-base font-bold mb-4">
+          عدد الغيابات : {data?.length}
+        </p>
       </div>
       <table className="w-full   print:text-[13px] font-medium ">
         <thead className="border-separate border bg-gray-400">
