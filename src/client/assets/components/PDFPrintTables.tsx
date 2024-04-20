@@ -8,7 +8,9 @@ export default function PDFPrintTables({ data, date }) {
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="flex justify-between">
-        <p className="text-lg font-bold mb-4">غيابات التلاميذ ليوم: {fdate}</p>
+        <p className="text-lg font-bold mb-4">
+          التلاميذ الغائبين الى غاية نهاية يوم: {fdate}
+        </p>
         <p className="text-lg font-bold mb-4">عدد الغيابات : {data?.length}</p>
       </div>
       <table className="w-full   print:text-[13px] font-medium ">
