@@ -38,6 +38,9 @@ function PDFPrint() {
   const [absencesData, setabsencesData] = useState<Student[]>();
   const [table, setTable] = useState("ghiyabat");
   const [lunchabsenceData, setlunchabsenceData] = useState<Student[]>();
+  const tasrih_charafi = motamadrisin.filter(
+    (student) => student.lunch_absence_justification
+  );
   const [rapportDate, setRapportDate] = useState<number>(
     new Date().setHours(23)
   );
@@ -299,6 +302,17 @@ function PDFPrint() {
           >
             المعفيين من الرياضة
           </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "tasrih_charafi" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("tasrih_charafi");
+            }}
+          >
+            المعفيين من النصف داخلي
+          </Button>
           <Button onClick={() => window.print()}>طبــــاعة</Button>
         </div>
         <div className="col-span-3 h-[50rem]">
@@ -317,28 +331,52 @@ function PDFPrint() {
             )}
             {table === "otla" && !loading && (
               <MedicalLeavePrintTable
-                data={otlaMaradiya}
+                data={otlaMaradiya.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
                 date={rapportDate}
                 title="العطل المرضية للتلاميذ"
               />
             )}
             {table === "maafiyin" && !loading && (
               <MaafiyinPrintTable
-                data={maafiyin}
+                data={maafiyin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
                 date={rapportDate}
                 title="التلاميذ المعفيين من الرياضة"
               />
             )}
             {table === "wafidin" && !loading && (
               <MaafiyinPrintTable
-                data={wafidin}
+                data={wafidin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
                 date={rapportDate}
                 title="التلاميذ الوافدين"
               />
             )}
             {table === "moghadirin" && !loading && (
               <MaafiyinPrintTable
-                data={moghadirin}
+                data={moghadirin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
                 date={rapportDate}
                 title="التلاميذ المغادرين"
               />
@@ -354,6 +392,19 @@ function PDFPrint() {
                 )}
                 date={rapportDate}
                 title="الاسمية للتلاميذ"
+              />
+            )}
+            {table === "tasrih_charafi" && !loading && (
+              <MaafiyinPrintTable
+                data={tasrih_charafi.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                date={rapportDate}
+                title="المعفيين من النصف داخلي بتصريح شرفي"
               />
             )}
             {/* <iframe
