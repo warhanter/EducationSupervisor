@@ -15,7 +15,7 @@ import {
 // import TableView from "./TableView";
 // import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
 import { Student, useStudents } from "@/client/providers/StudentProvider";
-import _ from "lodash";
+import _, { groupBy } from "lodash";
 import { AlertInfo } from "./Alert";
 import LoadingSpinnerNew from "./LoadingSpinnerNew";
 import PDFPrintTables from "./PDFPrintTables";
@@ -34,6 +34,7 @@ function PDFPrint() {
     wafidin,
     motamadrisin,
   } = useStudents();
+
   const [loading, setLoading] = useState(true);
   const [absencesData, setabsencesData] = useState<Student[]>();
   const [table, setTable] = useState("ghiyabat");
@@ -44,6 +45,8 @@ function PDFPrint() {
   const [rapportDate, setRapportDate] = useState<number>(
     new Date().setHours(23)
   );
+  const studentsGroupedByClass = groupBy(motamadrisin, "full_className");
+
   const filtredghiyabat = absences?.filter(
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
@@ -261,6 +264,18 @@ function PDFPrint() {
           <Button
             variant="outline"
             className={cn(
+              table === "motamadrisinByclass" &&
+                "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("motamadrisinByclass");
+            }}
+          >
+            القائمة الاسمية لكل قسم
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
               table === "wafidin" && "bg-accent text-accent-foreground"
             )}
             onClick={() => {
@@ -394,6 +409,21 @@ function PDFPrint() {
                     : 0
                 )}
                 table="motamadrisin"
+                date={rapportDate}
+                title="الاسمية للتلاميذ"
+              />
+            )}
+            {table === "motamadrisinByclass" && !loading && (
+              <MaafiyinPrintTable
+                data={motamadrisin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                multi={true}
+                table="motamadrisinByclass"
                 date={rapportDate}
                 title="الاسمية للتلاميذ"
               />
