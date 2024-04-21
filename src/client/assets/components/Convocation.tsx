@@ -51,7 +51,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
     dateStyle: "full",
   });
   return (
-    <DialogContent className="min-w-[900px] print:min-w-[700px] print:mt-0  flex flex-col items-center">
+    <DialogContent className="min-w-[900px] print:min-w-full print:min-h-full flex flex-col items-center">
       <DialogHeader className="flex flex-row w-full justify-between items-center px-20">
         <Button onClick={() => window.print()}>طبــــاعة</Button>
         <Popover>
@@ -75,10 +75,10 @@ export default function Convocation({ data, title }: ConvocationProps) {
         </Popover>
       </DialogHeader>
       <div className="flex gap-8 items-center">
-        <div className="w-full overflow-scroll h-[500px] p-4">
+        <div className="w-full overflow-scroll h-[600px] print:min-h-full print:p-0 p-4">
           <div
             id="section-to-print"
-            className="w-full print:max-w-[700px] p-4 print:-mt-56 print:p-0"
+            className="w-full  print:h-full p-4 print:p-0 "
           >
             <div className="text-center">
               <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
