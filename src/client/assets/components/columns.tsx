@@ -21,6 +21,7 @@ import { FemaleImage, MaleImage } from "./images";
 import { Badge } from "@/components/ui/badge";
 import Convocation from "./Convocation";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { NoticeDialog } from "./NoticeDialog";
 export type Student = {
   _id: number;
   student_id: number;
@@ -844,65 +845,86 @@ export const absencesColumns: ColumnDef<Student>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      const [open, setOpen] = useState(false);
+      const [noticeName, setNoticeName] = useState("");
       const { absences } = useStudents();
       const navigate = useNavigate();
       const student = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">فتح القائمة</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent style={{ direction: "rtl" }}>
-            <DropdownMenuLabel>معلومات</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                navigate("/studentAbsencesRecords", {
-                  state: filter(
-                    absences,
-                    (a) => a.student_id === row.original._id
-                  ),
-                });
-              }}
-            >
-              عرض سجل الغيابات للتلميذ
-            </DropdownMenuItem>
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>اشعارات</DropdownMenuLabel>
+        <>
+          <NoticeDialog
+            open={open}
+            state={{ student: student, notice: noticeName }}
+            setOpen={setOpen}
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">فتح القائمة</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent style={{ direction: "rtl" }}>
+              <DropdownMenuLabel>معلومات</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  navigate("/print-notice", {
-                    state: { student: student, notice: "notice1" },
+                  navigate("/studentAbsencesRecords", {
+                    state: filter(
+                      absences,
+                      (a) => a.student_id === row.original._id
+                    ),
                   });
                 }}
               >
-                الاشعار الأول
+                عرض سجل الغيابات للتلميذ
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  navigate("/print-notice", {
-                    state: { student: student, notice: "notice2" },
-                  });
-                }}
-              >
-                الاشعار الثاني
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  navigate("/print-notice", {
-                    state: { student: student, notice: "notice3" },
-                  });
-                }}
-              >
-                الإعـــــــــذار
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>اشعارات</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  // onClick={() => {
+                  //   navigate("/print-notice", {
+                  //     state: { student: student, notice: "notice1" },
+                  //   });
+                  // }}
+                  onClick={() => {
+                    setOpen(true);
+                    setNoticeName("notice1");
+                  }}
+                >
+                  الاشعار الأول
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  // onClick={() => {
+                  //   navigate("/print-notice", {
+                  //     state: { student: student, notice: "notice2" },
+                  //   });
+                  // }}
+                  onClick={() => {
+                    setOpen(true);
+                    setNoticeName("notice2");
+                  }}
+                >
+                  الاشعار الثاني
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  // onClick={() => {
+                  //   navigate("/print-notice", {
+                  //     state: { student: student, notice: "notice3" },
+                  //   });
+                  // }}
+                  onClick={() => {
+                    setOpen(true);
+                    setNoticeName("notice3");
+                  }}
+                >
+                  الإعـــــــــذار
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       );
     },
   },

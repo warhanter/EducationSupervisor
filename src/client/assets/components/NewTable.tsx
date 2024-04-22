@@ -39,6 +39,15 @@ import { useLocation } from "react-router-dom";
 import { FemaleImage, MaleImage } from "./images";
 import { Badge } from "@/components/ui/badge";
 import { MonthlyAbsences } from "./MonthlyAbsences";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { arDZ } from "date-fns/locale/ar-DZ";
+import { format } from "date-fns";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -67,10 +76,10 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     nisfDakhili,
     wafidin,
   } = useStudents();
+  const [rapportDate, setRapportDate] = React.useState(new Date().setHours(23));
   React.useEffect(() => {
     setAbsencesData(generateRapportTableData());
-  }, []);
-  const [rapportDate, setRapportDate] = React.useState(new Date().setHours(23));
+  }, [rapportDate]);
   const studentsTablesData: any = () => {
     switch (queryTbale) {
       case "all":
@@ -109,12 +118,13 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   };
   let absenceByDate = React.useCallback(() => {
     return filter(
-      // absences,
-      // (i) =>
-      //   (new Date(i.date_of_return) > rapportDate || !i.date_of_return) &&
-      //   new Date(i.date_of_absence) <= rapportDate
-      motamadrisin,
-      (i) => i.is_absent
+      absences,
+      (i) =>
+        (new Date(i.date_of_return).getTime() > rapportDate ||
+          !i.date_of_return) &&
+        new Date(i.date_of_absence).getTime() <= rapportDate
+      // motamadrisin,
+      // (i) => i.is_absent
     );
   }, [rapportDate, absences]);
   const generateRapportTableData = () => {
@@ -127,7 +137,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         return;
       }
       i += 1;
-      const dateOfAbsence = new Date(student.absence_date);
+      const dateOfAbsence = new Date(student.date_of_absence);
       const daysOfAbcence = Math.round(
         (rapportDate - dateOfAbsence.setHours(0)) / (1000 * 60 * 60 * 24)
       );
@@ -166,16 +176,21 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       };
       studentObject.number = index.toString();
       studentObject.id = i.toString();
-      studentObject._id = student._id;
+      studentObject._id = student.student_id;
       studentObject.full_name = student.full_name;
-      studentObject.level = student.level;
+      studentObject.level = student.class_level;
       studentObject.class_name = student.class_name;
       studentObject.class_number = student.class_number;
       studentObject.student_status = student.student_status;
-      studentObject.full_className =
-        student.level + " " + student.class_name + " " + student.class_number;
-      studentObject.gender = student.gender;
-      studentObject.student_DOB = student.student_DOB;
+      // studentObject.full_className =
+      //   student.level + " " + student.class_name + " " + student.class_number;
+      studentObject.full_className = student.full_className;
+      studentObject.gender = students?.filter(
+        (a) => a._id === student.student_id
+      )[0].gender;
+      studentObject.student_DOB = students?.filter(
+        (a) => a._id === student.student_id
+      )[0].student_DOB;
       studentObject.absence_date = new Intl.DateTimeFormat("en-ZA").format(
         dateOfAbsence
       );
@@ -317,7 +332,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
 
             <div>
               <div className="inline-flex gap-x-2">
-                <a
+                {/* <a
                   className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                   // href="#"
                 >
@@ -344,9 +359,34 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                     />
                   </svg>
                   إضافة تلميذ
-                </a>
+                </a> */}
                 {queryTbale === "Absence" && (
-                  <MonthlyAbsences data={absences} />
+                  <>
+                    <MonthlyAbsences data={absences} />
+                    <Popover>
+                      <PopoverTrigger className="print:hidden" asChild>
+                        <Button>
+                          <CalendarIcon className="ml-4 h-4 w-4" />
+                          {rapportDate ? (
+                            format(rapportDate, "PPPP", { locale: arDZ })
+                          ) : (
+                            <span>اختر التاريخ</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[auto] p-0">
+                        <Calendar
+                          mode="single"
+                          selected={new Date(rapportDate)}
+                          onSelect={(value) => {
+                            setRapportDate(value?.setHours(23));
+                          }}
+                          initialFocus
+                          locale={arDZ}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </>
                 )}
               </div>
             </div>

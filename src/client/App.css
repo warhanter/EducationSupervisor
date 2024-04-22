@@ -258,10 +258,12 @@
 div.chapter,
 div.appendix {
   page-break-after: always;
+  break-after: page;
 }
 .chapter,
 .appendix {
   page-break-after: always;
+  break-after: page;
 }
 div.titlepage {
   page: blank;

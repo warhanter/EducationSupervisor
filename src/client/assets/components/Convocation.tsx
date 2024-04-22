@@ -51,34 +51,34 @@ export default function Convocation({ data, title }: ConvocationProps) {
     dateStyle: "full",
   });
   return (
-    <DialogContent className="min-w-[900px] print:min-w-full print:min-h-full flex flex-col items-center">
-      <DialogHeader className="flex flex-row w-full justify-between items-center px-20">
-        <Button onClick={() => window.print()}>طبــــاعة</Button>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button>
-              <CalendarIcon className="ml-4 h-4 w-4" />
-              <span>تعديل تاريخ الاستعداء</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[auto] p-0">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={(value) => {
-                setDate(value);
-              }}
-              initialFocus
-              locale={arDZ}
-            />
-          </PopoverContent>
-        </Popover>
-      </DialogHeader>
-      <div className="flex gap-8 items-center">
-        <div className="w-full overflow-scroll h-[600px] print:min-h-full print:p-0 p-4">
+    <DialogContent className="min-w-[900px] min-h-full print:min-w-full">
+      <div className="w-full overflow-scroll !text-base print:!text-base">
+        <div className="h-[600px]">
+          <div className="flex flex-row w-full  justify-between items-center px-20 print:hidden">
+            <Button onClick={() => window.print()}>طبــــاعة</Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button>
+                  <CalendarIcon className="ml-4 h-4 w-4" />
+                  <span>تعديل تاريخ الاستعداء</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[auto] p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(value) => {
+                    setDate(value);
+                  }}
+                  initialFocus
+                  locale={arDZ}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
           <div
             id="section-to-print"
-            className="w-full  print:h-full p-4 print:p-0 "
+            className="w-full  print:h-full p-4 print:p-0"
           >
             <div className="text-center">
               <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
@@ -138,7 +138,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
                     className="flex w-[400px] justify-between font-bold py-1 mr-8"
                   >
                     <li className="list-disc">{action}</li>
-                    <input type="checkbox" />
+                    <input type="checkbox" className="h-4 w-4" />
                   </div>
                 ))}
               </ul>

@@ -36,18 +36,23 @@ const notice2 = "و بنــاء على الاشعار الأول المشار �
 const notice3 =
   "و بنــاء على الاشعار الأول والثاني المشار إليهما في المرجع أعلاه.";
 
-const Notice1Page = () => {
+const Notice1Page = ({ state, setOpen }) => {
   const { theme, setTheme } = useTheme();
   const baseTheme = theme;
   const { addresses } = useStudents();
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state;
+  // const state = location.state;
   const student: Student = state.student;
+
   const noticeName = state.notice;
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
-    (address) => address.student_id == student._id
+    (address) =>
+      address.student_id == student._id ||
+      address.full_name == student.full_name
   )[0];
+  console.log(student);
+  console.log(studentAdress);
   let absenceDate = student.absence_date;
   if (typeof absenceDate === "string") {
     absenceDate = new Date(absenceDate);
@@ -103,6 +108,19 @@ const Notice1Page = () => {
       : { name: "ابنكم", birth: "المولود", absence: "تغيب" };
   return (
     <div id="section-to-print" className="chapter text-lg leading-8 m-0 p-0">
+      <div className="sticky inline mx-12  justify-center gap-4 top-4 print:hidden">
+        {/* <Button
+            variant="secondary"
+            size="icon"
+            className="rounded-full"
+            onClick={() => navigate(-1)}
+          >
+            <CircleArrowRight className="h-5 w-5" />
+          </Button> */}
+        <Button variant={"destructive"} onClick={() => window.print()}>
+          طبــــاعة
+        </Button>
+      </div>
       <div className="text-center">
         <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
         <h2>وزارة التربية الوطنية</h2>
@@ -179,17 +197,6 @@ const Notice1Page = () => {
             استلامكـم هـذا الإشعـار.
           </h3>
         )}
-        <div className="absolute flex justify-center gap-4 top-4 print:hidden">
-          <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-full"
-            onClick={() => navigate(-1)}
-          >
-            <CircleArrowRight className="h-5 w-5" />
-          </Button>
-          <Button onClick={() => window.print()}>طبــــاعة</Button>
-        </div>
       </div>
       <div className="flex flex-col items-end  py-10 font-bold">
         <div className="flex items-center print:hidden mb-4 bg-primary p-1 rounded-md text-white">
@@ -231,6 +238,6 @@ const Notice1Page = () => {
   );
 };
 
-export const CreatePDFNotice1 = () => {
-  return <Notice1Page />;
+export const CreatePDFNotice1 = ({ state, setOpen }) => {
+  return <Notice1Page state={state} setOpen={setOpen} />;
 };
