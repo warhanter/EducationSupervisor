@@ -167,9 +167,9 @@ function PDFPrint() {
       studentObject.justification = studentdataobject[0]
         ?.lunch_absence_justification
         ? "تصريـــح شرفي"
-        : studentdataobject[0]?.is_absent
-        ? "غائب صباحا"
-        : "";
+        : // : studentdataobject[0]?.is_absent
+          // ? "غائب صباحا"
+          "";
       studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
       result.push(Object.assign({}, studentObject));
     });
