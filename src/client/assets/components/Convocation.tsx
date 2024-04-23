@@ -52,7 +52,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
   });
   return (
     <DialogContent className="min-w-[900px] min-h-full print:min-w-full">
-      <div className="w-full overflow-scroll !text-base print:!text-base">
+      <div className="w-full overflow-scroll !text-[20px] print:!text-[20px]">
         <div className="h-[600px]">
           <div className="flex flex-row w-full  justify-between items-center px-20 print:hidden">
             <Button onClick={() => window.print()}>طبــــاعة</Button>
