@@ -136,11 +136,17 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       if (student.is_absent === false) {
         return;
       }
+      const studentFROMDB = motamadrisin.filter(
+        (res) => res._id === student.student_id
+      )[0];
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
       const daysOfAbcence = Math.round(
         (rapportDate - dateOfAbsence.setHours(0)) / (1000 * 60 * 60 * 24)
       );
+      const medicalLeave =
+        studentFROMDB?.medical_leave === true &&
+        rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
       const missedHours = () => {
         const start = parseInt(
           new Intl.DateTimeFormat("fr", { hour: "numeric", minute: "numeric" })
@@ -164,13 +170,15 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
           : `${12 - start}  -  3`;
       };
       const noticeName = () => {
-        return daysOfAbcence < 4
+        return medicalLeave
+          ? "عطلة مرضية"
+          : daysOfAbcence < 4
           ? "/"
-          : daysOfAbcence >= 4 && daysOfAbcence < 10
+          : daysOfAbcence >= 4 && daysOfAbcence < 11
           ? "إشعار 1"
-          : daysOfAbcence >= 11 && daysOfAbcence < 18
+          : daysOfAbcence >= 11 && daysOfAbcence < 19
           ? "إشعار 2"
-          : daysOfAbcence >= 18 && daysOfAbcence < 32
+          : daysOfAbcence >= 19 && daysOfAbcence < 32
           ? "إعذار"
           : "شطب";
       };

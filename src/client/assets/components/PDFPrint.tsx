@@ -75,6 +75,9 @@ function PDFPrint() {
       if (student.is_absent === false) {
         return;
       }
+      const studentFROMDB = motamadrisin.filter(
+        (res) => res._id === student.student_id
+      )[0];
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
       const date1 = rapportDate;
@@ -106,13 +109,13 @@ function PDFPrint() {
           : `${12 - start}  -  3`;
       };
       const noticeName = () => {
-        return daysOfAbcence <= 3
+        return daysOfAbcence < 4
           ? "/"
-          : daysOfAbcence > 3 && daysOfAbcence <= 10
+          : daysOfAbcence >= 4 && daysOfAbcence < 11
           ? "إشعار 1"
-          : daysOfAbcence > 10 && daysOfAbcence <= 18
+          : daysOfAbcence >= 11 && daysOfAbcence < 19
           ? "إشعار 2"
-          : daysOfAbcence > 18 && daysOfAbcence <= 31
+          : daysOfAbcence >= 19 && daysOfAbcence < 32
           ? "إعذار"
           : "شطب";
       };
@@ -120,7 +123,10 @@ function PDFPrint() {
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
-      studentObject.medical_leave = student.medical_leave ? "ش طبية" : "";
+      const medicalLeave =
+        studentFROMDB?.medical_leave === true &&
+        rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
+      studentObject.medical_leave = medicalLeave ? "ش طبية" : "";
       studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
       studentObject.absence_date = new Intl.DateTimeFormat("fr", {
         day: "2-digit",
