@@ -30,3 +30,5 @@ dbconnect.js
 vite.config.js
 main.js
 
+src/server/main.js
+vite.config.js

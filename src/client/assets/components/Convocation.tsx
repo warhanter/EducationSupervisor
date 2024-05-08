@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChangeAddress } from "./ChangeAddress";
-import { DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Student, useStudents } from "@/client/providers/StudentProvider";
 import {
