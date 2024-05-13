@@ -29,9 +29,11 @@ export function SelectItems({ iconTitle, title, items, itemName, setLevel }) {
               <SelectItem
                 className="items-end flex flex-col px-5 font-bold"
                 key={index}
-                value={item[itemName]}
+                value={
+                  typeof item === "object" ? item[itemName] : item.toString()
+                }
               >
-                {item[itemName]}
+                {typeof item === "object" ? item[itemName] : item.toString()}
               </SelectItem>
             ))}
         </SelectGroup>

@@ -370,7 +370,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                 </a> */}
                 {queryTbale === "Absence" && (
                   <>
-                    <MonthlyAbsences data={absences} />
+                    <MonthlyAbsences data={absences} students={students} />
                     <Popover>
                       <PopoverTrigger className="print:hidden" asChild>
                         <Button>

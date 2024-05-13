@@ -319,9 +319,9 @@ body {
   body {
     visibility: hidden;
   }
-  /* @page {
-    size: A4 portrait;
-  } */
+  @page wide {
+    size: A4 landscape;
+  }
   #section-to-print {
     visibility: visible;
     position: absolute;
@@ -329,12 +329,22 @@ body {
     top: 0;
     width: 100%;
   }
+  #section-to-print-landscape {
+    visibility: visible;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    page: wide;
+  }
   div.chapter,
   div.appendix {
     page-break-after: always;
+    break-after: page;
   }
   .chapter,
   .appendix {
     page-break-after: always;
+    break-after: page;
   }
 }
