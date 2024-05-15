@@ -87,7 +87,7 @@ export function MonthlyAbsences({
   //  [level]
   //);
     const allClassStudents = useMemo(
-    () => (students.filter((student) => student.full_className === level)).sort((a,b) => a.full_name - b.full_name),
+    () => (students.filter((student) => student.full_className === level)).sort((a, b) => a.full_name.localeCompare(b.full_name)),
     [level]
   );
   const absentClassData = useMemo(
