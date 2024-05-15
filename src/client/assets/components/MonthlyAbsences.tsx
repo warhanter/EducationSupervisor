@@ -86,6 +86,10 @@ export function MonthlyAbsences({
     () => students.filter((student) => student.full_className === level),
     [level]
   );
+    const allClassStudents = useMemo(
+    () => (students.filter((student) => student.full_className === level)).sort((a,b) => a.full_name - b.full_name),
+    [level]
+  );
   const absentClassData = useMemo(
     () => data.filter((student) => student.full_className === level),
     [level]
