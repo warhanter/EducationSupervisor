@@ -82,10 +82,10 @@ export function MonthlyAbsences({
   const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
   let studentsData = [];
-  const allClassStudents = useMemo(
-    () => students.filter((student) => student.full_className === level),
-    [level]
-  );
+  //const allClassStudents = useMemo(
+  //  () => students.filter((student) => student.full_className === level),
+  //  [level]
+  //);
     const allClassStudents = useMemo(
     () => (students.filter((student) => student.full_className === level)).sort((a,b) => a.full_name - b.full_name),
     [level]
