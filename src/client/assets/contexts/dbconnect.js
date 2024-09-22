@@ -1,9 +1,13 @@
 import * as Realm from "realm-web";
 import _ from "lodash";
-const appID = "supervisorapp-nlsbq";
-const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
-const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
-const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=LunchAbsence`;
+// const appID = "supervisorapp-nlsbq";
+// const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Student`;
+// const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=Absence`;
+// const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/supervisorapp-nlsbq/endpoint/get?arg1=LunchAbsence`;
+const appID = "2024-2025-hfwvfab";
+const dbAPI = `https://eu-central-1.aws.data.mongodb-api.com/app/2024-2025-hfwvfab/endpoint/get?arg1=Student`;
+const dbAPIAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/2024-2025-hfwvfab/endpoint/get?arg1=Absence`;
+const dbAPILunchAbsences = `https://eu-central-1.aws.data.mongodb-api.com/app/2024-2025-hfwvfab/endpoint/get?arg1=LunchAbsence`;
 const app = Realm.getApp(appID);
 const accessToken = app.currentUser?.accessToken;
 

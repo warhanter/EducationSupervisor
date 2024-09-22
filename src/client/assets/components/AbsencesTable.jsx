@@ -13,7 +13,7 @@ import { reverseString } from "../contexts/AppFunctions";
 import app from "../../realm";
 
 const mongo = app.currentUser?.mongoClient("mongodb-atlas");
-const holidaysCollection = mongo.db("todo").collection("Holidays");
+const holidaysCollection = mongo.db("2024").collection("Holidays");
 const holidays = await holidaysCollection.find();
 
 Date.prototype.between = function (a, b) {
@@ -220,11 +220,11 @@ const AbsencesTable = ({
     try {
       const StudentCollection = app.currentUser
         .mongoClient("mongodb-atlas")
-        .db("todo")
+        .db("2024")
         .collection("Student");
       const AbsenceCollection = app.currentUser
         .mongoClient("mongodb-atlas")
-        .db("todo")
+        .db("2024")
         .collection("Absence");
       StudentCollection.updateOne(
         { _id: deleteData?.student_id },

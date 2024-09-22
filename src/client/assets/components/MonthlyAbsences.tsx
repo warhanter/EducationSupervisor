@@ -12,7 +12,7 @@ import { SelectItems } from "./SelectItems";
 import app from "../../realm";
 import { Badge } from "@/components/ui/badge";
 
-const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
+const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
 const holidaysCollection = mongo?.collection("Holidays");
 const holidays = await holidaysCollection?.find();
 const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
@@ -35,6 +35,43 @@ const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
     },
   },
 ]);
+const absenceStudents = await mongo?.collection("Absence").aggregate([
+  {
+    $group: {
+      _id: "$student_id",
+      total_missed_hours: { $sum: "$missed_hours" },
+      total_justified_missed_hours: { $sum: "$justified_missed_hours" },
+      className: { $first: "$full_className" },
+      fullName: { $first: "$full_name" },
+      dates: {
+        $push: {
+          supervisor_id: "$supervisor_id",
+          missed_hours: "$missed_hours",
+          justified_missed_hours: "$justified_missed_hours",
+          start: "$date_of_absence",
+          return: "$date_of_return",
+          daysOfAbsence: {
+            $floor: {
+              $divide: [
+                { $subtract: ["$date_of_return", "$date_of_absence"] },
+                86400000,
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    $addFields: {
+      total: { $add: ["$total_missed_hours", "$total_justified_missed_hours"] },
+    },
+  },
+  {
+    $sort: { total: -1 },
+  },
+]);
+
 Date.prototype.between = function (a, b) {
   let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
   let max = Math.max.apply(Math, [a.getTime(), b.getTime()]);
@@ -82,12 +119,11 @@ export function MonthlyAbsences({
   const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
   let studentsData = [];
-  //const allClassStudents = useMemo(
-  //  () => students.filter((student) => student.full_className === level),
-  //  [level]
-  //);
-    const allClassStudents = useMemo(
-    () => (students.filter((student) => student.full_className === level)).sort((a, b) => a.full_name.localeCompare(b.full_name)),
+  const allClassStudents = useMemo(
+    () =>
+      students
+        .filter((student) => student.full_className === level)
+        .sort((a, b) => a.full_name.localeCompare(b.full_name)),
     [level]
   );
   const absentClassData = useMemo(

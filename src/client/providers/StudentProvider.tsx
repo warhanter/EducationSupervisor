@@ -75,7 +75,7 @@ const defaultValues = {
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
 const StudentProvider = ({ children }: StudentsProviderProps) => {
-  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
+  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
   const [loading, setLoading] = useState(true);
   const [
     { students, absences, lunchAbsences, addresses, notification, classrooms },

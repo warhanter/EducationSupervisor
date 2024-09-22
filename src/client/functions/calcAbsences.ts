@@ -3,7 +3,7 @@ export async function calcAbsences(studentID, studentClass) {
   Date.prototype.between = function (start: Date, end: Date) {
     return this.getTime() >= start.getTime() && this.getTime() <= end.getTime();
   };
-  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("todo");
+  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
   const holidays = await mongo?.collection("Holidays").find();
   const students = await mongo?.collection("Student").find();
   const absences = await mongo?.collection("Absence").find();
