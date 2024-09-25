@@ -89,9 +89,82 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
             })}
         </tbody>
       </table>
-      <p className="font-bold text-xl flex justify-end m-8">
+      {/* <p className="font-bold text-xl flex justify-end m-8">
         مستشــــار التربيـــــة
-      </p>
+      </p> */}
+      <table className="w-full   print:text-[13px] font-medium mt-8">
+        <thead>
+          <tr>
+            <th className="border border-collapse py-1 px-1">
+              ملاحظات مستشار التربية:{" "}
+              <span className="text-xs">
+                (النظافة،الصيانة،الإتلافات،الحوادث،النشاط الثقافي و الرياضي،دروس
+                الدعم،الزيارات)
+              </span>
+            </th>
+            <th className="border border-collapse py-1 px-1">
+              الختم و الإمضاء
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="">
+            <td className="border border-collapse ">
+              <textarea
+                rows={5}
+                className="resize-none w-full m-0 py-0 px-5"
+              ></textarea>
+            </td>
+            <td className="border border-collapse px-1"></td>
+          </tr>
+        </tbody>
+      </table>
+      <table className="w-full   print:text-[13px] font-medium mt-2">
+        <thead>
+          <tr>
+            <th className="border border-collapse py-1 px-60">
+              اقتراحــات النـاظـــــــــر:
+            </th>
+            <th className="border border-collapse py-1 px-1">
+              الختم و الإمضاء
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="">
+            <td className="border border-collapse ">
+              <textarea
+                rows={3}
+                className="resize-none w-full m-0 py-0 px-5"
+              ></textarea>
+            </td>
+            <td className="border border-collapse px-1"></td>
+          </tr>
+        </tbody>
+      </table>
+      <table className="w-full   print:text-[13px] font-medium mt-2">
+        <thead>
+          <tr>
+            <th className="border border-collapse py-1 px-56">
+              توصيات مدير المؤسسة:
+            </th>
+            <th className="border border-collapse py-1 px-1">
+              الختم و الإمضاء
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr className="">
+            <td className="border border-collapse ">
+              <textarea
+                rows={3}
+                className="resize-none w-full m-0 py-0 px-5"
+              ></textarea>
+            </td>
+            <td className="border border-collapse px-1"></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
