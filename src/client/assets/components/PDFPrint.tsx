@@ -22,6 +22,7 @@ import PDFPrintTables from "./PDFPrintTables";
 import LuncAbsencePrintTable from "./LuncAbsencePrintTable";
 import MedicalLeavePrintTable from "./MedicalLeavePrintTable";
 import MaafiyinPrintTable from "./MaafiyinPrintTale";
+import Ta9rirYawmi from "./Ta9rirYawmi";
 
 function PDFPrint() {
   const {
@@ -128,6 +129,8 @@ function PDFPrint() {
         rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
       studentObject.medical_leave = medicalLeave ? "ش طبية" : "";
       studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
+      studentObject.level = student.class_level;
+      studentObject.class_abbriviation = student.class_abbriviation;
       studentObject.absence_date = new Intl.DateTimeFormat("fr", {
         day: "2-digit",
         month: "2-digit",
@@ -336,6 +339,17 @@ function PDFPrint() {
           >
             المعفيين من النصف داخلي
           </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "ta9rir" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("ta9rir");
+            }}
+          >
+            التقرير اليومي
+          </Button>
           <Button onClick={() => window.print()}>طبــــاعة</Button>
         </div>
         <div className="col-span-3 h-[50rem]">
@@ -448,6 +462,15 @@ function PDFPrint() {
                 )}
                 date={rapportDate}
                 title="المعفيين من النصف داخلي بتصريح شرفي"
+              />
+            )}
+            {table === "ta9rir" && !loading && (
+              <Ta9rirYawmi
+                table="tasrih_charafi"
+                data={absencesData}
+                allStudents={motamadrisin}
+                date={rapportDate}
+                title="التقرير اليومي لمستشار التربية رقم: 01"
               />
             )}
             {/* <iframe

@@ -257,7 +257,7 @@ export function NewDashboard() {
             <CardContent>
               <div className="text-2xl font-bold">{motamadrisin?.length}</div>
               <p className="text-xs text-muted-foreground">
-                جميع التلاميذ في المؤسسة
+                جميع التلاميذ المتدمدرسين في المؤسسة
               </p>
             </CardContent>
           </Card>

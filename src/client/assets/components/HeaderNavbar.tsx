@@ -70,7 +70,7 @@ function HeaderNavbar() {
           </NavigationMenuList>
         </NavigationMenu>
         <AppLink to="/print-pdf" link="طباعة" />
-        <AppLink to="/daily-report" link="التقرير اليومي" />
+        {/* <AppLink to="/daily-report" link="التقرير اليومي" /> */}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
