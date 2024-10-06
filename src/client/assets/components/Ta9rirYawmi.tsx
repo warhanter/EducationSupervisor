@@ -22,8 +22,12 @@ export default function Ta9rirYawmi({
     dateStyle: "full",
   });
 
-  console.log(new Date(new Date(date).setHours(0, 0, 0)));
-  // const yesterdayCount = filter(allStudents, (student)=>  student.);
+  const yesterdayDate = new Date(new Date(date).setHours(0, 0, 0));
+  const yesterdayCount = filter(
+    allStudents,
+    (student) => student.student_inscription_date < yesterdayDate
+  );
+  console.log(yesterdayCount.length);
   const studentsGroupedByLevel = groupBy(allStudents, "level");
   const absencesGroupedByLevel = groupBy(data, "level");
   const studentsGroupedByClass1 = groupBy(
@@ -49,7 +53,49 @@ export default function Ta9rirYawmi({
         ).length
     )
   );
-  console.log(minNumberOfCells);
+
+  const newStudents = (student_status, gender) => {
+    return filter(
+      allStudents,
+      (s) =>
+        s.is_new === true &&
+        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+          new Date(date).setHours(0, 0, 0, 0) &&
+        s.student_status === student_status &&
+        s.gender === gender
+    ).length;
+  };
+  const allNewStudents = (gender) => {
+    return filter(
+      allStudents,
+      (s) =>
+        s.is_new === true &&
+        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+          new Date(date).setHours(0, 0, 0, 0) &&
+        s.gender === gender
+    ).length;
+  };
+  const goneStudents = (student_status, gender) => {
+    return filter(
+      allStudents,
+      (s) =>
+        (s.swtched_school || s.is_fired) &&
+        s.createdAt.setHours(0, 0, 0, 0) ===
+          new Date(date).setHours(0, 0, 0, 0) &&
+        s.student_status === student_status &&
+        s.gender === gender
+    ).length;
+  };
+  const AllGoneStudents = (gender) => {
+    return filter(
+      allStudents,
+      (s) =>
+        (s.swtched_school || s.is_fired) &&
+        s.createdAt.setHours(0, 0, 0, 0) ===
+          new Date(date).setHours(0, 0, 0, 0) &&
+        s.gender === gender
+    ).length;
+  };
 
   const TableCell = ({
     children,
@@ -485,64 +531,156 @@ export default function Ta9rirYawmi({
             </tr>
             <tr>
               <TableHead>ذ</TableHead>
-              <TableHead>أ</TableHead>
+              <TableHead>إ</TableHead>
               <TableHead>ذ</TableHead>
-              <TableHead>أ</TableHead>
+              <TableHead>إ</TableHead>
               <TableHead>ذ</TableHead>
-              <TableHead>أ</TableHead>
+              <TableHead>إ</TableHead>
               <TableHead>ذ</TableHead>
-              <TableHead>أ</TableHead>
+              <TableHead>إ</TableHead>
             </tr>
           </thead>
           <tbody className="text-center">
             <tr className="text-center">
               <TableCell colSpan={2}>تعداد الأمس</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>935</TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "داخلي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "داخلي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "خارجي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    yesterdayCount,
+                    (s) => s.student_status == "خارجي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {filter(yesterdayCount, (s) => s.gender == "ذكر").length}
+              </TableCell>
+              <TableCell>
+                {filter(yesterdayCount, (s) => s.gender == "أنثى").length}
+              </TableCell>
+              <TableCell>{yesterdayCount.length}</TableCell>
             </tr>
             <tr>
               <TableCell rowSpan={2}>التغييرات</TableCell>
               <TableCell>دخول</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>935</TableCell>
+              <TableCell>{newStudents("داخلي", "ذكر")}</TableCell>
+              <TableCell>{newStudents("داخلي", "أنثى")}</TableCell>
+              <TableCell>{newStudents("نصف داخلي", "ذكر")}</TableCell>
+              <TableCell>{newStudents("نصف داخلي", "أنثى")}</TableCell>
+              <TableCell>{newStudents("خارجي", "ذكر")}</TableCell>
+              <TableCell>{newStudents("خارجي", "أنثى")}</TableCell>
+              <TableCell>{allNewStudents("ذكر")}</TableCell>
+              <TableCell>{allNewStudents("أنثى")}</TableCell>
+              <td className="bg-gray-400"></td>
             </tr>
             <tr>
               <TableCell>خروج</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>0</TableCell>
-              <TableCell>935</TableCell>
+              <TableCell>{goneStudents("داخلي", "ذكر")}</TableCell>
+              <TableCell>{goneStudents("داخلي", "أنثى")}</TableCell>
+              <TableCell>{goneStudents("نصف داخلي", "ذكر")}</TableCell>
+              <TableCell>{goneStudents("نصف داخلي", "أنثى")}</TableCell>
+              <TableCell>{goneStudents("خارجي", "ذكر")}</TableCell>
+              <TableCell>{goneStudents("خارجي", "أنثى")}</TableCell>
+              <TableCell>{AllGoneStudents("ذكر")}</TableCell>
+              <TableCell>{AllGoneStudents("أنثى")}</TableCell>
+              <td className="bg-gray-400"></td>
             </tr>
             <tr>
-              <TableCell colSpan={2}>التعداد الكلي</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>15</TableCell>
-              <TableCell>935</TableCell>
+              <TableCell colSpan={2}>تعداد اليوم</TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "داخلي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "داخلي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "خارجي" && s.gender == "ذكر"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {
+                  filter(
+                    allStudents,
+                    (s) => s.student_status == "خارجي" && s.gender == "أنثى"
+                  ).length
+                }
+              </TableCell>
+              <TableCell>
+                {filter(allStudents, (s) => s.gender == "ذكر").length}
+              </TableCell>
+              <TableCell>
+                {filter(allStudents, (s) => s.gender == "أنثى").length}
+              </TableCell>
+              <TableCell>{allStudents?.length}</TableCell>
             </tr>
           </tbody>
         </table>
