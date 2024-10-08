@@ -52,6 +52,9 @@ function PDFPrint() {
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
   );
+  const yatama = motamadrisin.filter((student) => student.yatim);
+  const marda = motamadrisin.filter((student) => student.sick);
+  const mandoubin = motamadrisin.filter((student) => student.mandoub);
   const generateRapportTableData = async () => {
     let result: any = [];
     let i = 0;
@@ -331,6 +334,39 @@ function PDFPrint() {
           <Button
             variant="outline"
             className={cn(
+              table === "yatama" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("yatama");
+            }}
+          >
+            التلاميذ اليتامى
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "marda" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("marda");
+            }}
+          >
+            التلاميذ المرضى
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
+              table === "mandoubin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("mandoubin");
+            }}
+          >
+            التلاميذ مندوبي الأقسام
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
               table === "tasrih_charafi" && "bg-accent text-accent-foreground"
             )}
             onClick={() => {
@@ -391,6 +427,48 @@ function PDFPrint() {
                 table="maafiyin"
                 date={rapportDate}
                 title="التلاميذ المعفيين من الرياضة"
+              />
+            )}
+            {table === "yatama" && !loading && (
+              <MaafiyinPrintTable
+                data={yatama.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                table="yatama"
+                date={rapportDate}
+                title="التلاميذ اليتامى"
+              />
+            )}
+            {table === "mandoubin" && !loading && (
+              <MaafiyinPrintTable
+                data={mandoubin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                table="mandoubin"
+                date={rapportDate}
+                title="التلاميذ مندوبي الأقسام"
+              />
+            )}
+            {table === "marda" && !loading && (
+              <MaafiyinPrintTable
+                data={marda.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                table="marda"
+                date={rapportDate}
+                title="التلاميذ المرضى"
               />
             )}
             {table === "wafidin" && !loading && (
