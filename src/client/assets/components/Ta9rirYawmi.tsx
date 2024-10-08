@@ -65,7 +65,7 @@ export default function Ta9rirYawmi({
         s.gender === gender
     ).length;
   };
-  const allNewStudents = (gender) => {
+  const allNewStudentsByGender = (gender) => {
     return filter(
       allStudents,
       (s) =>
@@ -74,6 +74,15 @@ export default function Ta9rirYawmi({
           new Date(date).setHours(0, 0, 0, 0) &&
         s.gender === gender
     ).length;
+  };
+  const allNewStudents = () => {
+    return filter(
+      allStudents,
+      (s) =>
+        s.is_new === true &&
+        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+          new Date(date).setHours(0, 0, 0, 0)
+    );
   };
   const goneStudents = (student_status, gender) => {
     return filter(
@@ -86,7 +95,7 @@ export default function Ta9rirYawmi({
         s.gender === gender
     ).length;
   };
-  const AllGoneStudents = (gender) => {
+  const AllGoneStudentsByGender = (gender) => {
     return filter(
       allStudents,
       (s) =>
@@ -96,6 +105,21 @@ export default function Ta9rirYawmi({
         s.gender === gender
     ).length;
   };
+  const AllGoneStudents = () => {
+    return filter(
+      allStudents,
+      (s) =>
+        (s.swtched_school || s.is_fired) &&
+        s.createdAt.setHours(0, 0, 0, 0) === new Date(date).setHours(0, 0, 0, 0)
+    );
+  };
+
+  const minTransferCells = max([
+    allNewStudents().length,
+    AllGoneStudents().length,
+    3,
+  ]);
+  const minTeachersCells = max([5]);
 
   const TableCell = ({
     children,
@@ -148,122 +172,115 @@ export default function Ta9rirYawmi({
         </p>
         <p className="font-bold">ليـــــــوم: {fdate}</p>
       </div>
-      <table className="w-full print:text-[14px] font-medium ">
+      <table className="text-center w-full">
         <thead className="border-separate border bg-gray-400">
           <tr>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
               الرقم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
               لقب واسم الأستاذ
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
               المادة
             </th>
-            <th className="border-separate border p-0 w-14 bg-gray-400 text-xs">
+            <th
+              rowSpan={2}
+              className="border-separate border p-0 w-14 bg-gray-400 text-xs"
+            >
               عدد الساعات
             </th>
-            <th className="border-separate border p-0 bg-gray-400">
-              <table className="w-full p-0">
-                <tr>
-                  <th colSpan={4}>صباحا</th>
-                </tr>
-                <tr className="p-0">
-                  <th className="border w-10">1</th>
-                  <th className="border w-10">2</th>
-                  <th className="border w-10">3</th>
-                  <th className="border w-10">4</th>
-                </tr>
-              </table>
+            <th colSpan={4} className="border-separate border p-0 bg-gray-400">
+              صباحا
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400 w-8">
+
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400 w-8"
+            >
               /
             </th>
-            <th className="border-separate border p-0 bg-gray-400">
-              <table className="w-full p-0">
-                <tr>
-                  <th colSpan={4}>مساء</th>
-                </tr>
-                <tr className="p-0">
-                  <th className="border w-10">5</th>
-                  <th className="border w-10">6</th>
-                  <th className="border w-10">7</th>
-                  <th className="border w-10">8</th>
-                </tr>
-              </table>
+            <th colSpan={4} className="border-separate border p-0 bg-gray-400">
+              مساء
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
               سبب الغياب
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
               ملاحظة
             </th>
           </tr>
+          <tr className="p-0">
+            <th className="border p-0">1</th>
+            <th className="border p-0">2</th>
+            <th className="border p-0">3</th>
+            <th className="border p-0">4</th>
+            <th className="border p-0">1</th>
+            <th className="border p-0">2</th>
+            <th className="border p-0">3</th>
+            <th className="border p-0">4</th>
+          </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           <tr>
-            <td className="border border-collapse text-center ">1</td>
-            <td className="border border-collapse py-1 px-1">الاسم واللقب</td>
-            <td className="border border-collapse py-1 px-1">المادة</td>
-            <td className="border border-collapse py-1 px-1 text-center">5</td>
+            <td className="border border-collapse py-1 px-1">1</td>
+            <td className="border border-collapse py-1 px-1">اعبوبو مختار </td>
+            <td className="border border-collapse py-1 px-1">علوم</td>
+            <td className="border border-collapse py-1 px-1">8</td>
+            <td className="border p-0 w-14">ج م ع 1</td>
+            <td className="border p-0 w-14">ج م ع 2</td>
+            <td className="border p-0 w-14">ج م ع 3</td>
+            <td className="border p-0 w-14">ج م ع 4</td>
+            <td className="border bg-gray-400 w-8"></td>
+            <td className="border p-0 w-14">ج م ع 5</td>
+            <td className="border p-0 w-14">ج م ع 6</td>
+            <td className="border p-0 w-14">ج م ع 7</td>
+            <td className="border p-0 w-14">ج م ع 8</td>
             <td className="border border-collapse p-0">
-              <table className="w-full p-0">
-                <tr className="text-center text-xs">
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    1 ع ت1
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    ج م ع 1
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    2اف
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    3ع4
-                  </td>
-                </tr>
-              </table>
+              <input className="w-20 m-0 text-center" type="text" />
             </td>
-            <td className="border border-collapse bg-slate-600"></td>
             <td className="border border-collapse p-0">
-              <table className="w-full p-0">
-                <tr className="text-center text-xs">
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    1 ع ت1
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    ج م ع 1
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    2اف
-                  </td>
-                  <td className="border-x border-collapse py-1 px-1 w-10">
-                    3ع4
-                  </td>
-                </tr>
-              </table>
-            </td>
-            <td className="border border-collapse p-0 text-center">
-              <input type="text" className="w-24 m-0 text-center" />
-            </td>
-            <td className="border border-collapse p-0 text-center">
-              <input type="text" className="w-20 m-0 text-center" />
+              <input className="w-16 m-0 text-center" type="text" />
             </td>
           </tr>
-          <tr className="text-center p-0">
-            <td colSpan={2} className="border border-collapse">
-              الحجم الساعي اليومي:
-            </td>
-            <td className="border border-collapse">184</td>
-            <td colSpan={2} className="border border-collapse">
-              مجموع ساعات الغياب:
-            </td>
-            <td className="border border-collapse">10</td>
-            <td colSpan={2} className="border border-collapse">
-              نسبـة الغيابـات:
-            </td>
-            <td className="border border-collapse">10.05%</td>
-          </tr>
+          {Array.from({ length: minTeachersCells }).map((_, i) => (
+            <tr>
+              <td className="border border-collapse py-1 px-1">{i + 1}</td>
+              <td className="border border-collapse py-1 px-1"></td>
+              <td className="border border-collapse py-1 px-1"></td>
+              <td className="border border-collapse py-1 px-1"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border-separate border py-1 px-1 bg-gray-400 w-8"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14"></td>
+              <td className="border border-collapse p-0">
+                <input className="w-20 m-0 text-center" type="text" />
+              </td>
+              <td className="border border-collapse p-0">
+                <input className="w-16 m-0 text-center" type="text" />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <p className="font-bold text-lg">2. التعــــــــداد:</p>
@@ -608,9 +625,9 @@ export default function Ta9rirYawmi({
               <TableCell>{newStudents("نصف داخلي", "أنثى")}</TableCell>
               <TableCell>{newStudents("خارجي", "ذكر")}</TableCell>
               <TableCell>{newStudents("خارجي", "أنثى")}</TableCell>
-              <TableCell>{allNewStudents("ذكر")}</TableCell>
-              <TableCell>{allNewStudents("أنثى")}</TableCell>
-              <td className="bg-gray-400"></td>
+              <TableCell>{allNewStudentsByGender("ذكر")}</TableCell>
+              <TableCell>{allNewStudentsByGender("أنثى")}</TableCell>
+              <TableCell>{allNewStudents().length}</TableCell>
             </tr>
             <tr>
               <TableCell>خروج</TableCell>
@@ -620,9 +637,9 @@ export default function Ta9rirYawmi({
               <TableCell>{goneStudents("نصف داخلي", "أنثى")}</TableCell>
               <TableCell>{goneStudents("خارجي", "ذكر")}</TableCell>
               <TableCell>{goneStudents("خارجي", "أنثى")}</TableCell>
-              <TableCell>{AllGoneStudents("ذكر")}</TableCell>
-              <TableCell>{AllGoneStudents("أنثى")}</TableCell>
-              <td className="bg-gray-400"></td>
+              <TableCell>{AllGoneStudentsByGender("ذكر")}</TableCell>
+              <TableCell>{AllGoneStudentsByGender("أنثى")}</TableCell>
+              <TableCell>{AllGoneStudents().length}</TableCell>
             </tr>
             <tr>
               <TableCell colSpan={2}>تعداد اليوم</TableCell>
@@ -685,13 +702,15 @@ export default function Ta9rirYawmi({
           </tbody>
         </table>
         <div>
-          <p className="font-bold text-lg">3. غيابات مشرفي التربية:</p>
           <table className="text-center">
+            <caption className="font-bold text-lg">
+              3. غيابات مشرفي التربية:
+            </caption>
             <thead>
               <tr>
                 <TableHead>الرقم</TableHead>
                 <TableHead>اللقب والإسم</TableHead>
-                <TableHead>السبب</TableHead>
+                <TableHead>سبب الغياب</TableHead>
               </tr>
             </thead>
             <tbody>
@@ -723,100 +742,82 @@ export default function Ta9rirYawmi({
           </table>
         </div>
       </div>
-      <div className="flex justify-around m-4">
-        <p className="font-bold text-lg">1.4. الدخول الجديد:</p>
-        <p className="font-bold text-lg">2.4. الخروج الجديد:</p>
+      <div className="flex gap-4 justify-between m-4">
+        <table className="text-center w-full">
+          <caption className="font-bold text-lg">1.4. الدخول الجديد:</caption>
+          <thead>
+            <tr>
+              <TableHead>الرقم</TableHead>
+              <TableHead>اللقب والاسم</TableHead>
+              <TableHead>القسم</TableHead>
+              <TableHead>الصفة</TableHead>
+              <TableHead>ملاحظة</TableHead>
+            </tr>
+          </thead>
+          <tbody>
+            {allNewStudents()?.map((s, index) => {
+              return (
+                <>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{s.full_name}</TableCell>
+                  <TableCell>{s.class_abbriviation}</TableCell>
+                  <TableCell>{s.student_status}</TableCell>
+                  <TableCell> </TableCell>
+                </>
+              );
+            })}
+            {allNewStudents().length < minTransferCells &&
+              Array.from({
+                length: minTransferCells - allNewStudents().length,
+              }).map((_, index) => (
+                <tr>
+                  <TableCell>{index + allNewStudents().length + 1}</TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+        <table className="text-center w-full">
+          <caption className="font-bold text-lg">2.4. الخروج الجديد:</caption>
+          <thead>
+            <tr>
+              <TableHead>الرقم</TableHead>
+              <TableHead>اللقب والاسم</TableHead>
+              <TableHead>القسم</TableHead>
+              <TableHead>الصفة</TableHead>
+              <TableHead>ملاحظة</TableHead>
+            </tr>
+          </thead>
+          <tbody>
+            {AllGoneStudents()?.map((s, index) => {
+              return (
+                <>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{s.full_name}</TableCell>
+                  <TableCell>{s.class_abbriviation}</TableCell>
+                  <TableCell>{s.student_status}</TableCell>
+                  <TableCell> </TableCell>
+                </>
+              );
+            })}
+            {AllGoneStudents().length < minTransferCells &&
+              Array.from({
+                length: minTransferCells - AllGoneStudents().length,
+              }).map((_, index) => (
+                <tr>
+                  <TableCell>{index + AllGoneStudents().length + 1}</TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell> </TableCell>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
-      <table className="text-center w-full">
-        <thead>
-          {/* <tr>
-            <TableCell  colSpan={4}>1.4 التسجيلات الجديدة:</TableCell>
-            <TableCell colSpan={4}>الخروج الجديد:</TableCell>
-          </tr> */}
-          <tr>
-            <TableHead>الرقم</TableHead>
-            <TableHead>اللقب والاسم</TableHead>
-            <TableHead>القسم</TableHead>
-            <TableHead>ملاحظة</TableHead>
-            <TableHead>الرقم</TableHead>
-            <TableHead>اللقب والاسم</TableHead>
-            <TableHead>القسم</TableHead>
-            <TableHead>ملاحظة</TableHead>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <TableCell>1</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>1</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>2</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>2</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>3</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>3</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>4</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>4</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>5</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>5</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>6</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>6</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-          <tr>
-            <TableCell>7</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell>7</TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-            <TableCell> </TableCell>
-          </tr>
-        </tbody>
-      </table>
       <div className="flex flex-col  items-end m-8">
         <p className="text-lg font-bold"> مروانة في : {fdate}</p>
       </div>
