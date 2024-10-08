@@ -55,6 +55,7 @@ function PDFPrint() {
   const yatama = motamadrisin.filter((student) => student.yatim);
   const marda = motamadrisin.filter((student) => student.sick);
   const mandoubin = motamadrisin.filter((student) => student.mandoub);
+  const mo3wazin = motamadrisin.filter((student) => student.mo3waz);
   const generateRapportTableData = async () => {
     let result: any = [];
     let i = 0;
@@ -345,6 +346,17 @@ function PDFPrint() {
           <Button
             variant="outline"
             className={cn(
+              table === "mo3wazin" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("mo3wazin");
+            }}
+          >
+            التلاميذ المعوزين
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
               table === "marda" && "bg-accent text-accent-foreground"
             )}
             onClick={() => {
@@ -441,6 +453,20 @@ function PDFPrint() {
                 table="yatama"
                 date={rapportDate}
                 title="التلاميذ اليتامى"
+              />
+            )}
+            {table === "mo3wazin" && !loading && (
+              <MaafiyinPrintTable
+                data={mo3wazin.sort((a, b) =>
+                  a.class_abbriviation > b.class_abbriviation
+                    ? 1
+                    : b.class_abbriviation > a.class_abbriviation
+                    ? -1
+                    : 0
+                )}
+                table="mo3wazin"
+                date={rapportDate}
+                title="التلاميذ المعوزين"
               />
             )}
             {table === "mandoubin" && !loading && (
