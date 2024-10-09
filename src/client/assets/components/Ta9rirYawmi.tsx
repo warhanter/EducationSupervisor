@@ -757,13 +757,13 @@ export default function Ta9rirYawmi({
           <tbody>
             {allNewStudents()?.map((s, index) => {
               return (
-                <>
+                <tr>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{s.full_name}</TableCell>
                   <TableCell>{s.class_abbriviation}</TableCell>
                   <TableCell>{s.student_status}</TableCell>
                   <TableCell> </TableCell>
-                </>
+                </tr>
               );
             })}
             {allNewStudents().length < minTransferCells &&
@@ -794,13 +794,13 @@ export default function Ta9rirYawmi({
           <tbody>
             {AllGoneStudents()?.map((s, index) => {
               return (
-                <>
+                <tr>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{s.full_name}</TableCell>
                   <TableCell>{s.class_abbriviation}</TableCell>
                   <TableCell>{s.student_status}</TableCell>
                   <TableCell> </TableCell>
-                </>
+                </tr>
               );
             })}
             {AllGoneStudents().length < minTransferCells &&
