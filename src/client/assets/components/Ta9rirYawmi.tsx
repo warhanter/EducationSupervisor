@@ -755,17 +755,19 @@ export default function Ta9rirYawmi({
             </tr>
           </thead>
           <tbody>
-            {allNewStudents()?.map((s, index) => {
-              return (
-                <tr>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{s.full_name}</TableCell>
-                  <TableCell>{s.class_abbriviation}</TableCell>
-                  <TableCell>{s.student_status}</TableCell>
-                  <TableCell> </TableCell>
-                </tr>
-              );
-            })}
+            {sortBy(allNewStudents(), (s) => s.class_abbriviation)?.map(
+              (s, index) => {
+                return (
+                  <tr>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{s.full_name}</TableCell>
+                    <TableCell>{s.class_abbriviation}</TableCell>
+                    <TableCell>{s.student_status}</TableCell>
+                    <TableCell> </TableCell>
+                  </tr>
+                );
+              }
+            )}
             {allNewStudents().length < minTransferCells &&
               Array.from({
                 length: minTransferCells - allNewStudents().length,
@@ -792,17 +794,19 @@ export default function Ta9rirYawmi({
             </tr>
           </thead>
           <tbody>
-            {AllGoneStudents()?.map((s, index) => {
-              return (
-                <tr>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{s.full_name}</TableCell>
-                  <TableCell>{s.class_abbriviation}</TableCell>
-                  <TableCell>{s.student_status}</TableCell>
-                  <TableCell> </TableCell>
-                </tr>
-              );
-            })}
+            {sortBy(AllGoneStudents(), (s) => s.class_abbriviation)?.map(
+              (s, index) => {
+                return (
+                  <tr>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{s.full_name}</TableCell>
+                    <TableCell>{s.class_abbriviation}</TableCell>
+                    <TableCell>{s.student_status}</TableCell>
+                    <TableCell> </TableCell>
+                  </tr>
+                );
+              }
+            )}
             {AllGoneStudents().length < minTransferCells &&
               Array.from({
                 length: minTransferCells - AllGoneStudents().length,
