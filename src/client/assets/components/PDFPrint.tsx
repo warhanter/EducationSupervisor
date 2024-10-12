@@ -572,9 +572,10 @@ function PDFPrint() {
               <Ta9rirYawmi
                 table="tasrih_charafi"
                 data={absencesData}
-                allStudents={motamadrisin}
+                allStudents={students}
+                motamadrisin={motamadrisin}
                 date={rapportDate}
-                title="التقرير اليومي لمستشار التربية رقم: 01"
+                title="التقرير اليومي لمستشار التربية رقم: "
               />
             )}
             {/* <iframe

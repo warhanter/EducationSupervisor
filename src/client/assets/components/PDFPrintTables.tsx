@@ -1,6 +1,7 @@
 import React from "react";
 import { reverseString } from "../contexts/AppFunctions";
 import { Student } from "@/client/providers/StudentProvider";
+import { sortBy } from "lodash";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
@@ -10,6 +11,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
+  const absencesData = sortBy(data, (student) => student.class_abbriviation);
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="flex justify-between">
@@ -53,8 +55,8 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
           </tr>
         </thead>
         <tbody>
-          {data &&
-            data.map((student, index) => {
+          {absencesData &&
+            absencesData.map((student, index) => {
               return (
                 <tr key={student.id}>
                   <td className="border border-collapse py-1 px-1">

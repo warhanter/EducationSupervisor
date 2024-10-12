@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
 import { filter, groupBy, max, sortBy } from "lodash";
 import { Student, StudentList } from "@/client/providers/StudentProvider";
+import { Button } from "@/components/ui/button";
 
 type Ta9rirYawmiProps = PDFPrintTablesProps & {
   title: string;
@@ -18,17 +19,35 @@ export default function Ta9rirYawmi({
   table,
   multi,
 }: Ta9rirYawmiProps) {
+  const [minTeachersCells, setMinTeachersCells] = useState(5);
+  const [missedHoursByTeachers, setMissedHoursByTeachers] = useState("");
+  const [totalhours, setTotalHours] = useState("");
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
-
+  const lastEducationDay = new Date("2025-06-30");
   const yesterdayDate = new Date(new Date(date).setHours(0, 0, 0));
+  const todayDate = new Date(new Date(date).setHours(23, 0, 0));
   const yesterdayCount = filter(
     allStudents,
-    (student) => student.student_inscription_date < yesterdayDate
+    (student) =>
+      student.student_inscription_date < yesterdayDate &&
+      !(
+        student.switched_school == true &&
+        yesterdayDate > student.student_leave_date
+      )
+  );
+  const todayCount = filter(
+    allStudents,
+    (student) =>
+      student.student_inscription_date < todayDate &&
+      !(
+        (student.switched_school == true || student.is_fired == true) &&
+        student.student_leave_date < todayDate
+      )
   );
   console.log(yesterdayCount.length);
-  const studentsGroupedByLevel = groupBy(allStudents, "level");
+  const studentsGroupedByLevel = groupBy(todayCount, "level");
   const absencesGroupedByLevel = groupBy(data, "level");
   const studentsGroupedByClass1 = groupBy(
     sortBy(studentsGroupedByLevel["أولى"], "class_abbriviation"),
@@ -88,7 +107,7 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        (s.swtched_school || s.is_fired) &&
+        (s.switched_school || s.is_fired) &&
         s.createdAt.setHours(0, 0, 0, 0) ===
           new Date(date).setHours(0, 0, 0, 0) &&
         s.student_status === student_status &&
@@ -99,7 +118,7 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        (s.swtched_school || s.is_fired) &&
+        (s.switched_school || s.is_fired) &&
         s.createdAt.setHours(0, 0, 0, 0) ===
           new Date(date).setHours(0, 0, 0, 0) &&
         s.gender === gender
@@ -109,7 +128,7 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        (s.swtched_school || s.is_fired) &&
+        (s.switched_school || s.is_fired) &&
         s.createdAt.setHours(0, 0, 0, 0) === new Date(date).setHours(0, 0, 0, 0)
     );
   };
@@ -119,7 +138,7 @@ export default function Ta9rirYawmi({
     AllGoneStudents().length,
     3,
   ]);
-  const minTeachersCells = max([5]);
+  // const minTeachersCells = max([5]);
 
   const TableCell = ({
     children,
@@ -164,7 +183,9 @@ export default function Ta9rirYawmi({
           <h3>السنة الدراسية : 2025/2024</h3>
         </div>
       </div>
-      <h1 className="text-xl font-bold my-5 text-center">{title}</h1>
+      <h1 className="text-xl font-bold my-5 text-center">
+        {title} <input type="text" className="w-10" />
+      </h1>
 
       <div className="flex justify-between">
         <p className="font-bold text-lg">
@@ -237,52 +258,107 @@ export default function Ta9rirYawmi({
           </tr>
         </thead>
         <tbody className="text-center">
-          <tr>
-            <td className="border border-collapse py-1 px-1">1</td>
-            <td className="border border-collapse py-1 px-1">اعبوبو مختار </td>
-            <td className="border border-collapse py-1 px-1">علوم</td>
-            <td className="border border-collapse py-1 px-1">8</td>
-            <td className="border p-0 w-14">ج م ع 1</td>
-            <td className="border p-0 w-14">ج م ع 2</td>
-            <td className="border p-0 w-14">ج م ع 3</td>
-            <td className="border p-0 w-14">ج م ع 4</td>
-            <td className="border bg-gray-400 w-8"></td>
-            <td className="border p-0 w-14">ج م ع 5</td>
-            <td className="border p-0 w-14">ج م ع 6</td>
-            <td className="border p-0 w-14">ج م ع 7</td>
-            <td className="border p-0 w-14">ج م ع 8</td>
-            <td className="border border-collapse p-0">
-              <input className="w-20 m-0 text-center" type="text" />
-            </td>
-            <td className="border border-collapse p-0">
-              <input className="w-16 m-0 text-center" type="text" />
-            </td>
-          </tr>
           {Array.from({ length: minTeachersCells }).map((_, i) => (
             <tr>
               <td className="border border-collapse py-1 px-1">{i + 1}</td>
-              <td className="border border-collapse py-1 px-1"></td>
-              <td className="border border-collapse py-1 px-1"></td>
-              <td className="border border-collapse py-1 px-1"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
+              <td className="border border-collapse py-1 px-1">
+                <input type="text" className="w-32 m-0 text-center" />
+              </td>
+              <td className="border border-collapse py-1 px-1">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input
+                  // type="number"
+                  className="w-14 m-0 text-center"
+                  // onChange={(e) =>
+                  //   setMissedHoursByTeachers([
+                  //     ...missedHoursByTeachers,
+                  //     e.target.value,
+                  //   ])
+                  // }
+                />
+              </td>
+              <td className="border border-collapse py-1 px-1">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
               <td className="border-separate border py-1 px-1 bg-gray-400 w-8"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
-              <td className="border p-0 w-14"></td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
+              <td className="border p-0 w-14">
+                <input type="text" className="w-14 m-0 text-center" />
+              </td>
               <td className="border border-collapse p-0">
                 <input className="w-20 m-0 text-center" type="text" />
               </td>
               <td className="border border-collapse p-0">
-                <input className="w-16 m-0 text-center" type="text" />
+                <input className="w-16 m-0 text-center" type="text"></input>
               </td>
             </tr>
           ))}
+          <tr>
+            <td className="border border-collapse p-0" colSpan={3}>
+              مجموع الساعات الضائعة
+            </td>
+            <td className="border border-collapse p-0" colSpan={1}>
+              <input
+                name=""
+                type="number"
+                className="w-14 m-0 text-center"
+                onChange={(e) => setMissedHoursByTeachers(e.target.value)}
+              />
+            </td>
+            <td className="border border-collapse p-0" colSpan={5}>
+              الحجم الساعي اليومي
+            </td>
+            <td className="border border-collapse p-0" colSpan={2}>
+              <input
+                name=""
+                type="number"
+                className="w-14 m-0 text-center"
+                onChange={(e) => setTotalHours(e.target.value)}
+              />
+            </td>
+            <td className="border border-collapse p-0" colSpan={3}>
+              نسبة الساعات الضائعة
+            </td>
+            <td className="border border-collapse p-0">
+              {"% " +
+                (
+                  (Number(missedHoursByTeachers) * 100) /
+                  Number(totalhours)
+                ).toFixed(2)}
+            </td>
+          </tr>
         </tbody>
       </table>
+      <div className="flex justify-between print:hidden">
+        <Button onClick={() => setMinTeachersCells(minTeachersCells + 1)}>
+          +
+        </Button>
+        <Button
+          variant="destructive"
+          onClick={() => setMinTeachersCells(minTeachersCells - 1)}
+        >
+          -
+        </Button>
+      </div>
       <p className="font-bold text-lg">2. التعــــــــداد:</p>
       <table className="w-full mb-4">
         <thead>
@@ -513,10 +589,22 @@ export default function Ta9rirYawmi({
         <thead>
           <tr>
             <th
-              colSpan={1 + minNumberOfCells}
+              colSpan={minNumberOfCells - 5}
               className="border-separate border py-1 px-1 bg-gray-400"
             >
-              المجموع الكلي للغياب / النسبة الكلية للغياب
+              التعداد الكلي للتلاميذ
+            </th>
+            <th
+              colSpan={1}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
+              {todayCount.length}
+            </th>
+            <th
+              colSpan={4}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
+              التعداد الكلي للغياب
             </th>
             <th
               rowSpan={2}
@@ -528,13 +616,19 @@ export default function Ta9rirYawmi({
               rowSpan={2}
               className="border-separate border py-1 px-1 bg-gray-400"
             >
-              {((data?.length * 100) / allStudents?.length).toFixed(2) + " %"}
+              نسبة الغياب
+            </th>
+            <th
+              rowSpan={2}
+              className="border-separate border py-1 px-1 bg-gray-400"
+            >
+              {((data?.length * 100) / todayCount?.length).toFixed(2) + " %"}
             </th>
           </tr>
         </thead>
       </table>
       <div className="flex justify-between">
-        <table>
+        <table className="w-2/3">
           <thead>
             <tr>
               <TableHead colSpan={2} rowSpan={2}>
@@ -646,7 +740,7 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "داخلي" && s.gender == "ذكر"
                   ).length
                 }
@@ -654,7 +748,7 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "داخلي" && s.gender == "أنثى"
                   ).length
                 }
@@ -662,7 +756,7 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر"
                   ).length
                 }
@@ -670,7 +764,7 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "نصف داخلي" && s.gender == "أنثى"
                   ).length
                 }
@@ -678,7 +772,7 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "خارجي" && s.gender == "ذكر"
                   ).length
                 }
@@ -686,18 +780,29 @@ export default function Ta9rirYawmi({
               <TableCell>
                 {
                   filter(
-                    allStudents,
+                    todayCount,
                     (s) => s.student_status == "خارجي" && s.gender == "أنثى"
                   ).length
                 }
               </TableCell>
               <TableCell>
-                {filter(allStudents, (s) => s.gender == "ذكر").length}
+                {filter(todayCount, (s) => s.gender == "ذكر").length}
               </TableCell>
               <TableCell>
-                {filter(allStudents, (s) => s.gender == "أنثى").length}
+                {filter(todayCount, (s) => s.gender == "أنثى").length}
               </TableCell>
-              <TableCell>{allStudents?.length}</TableCell>
+              <TableCell>
+                {
+                  filter(
+                    todayCount,
+                    (s) =>
+                      !(
+                        (s.switched_school == true || s.is_fired) &&
+                        s.student_leave_date < todayDate
+                      )
+                  )?.length
+                }
+              </TableCell>
             </tr>
           </tbody>
         </table>
@@ -716,27 +821,45 @@ export default function Ta9rirYawmi({
             <tbody>
               <tr>
                 <TableCell>1</TableCell>
-                <TableCell>سعيدي وليد</TableCell>
-                <TableCell>عطلة مرضية</TableCell>
+                <TableCell>
+                  <input type="text" className="w-32 m-0 text-center" />{" "}
+                </TableCell>
+                <TableCell>
+                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                </TableCell>
               </tr>
               <tr>
                 <TableCell>2</TableCell>
-                <TableCell> </TableCell>
-                <TableCell> </TableCell>
+                <TableCell>
+                  <input type="text" className="w-32 m-0 text-center" />{" "}
+                </TableCell>
+                <TableCell>
+                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                </TableCell>
               </tr>
               <tr>
                 <TableCell>3</TableCell>
-                <TableCell> </TableCell>
-                <TableCell> </TableCell>
+                <TableCell>
+                  <input type="text" className="w-32 m-0 text-center" />{" "}
+                </TableCell>
+                <TableCell>
+                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                </TableCell>
               </tr>
               <tr>
                 <TableCell>4</TableCell>
-                <TableCell> </TableCell>
-                <TableCell> </TableCell>
+                <TableCell>
+                  <input type="text" className="w-32 m-0 text-center" />{" "}
+                </TableCell>
+                <TableCell>
+                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                </TableCell>
               </tr>
               <tr>
                 <TableCell colSpan={2}>النسبة اليومية للغيابات</TableCell>
-                <TableCell>12.60%</TableCell>
+                <TableCell>
+                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                </TableCell>
               </tr>
             </tbody>
           </table>
