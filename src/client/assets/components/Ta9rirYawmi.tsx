@@ -21,6 +21,7 @@ export default function Ta9rirYawmi({
 }: Ta9rirYawmiProps) {
   const [minTeachersCells, setMinTeachersCells] = useState(5);
   const [missedHoursByTeachers, setMissedHoursByTeachers] = useState("");
+  const [supervisors, setSupervisors] = useState("");
   const [totalhours, setTotalHours] = useState("");
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
@@ -193,7 +194,7 @@ export default function Ta9rirYawmi({
         </p>
         <p className="font-bold">ليـــــــوم: {fdate}</p>
       </div>
-      <table className="text-center w-full">
+      <table className="text-center w-full mb-4">
         <thead className="border-separate border bg-gray-400">
           <tr>
             <th
@@ -312,33 +313,35 @@ export default function Ta9rirYawmi({
               </td>
             </tr>
           ))}
-          <tr>
+          <tr className="border-separate border font-bold bg-gray-400">
             <td className="border border-collapse p-0" colSpan={3}>
               مجموع الساعات الضائعة
             </td>
             <td className="border border-collapse p-0" colSpan={1}>
               <input
                 name=""
-                type="number"
+                // type="number"
                 className="w-14 m-0 text-center"
+                defaultValue={missedHoursByTeachers}
                 onChange={(e) => setMissedHoursByTeachers(e.target.value)}
               />
             </td>
             <td className="border border-collapse p-0" colSpan={5}>
               الحجم الساعي اليومي
             </td>
-            <td className="border border-collapse p-0" colSpan={2}>
+            <td className="border border-collapse p-0" colSpan={1}>
               <input
                 name=""
-                type="number"
+                // type="number"
                 className="w-14 m-0 text-center"
                 onChange={(e) => setTotalHours(e.target.value)}
+                defaultValue={totalhours}
               />
             </td>
-            <td className="border border-collapse p-0" colSpan={3}>
+            <td className="border border-collapse p-0" colSpan={4}>
               نسبة الساعات الضائعة
             </td>
-            <td className="border border-collapse p-0">
+            <td className="border border-collapse p-0 bg-white">
               {"% " +
                 (
                   (Number(missedHoursByTeachers) * 100) /
@@ -856,16 +859,27 @@ export default function Ta9rirYawmi({
                 </TableCell>
               </tr>
               <tr>
+                <TableCell colSpan={2}>عدد الغيابات</TableCell>
+                <TableCell>
+                  <input
+                    type="text"
+                    className="w-24 m-0 text-center"
+                    onChange={(e) => setSupervisors(e.target.value)}
+                    defaultValue={supervisors}
+                  />
+                </TableCell>
+              </tr>
+              <tr>
                 <TableCell colSpan={2}>النسبة اليومية للغيابات</TableCell>
                 <TableCell>
-                  <input type="text" className="w-24 m-0 text-center" />{" "}
+                  {"% " + ((Number(supervisors) * 100) / 9).toFixed(2)}
                 </TableCell>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div className="flex gap-4 justify-between m-4">
+      <div className="flex gap-4 justify-between my-4">
         <table className="text-center w-full">
           <caption className="font-bold text-lg">1.4. الدخول الجديد:</caption>
           <thead>
@@ -886,7 +900,9 @@ export default function Ta9rirYawmi({
                     <TableCell>{s.full_name}</TableCell>
                     <TableCell>{s.class_abbriviation}</TableCell>
                     <TableCell>{s.student_status}</TableCell>
-                    <TableCell> </TableCell>
+                    <TableCell>
+                      <input type="text" className="w-20 text-center" />
+                    </TableCell>
                   </tr>
                 );
               }
@@ -900,7 +916,9 @@ export default function Ta9rirYawmi({
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
-                  <TableCell> </TableCell>
+                  <TableCell>
+                    <input type="text" className="w-20 text-center" />
+                  </TableCell>
                 </tr>
               ))}
           </tbody>
@@ -925,7 +943,9 @@ export default function Ta9rirYawmi({
                     <TableCell>{s.full_name}</TableCell>
                     <TableCell>{s.class_abbriviation}</TableCell>
                     <TableCell>{s.student_status}</TableCell>
-                    <TableCell> </TableCell>
+                    <TableCell>
+                      <input type="text" className="w-20 text-center" />
+                    </TableCell>
                   </tr>
                 );
               }
@@ -939,7 +959,9 @@ export default function Ta9rirYawmi({
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
-                  <TableCell> </TableCell>
+                  <TableCell>
+                    <input type="text" className="w-20 text-center" />
+                  </TableCell>
                 </tr>
               ))}
           </tbody>
