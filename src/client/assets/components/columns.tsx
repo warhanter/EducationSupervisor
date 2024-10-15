@@ -36,6 +36,7 @@ export type Student = {
   gender: string;
   is_fired: boolean;
   is_new: boolean;
+  idmaj: boolean;
   switched_school: boolean;
   student_DOB: Date;
   student_status: string;
@@ -168,6 +169,10 @@ export const studentsColumns: ColumnDef<Student>[] = [
         ? "تغيير مؤسسة"
         : row.getValue("is_fired")
         ? "شطب غياب"
+        : row.original.idmaj
+        ? "إعادة إدماج"
+        : row.original.is_new
+        ? "وافد جديد"
         : "متمدرس";
       return (
         <div className="ml-10">
