@@ -34,7 +34,7 @@ export default function Ta9rirYawmi({
     (student) =>
       student.student_inscription_date < yesterdayDate &&
       !(
-        student.switched_school == true &&
+        (student.switched_school == true || student.is_fired == true) &&
         yesterdayDate > student.student_leave_date
       )
   );
