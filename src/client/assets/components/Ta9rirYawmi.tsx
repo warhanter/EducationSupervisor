@@ -109,7 +109,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         (s.switched_school || s.is_fired) &&
-        s.createdAt.setHours(0, 0, 0, 0) ===
+        s.student_leave_date.setHours(0, 0, 0, 0) ===
           new Date(date).setHours(0, 0, 0, 0) &&
         s.student_status === student_status &&
         s.gender === gender
@@ -120,7 +120,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         (s.switched_school || s.is_fired) &&
-        s.createdAt.setHours(0, 0, 0, 0) ===
+        s.student_leave_date.setHours(0, 0, 0, 0) ===
           new Date(date).setHours(0, 0, 0, 0) &&
         s.gender === gender
     ).length;
@@ -130,7 +130,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         (s.switched_school || s.is_fired) &&
-        s.createdAt.setHours(0, 0, 0, 0) === new Date(date).setHours(0, 0, 0, 0)
+        s.student_leave_date.setHours(0, 0, 0, 0) === new Date(date).setHours(0, 0, 0, 0)
     );
   };
 
