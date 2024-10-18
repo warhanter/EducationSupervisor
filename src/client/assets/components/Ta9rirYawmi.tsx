@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
 import { filter, groupBy, max, sortBy } from "lodash";
-import { Student, StudentList } from "@/client/providers/StudentProvider";
+import { StudentList, useStudents } from "@/client/providers/StudentProvider";
 import { Button } from "@/components/ui/button";
 
 type Ta9rirYawmiProps = PDFPrintTablesProps & {
@@ -19,16 +19,17 @@ export default function Ta9rirYawmi({
   table,
   multi,
 }: Ta9rirYawmiProps) {
-  const [minTeachersCells, setMinTeachersCells] = useState(5);
-  const [missedHoursByTeachers, setMissedHoursByTeachers] = useState("");
+  const { professors } = useStudents();
   const [supervisors, setSupervisors] = useState("");
   const [totalhours, setTotalHours] = useState("");
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
   const lastEducationDay = new Date("2025-06-30");
+
   const yesterdayDate = new Date(new Date(date).setHours(0, 0, 0));
   const todayDate = new Date(new Date(date).setHours(23, 0, 0));
+
   const yesterdayCount = filter(
     allStudents,
     (student) =>
@@ -47,7 +48,6 @@ export default function Ta9rirYawmi({
         student.student_leave_date < todayDate
       )
   );
-  console.log(yesterdayCount.length);
   const studentsGroupedByLevel = groupBy(todayCount, "level");
   const absencesGroupedByLevel = groupBy(data, "level");
   const studentsGroupedByClass1 = groupBy(
@@ -172,6 +172,52 @@ export default function Ta9rirYawmi({
       </th>
     );
   };
+  let professorsAbsences = [];
+  professors?.map((professor) => {
+    if (professor.absences?.length > 0) {
+      professor.absences.map((absence) => {
+        if (absence.date > yesterdayDate && absence.date < todayDate) {
+          // Object.assign({}, absence, {full_name: professor.full_name})
+          professorsAbsences.push(
+            Object.assign({}, absence, {
+              full_name: professor.full_name,
+              module_name: professor.module_name,
+            })
+          );
+        }
+      });
+    }
+  });
+  const groupedByTeacher = groupBy(professorsAbsences, "full_name");
+  const teacherKeys = Object.keys(groupedByTeacher);
+  console.log(groupedByTeacher);
+  const filterFunc = (
+    collection,
+    firstHour,
+    secondHour,
+    firstMinute,
+    secondMinute
+  ) => {
+    // const val = filter(
+    //   collection,
+    //   (e) =>
+    //     e.date >= todayDate.setHours(firstHour, firstMinute, 0) &&
+    //     e.date < todayDate.setHours(secondHour, secondMinute, 0)
+    // );
+    // return val.length > 0 ? val[0].class_name : "";
+    return filter(
+      collection,
+      (s) =>
+        s.date >= todayDate.setHours(firstHour, firstMinute, 0) &&
+        s.date < todayDate.setHours(secondHour, secondMinute, 0)
+    )[0]?.class_name;
+  };
+  const [minTeachersCells, setMinTeachersCells] = useState(
+    5 - teacherKeys.length
+  );
+  const [missedHoursByTeachers, setMissedHoursByTeachers] = useState(
+    professorsAbsences.length
+  );
 
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
@@ -221,9 +267,9 @@ export default function Ta9rirYawmi({
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 p-0 w-14 bg-gray-200 text-xs"
+              className="border-separate border border-zinc-400 p-0 w-8 bg-gray-200 text-xs"
             >
-              عدد الساعات
+              عدد سا
             </th>
             <th
               colSpan={4}
@@ -246,13 +292,13 @@ export default function Ta9rirYawmi({
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-400 p-0 bg-gray-200"
             >
               سبب الغياب
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-400 p-0 bg-gray-200"
             >
               ملاحظة
             </th>
@@ -269,21 +315,147 @@ export default function Ta9rirYawmi({
           </tr>
         </thead>
         <tbody className="text-center">
-          {Array.from({ length: minTeachersCells }).map((_, i) => (
+          {teacherKeys.map((teacher, i) => (
             <tr>
               <td className="border border-zinc-400 border-collapse py-1 px-1">
                 {i + 1}
               </td>
-              <td className="border border-zinc-400 border-collapse py-1 px-1">
-                <input type="text" className="w-32 m-0 text-center" />
+              <td className="border border-zinc-400 border-collapse w-36">
+                <input
+                  type="text"
+                  className="w-36 m-0 text-center"
+                  defaultValue={teacher}
+                />
+                {/* {absence.full_name} */}
               </td>
-              <td className="border border-zinc-400 border-collapse py-1 px-1">
-                <input type="text" className="w-14 m-0 text-center" />
+              <td className="border border-zinc-400 border-collapse p-0 w-36">
+                <input
+                  type="text"
+                  className="w-36 m-0 text-center"
+                  defaultValue={groupedByTeacher[teacher][0].module_name}
+                />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-400 p-0 w-8">
                 <input
                   // type="number"
-                  className="w-14 m-0 text-center"
+                  className="w-8 m-0 text-center"
+                  // onChange={(e) =>
+                  //   setMissedHoursByTeachers([
+                  //     ...missedHoursByTeachers,
+                  //     e.target.value,
+                  //   ])
+                  // }
+                  defaultValue={groupedByTeacher[teacher].length}
+                />
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse">
+                {/* <input type="text" className="w-14 m-0 text-center" /> */}
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(8, 0, 0, 0) &&
+                      s.date < todayDate.setHours(9, 0, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(9, 0, 0, 0) &&
+                      s.date < todayDate.setHours(10, 0, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(10, 0, 0, 0) &&
+                      s.date < todayDate.setHours(11, 0, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(11, 0, 0, 0) &&
+                      s.date < todayDate.setHours(12, 0, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border-separate border border-zinc-400  bg-gray-200 w-8"></td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(13, 30, 0, 0) &&
+                      s.date < todayDate.setHours(14, 30, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(14, 30, 0, 0) &&
+                      s.date < todayDate.setHours(15, 30, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(15, 30, 0, 0) &&
+                      s.date < todayDate.setHours(16, 30, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+              <td className="border border-zinc-400 w-16 border-collapse ">
+                {
+                  filter(
+                    groupedByTeacher[teacher],
+                    (s) =>
+                      s.date >= todayDate.setHours(16, 30, 0, 0) &&
+                      s.date < todayDate.setHours(17, 30, 0, 0)
+                  )[0]?.class_name
+                }
+              </td>
+
+              <td className="border border-zinc-400 border-collapse p-0">
+                <input className="w-16 m-0 text-center" type="text" />
+              </td>
+              <td className="border border-zinc-400 border-collapse p-0">
+                <input className="w-16 m-0 text-center" type="text"></input>
+              </td>
+            </tr>
+          ))}
+          {Array.from({
+            length: minTeachersCells,
+          }).map((_, i) => (
+            <tr>
+              <td className="border border-zinc-400 border-collapse py-1 px-1 ">
+                {teacherKeys.length + i + 1}
+              </td>
+              <td className="border border-zinc-400 border-collapse p-0">
+                <input type="text" className="w-36 m-0 text-center" />
+              </td>
+              <td className="border border-zinc-400 p-0 border-collapse">
+                <input type="text" className="w-36 m-0 text-center" />
+              </td>
+              <td className="border border-zinc-400 p-0 w-8">
+                <input
+                  // type="number"
+                  className="w-8 m-0 text-center"
                   // onChange={(e) =>
                   //   setMissedHoursByTeachers([
                   //     ...missedHoursByTeachers,
@@ -318,7 +490,7 @@ export default function Ta9rirYawmi({
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
               <td className="border border-zinc-400 border-collapse p-0">
-                <input className="w-20 m-0 text-center" type="text" />
+                <input className="w-16 m-0 text-center" type="text" />
               </td>
               <td className="border border-zinc-400 border-collapse p-0">
                 <input className="w-16 m-0 text-center" type="text"></input>
@@ -333,15 +505,17 @@ export default function Ta9rirYawmi({
               مجموع الساعات الضائعة
             </td>
             <td
-              className="border border-zinc-400 border-collapse p-0"
+              className="border border-zinc-400 border-collapse w-8 p-0"
               colSpan={1}
             >
               <input
                 name=""
                 // type="number"
-                className="w-14 m-0 text-center"
+                className="w-8 m-0 text-center"
                 defaultValue={missedHoursByTeachers}
-                onChange={(e) => setMissedHoursByTeachers(e.target.value)}
+                onChange={(e) =>
+                  setMissedHoursByTeachers(Number(e.target.value))
+                }
               />
             </td>
             <td
@@ -351,13 +525,13 @@ export default function Ta9rirYawmi({
               الحجم الساعي اليومي
             </td>
             <td
-              className="border border-zinc-400 border-collapse p-0"
+              className="border border-zinc-400 border-collapse p-0 bg-white"
               colSpan={1}
             >
               <input
                 name=""
                 // type="number"
-                className="w-14 m-0 text-center"
+                className="w-14 m-0 text-center p-0"
                 onChange={(e) => setTotalHours(e.target.value)}
                 defaultValue={totalhours}
               />

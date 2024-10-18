@@ -23,6 +23,7 @@ type StudentsType = {
   addresses: StudentRealm;
   lunchAbsences: StudentRealm;
   classrooms: StudentRealm;
+  professors: StudentRealm;
   notification: Notification | undefined;
 };
 type StudentsProviderProps = {
@@ -42,6 +43,7 @@ type StudentContextType = {
   addresses: StudentRealm;
   lunchAbsences: StudentRealm;
   classrooms: StudentRealm;
+  professors: StudentRealm;
   notification: Notification | undefined;
   setStudents: ({
     students,
@@ -65,6 +67,7 @@ const defaultValues = {
   addresses: [],
   lunchAbsences: [],
   classrooms: [],
+  professors: [],
   setStudents: () => {},
   notification: {
     fullDocument: undefined,
@@ -78,7 +81,15 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
   const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
   const [loading, setLoading] = useState(true);
   const [
-    { students, absences, lunchAbsences, addresses, notification, classrooms },
+    {
+      students,
+      absences,
+      lunchAbsences,
+      addresses,
+      notification,
+      classrooms,
+      professors,
+    },
     setStudents,
   ] = useState<StudentsType>({
     students: undefined,
@@ -87,6 +98,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     addresses: undefined,
     notification: undefined,
     classrooms: undefined,
+    professors: undefined,
   });
   const fetchData = async () => {
     const studentsPromise = mongo?.collection("Student").find();
@@ -94,18 +106,21 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     const addressesPromise = mongo?.collection("Adress").find();
     const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
     const classroomsPromise = mongo?.collection("Classroom").find();
+    const professorsPromise = mongo?.collection("Professor").find();
     const [
       studentsCollection,
       absencesCollection,
       addressesCollection,
       lunchAbsencesCollection,
       classroomsCollection,
+      professorsCollection,
     ] = await Promise.all([
       studentsPromise,
       absencesPromise,
       addressesPromise,
       lunchAbsencesPromise,
       classroomsPromise,
+      professorsPromise,
     ]);
     setStudents({
       students: studentsCollection,
@@ -113,6 +128,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
       addresses: addressesCollection,
       lunchAbsences: lunchAbsencesCollection,
       classrooms: classroomsCollection,
+      professors: professorsCollection,
       notification: undefined,
     });
     setLoading(false);
@@ -142,6 +158,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
           lunchAbsences,
           addresses,
           classrooms,
+          professors,
           notification: {
             fullDocument: documentOBJ,
             operationType: operation,
@@ -182,6 +199,7 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     lunchAbsences,
     notification,
     classrooms,
+    professors,
     setStudents,
   };
   return !loading ? (
