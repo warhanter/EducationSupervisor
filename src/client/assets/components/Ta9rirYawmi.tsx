@@ -220,7 +220,7 @@ export default function Ta9rirYawmi({
   );
 
   return (
-    <div id="section-to-print" className="w-full p-4 print:p-0">
+    <div id="section-to-print" className="w-full p-0 print:p-5">
       <div className="text-center">
         <h2>الجمهورية الجزائرية الديمقراطية الشعبية</h2>
         <h2>وزارة التربية الوطنية</h2>
@@ -234,7 +234,7 @@ export default function Ta9rirYawmi({
           <h3>السنة الدراسية : 2025/2024</h3>
         </div>
       </div>
-      <h1 className="text-xl font-bold my-5 text-center">
+      <h1 className="text-xl font-bold  text-center">
         {title} <input type="text" className="w-10" />
       </h1>
 
@@ -249,13 +249,13 @@ export default function Ta9rirYawmi({
           <tr>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-400  bg-gray-200"
             >
               الرقم
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-400  bg-gray-200"
             >
               لقب واسم الأستاذ
             </th>
@@ -267,7 +267,7 @@ export default function Ta9rirYawmi({
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 p-0 w-8 bg-gray-200 text-xs"
+              className="border-separate border border-zinc-400 p-0 w-8 bg-gray-200 text-sm"
             >
               عدد سا
             </th>
@@ -316,39 +316,33 @@ export default function Ta9rirYawmi({
         </thead>
         <tbody className="text-center">
           {teacherKeys.map((teacher, i) => (
-            <tr>
+            <tr className="font-bold text-sm">
               <td className="border border-zinc-400 border-collapse py-1 px-1">
                 {i + 1}
               </td>
-              <td className="border border-zinc-400 border-collapse w-36">
+              <td className="border border-zinc-400 border-collapse w-32">
                 <input
                   type="text"
-                  className="w-36 m-0 text-center"
+                  className="w-32 m-0 text-center"
                   defaultValue={teacher}
                 />
                 {/* {absence.full_name} */}
               </td>
-              <td className="border border-zinc-400 border-collapse p-0 w-36">
+              <td className="border border-zinc-400 border-collapse p-0 w-32">
                 <input
                   type="text"
-                  className="w-36 m-0 text-center"
+                  className="w-32 m-0 text-center"
                   defaultValue={groupedByTeacher[teacher][0].module_name}
                 />
               </td>
-              <td className="border border-zinc-400 p-0 w-8">
+              <td className="border border-zinc-400 p-0 w-8 font-bold">
                 <input
                   // type="number"
                   className="w-8 m-0 text-center"
-                  // onChange={(e) =>
-                  //   setMissedHoursByTeachers([
-                  //     ...missedHoursByTeachers,
-                  //     e.target.value,
-                  //   ])
-                  // }
                   defaultValue={groupedByTeacher[teacher].length}
                 />
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse">
+              <td className="border border-zinc-400 w-14 border-collapse">
                 {/* <input type="text" className="w-14 m-0 text-center" /> */}
                 {
                   filter(
@@ -359,7 +353,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -369,7 +363,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -379,7 +373,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -390,7 +384,7 @@ export default function Ta9rirYawmi({
                 }
               </td>
               <td className="border-separate border border-zinc-400  bg-gray-200 w-8"></td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -400,7 +394,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -410,7 +404,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -420,7 +414,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-16 border-collapse ">
+              <td className="border border-zinc-400 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -452,17 +446,8 @@ export default function Ta9rirYawmi({
               <td className="border border-zinc-400 p-0 border-collapse">
                 <input type="text" className="w-36 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-8">
-                <input
-                  // type="number"
-                  className="w-8 m-0 text-center"
-                  // onChange={(e) =>
-                  //   setMissedHoursByTeachers([
-                  //     ...missedHoursByTeachers,
-                  //     e.target.value,
-                  //   ])
-                  // }
-                />
+              <td className="border border-zinc-400 p-0 w-8 font-bold">
+                <input className="w-8 m-0 text-center" />
               </td>
               <td className="border border-zinc-400 border-collapse py-1 px-1">
                 <input type="text" className="w-14 m-0 text-center" />
