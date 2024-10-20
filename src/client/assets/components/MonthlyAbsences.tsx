@@ -246,7 +246,7 @@ export function MonthlyAbsences({
               />
             </div>
             <div className="w-full overflow-scroll print:overflow-visible print:h-screen h-[600px]">
-              <table className="border-separate border border-slate-500 text print:w-screen">
+              <table className="border-separate border border-zinc-500 border-slate-500 text print:w-screen">
                 <thead className="sticky top-0 z-10 bg-white">
                   <tr>
                     <th className="border border-slate-600 px-5">الرقم</th>

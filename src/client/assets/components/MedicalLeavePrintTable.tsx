@@ -23,24 +23,24 @@ export default function MedicalLeavePrintTable({ data, date, title }) {
         قائمـــــــــة: {title}
       </h1>
       <table className="w-full  print:text-[13px] font-medium ">
-        <thead className="border-separate border bg-gray-400">
+        <thead className="border-separate border border-zinc-500 bg-gray-200">
           <tr>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               الرقم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               اللقب
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               الاسم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               القسم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               تاريخ البداية
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               تاريخ العودة
             </th>
           </tr>
@@ -50,24 +50,24 @@ export default function MedicalLeavePrintTable({ data, date, title }) {
             data.map((student, index) => {
               return (
                 <tr key={student.id}>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {index + 1}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.last_name}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.first_name}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.full_className}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.medical_leave_startDate.toLocaleDateString(
                       "en-ZA"
                     )}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.medical_leave_endDate.toLocaleDateString("en-ZA")}
                   </td>
                 </tr>

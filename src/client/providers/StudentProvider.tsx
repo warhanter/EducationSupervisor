@@ -51,6 +51,7 @@ type StudentContextType = {
     addresses,
     lunchAbsences,
     notification,
+    professors,
   }: StudentsType) => void;
 };
 

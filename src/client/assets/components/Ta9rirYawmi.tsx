@@ -17,7 +17,6 @@ export default function Ta9rirYawmi({
   title,
   allStudents,
   table,
-  multi,
 }: Ta9rirYawmiProps) {
   const { professors } = useStudents();
   const [supervisors, setSupervisors] = useState("");
@@ -150,7 +149,7 @@ export default function Ta9rirYawmi({
   }) => {
     return (
       <td
-        className="border border-zinc-400 border-collapse py-1 px-1"
+        className="border border-zinc-500 border-collapse p-0.5"
         {...otherProps}
       >
         {children}
@@ -165,7 +164,7 @@ export default function Ta9rirYawmi({
   }) => {
     return (
       <th
-        className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+        className="border-separate border border-zinc-500 p-0.5 bg-gray-200"
         {...otherProps}
       >
         {children}
@@ -191,29 +190,8 @@ export default function Ta9rirYawmi({
   const groupedByTeacher = groupBy(professorsAbsences, "full_name");
   const teacherKeys = Object.keys(groupedByTeacher);
   console.log(groupedByTeacher);
-  const filterFunc = (
-    collection,
-    firstHour,
-    secondHour,
-    firstMinute,
-    secondMinute
-  ) => {
-    // const val = filter(
-    //   collection,
-    //   (e) =>
-    //     e.date >= todayDate.setHours(firstHour, firstMinute, 0) &&
-    //     e.date < todayDate.setHours(secondHour, secondMinute, 0)
-    // );
-    // return val.length > 0 ? val[0].class_name : "";
-    return filter(
-      collection,
-      (s) =>
-        s.date >= todayDate.setHours(firstHour, firstMinute, 0) &&
-        s.date < todayDate.setHours(secondHour, secondMinute, 0)
-    )[0]?.class_name;
-  };
   const [minTeachersCells, setMinTeachersCells] = useState(
-    5 - teacherKeys.length
+    8 - teacherKeys.length
   );
   const [missedHoursByTeachers, setMissedHoursByTeachers] = useState(
     professorsAbsences.length
@@ -245,82 +223,82 @@ export default function Ta9rirYawmi({
         <p className="font-bold">ليـــــــوم: {fdate}</p>
       </div>
       <table className="text-center w-full mb-4">
-        <thead className="border-separate border border-zinc-400 bg-gray-200">
+        <thead className="border-separate border border-zinc-500 bg-gray-200">
           <tr>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400  bg-gray-200"
+              className="border-separate border border-zinc-500  bg-gray-200"
             >
               الرقم
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400  bg-gray-200"
+              className="border-separate border border-zinc-500  bg-gray-200"
             >
               لقب واسم الأستاذ
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"
             >
               المادة
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 p-0 w-8 bg-gray-200 text-sm"
+              className="border-separate border border-zinc-500 p-0 w-8 bg-gray-200 text-sm"
             >
               عدد سا
             </th>
             <th
               colSpan={4}
-              className="border-separate border border-zinc-400 p-0 bg-gray-200"
+              className="border-separate border border-zinc-500 p-0 bg-gray-200"
             >
               صباحا
             </th>
 
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200 w-8"
+              className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200 w-8"
             >
               /
             </th>
             <th
               colSpan={4}
-              className="border-separate border border-zinc-400 p-0 bg-gray-200"
+              className="border-separate border border-zinc-500 p-0 bg-gray-200"
             >
               مساء
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 p-0 bg-gray-200"
+              className="border-separate border border-zinc-500 p-0 bg-gray-200"
             >
               سبب الغياب
             </th>
             <th
               rowSpan={2}
-              className="border-separate border border-zinc-400 p-0 bg-gray-200"
+              className="border-separate border border-zinc-500 p-0 bg-gray-200"
             >
               ملاحظة
             </th>
           </tr>
           <tr className="p-0">
-            <th className="border border-zinc-400 p-0">1</th>
-            <th className="border border-zinc-400 p-0">2</th>
-            <th className="border border-zinc-400 p-0">3</th>
-            <th className="border border-zinc-400 p-0">4</th>
-            <th className="border border-zinc-400 p-0">1</th>
-            <th className="border border-zinc-400 p-0">2</th>
-            <th className="border border-zinc-400 p-0">3</th>
-            <th className="border border-zinc-400 p-0">4</th>
+            <th className="border border-zinc-500 p-0">1</th>
+            <th className="border border-zinc-500 p-0">2</th>
+            <th className="border border-zinc-500 p-0">3</th>
+            <th className="border border-zinc-500 p-0">4</th>
+            <th className="border border-zinc-500 p-0">1</th>
+            <th className="border border-zinc-500 p-0">2</th>
+            <th className="border border-zinc-500 p-0">3</th>
+            <th className="border border-zinc-500 p-0">4</th>
           </tr>
         </thead>
         <tbody className="text-center">
           {teacherKeys.map((teacher, i) => (
             <tr className="font-bold text-sm">
-              <td className="border border-zinc-400 border-collapse py-1 px-1">
+              <td className="border border-zinc-500 border-collapse py-1 px-1">
                 {i + 1}
               </td>
-              <td className="border border-zinc-400 border-collapse w-32">
+              <td className="border border-zinc-500 border-collapse w-32">
                 <input
                   type="text"
                   className="w-32 m-0 text-center"
@@ -328,21 +306,21 @@ export default function Ta9rirYawmi({
                 />
                 {/* {absence.full_name} */}
               </td>
-              <td className="border border-zinc-400 border-collapse p-0 w-32">
+              <td className="border border-zinc-500 border-collapse p-0 w-32">
                 <input
                   type="text"
                   className="w-32 m-0 text-center"
                   defaultValue={groupedByTeacher[teacher][0].module_name}
                 />
               </td>
-              <td className="border border-zinc-400 p-0 w-8 font-bold">
+              <td className="border border-zinc-500 p-0 w-8 font-bold">
                 <input
                   // type="number"
                   className="w-8 m-0 text-center"
                   defaultValue={groupedByTeacher[teacher].length}
                 />
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse">
+              <td className="border border-zinc-500 w-14 border-collapse">
                 {/* <input type="text" className="w-14 m-0 text-center" /> */}
                 {
                   filter(
@@ -353,7 +331,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -363,7 +341,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -373,7 +351,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -383,8 +361,8 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border-separate border border-zinc-400  bg-gray-200 w-8"></td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border-separate border border-zinc-500  bg-gray-200 w-8"></td>
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -394,7 +372,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -404,7 +382,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -414,7 +392,7 @@ export default function Ta9rirYawmi({
                   )[0]?.class_name
                 }
               </td>
-              <td className="border border-zinc-400 w-14 border-collapse ">
+              <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
@@ -425,10 +403,10 @@ export default function Ta9rirYawmi({
                 }
               </td>
 
-              <td className="border border-zinc-400 border-collapse p-0">
+              <td className="border border-zinc-500 border-collapse p-0">
                 <input className="w-16 m-0 text-center" type="text" />
               </td>
-              <td className="border border-zinc-400 border-collapse p-0">
+              <td className="border border-zinc-500 border-collapse p-0">
                 <input className="w-16 m-0 text-center" type="text"></input>
               </td>
             </tr>
@@ -436,61 +414,61 @@ export default function Ta9rirYawmi({
           {Array.from({
             length: minTeachersCells,
           }).map((_, i) => (
-            <tr>
-              <td className="border border-zinc-400 border-collapse py-1 px-1 ">
+            <tr className="text-sm font-bold">
+              <td className="border border-zinc-500 border-collapse py-1 px-1 ">
                 {teacherKeys.length + i + 1}
               </td>
-              <td className="border border-zinc-400 border-collapse p-0">
+              <td className="border border-zinc-500 border-collapse p-0">
                 <input type="text" className="w-36 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 border-collapse">
+              <td className="border border-zinc-500 p-0 border-collapse">
                 <input type="text" className="w-36 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-8 font-bold">
+              <td className="border border-zinc-500 p-0 w-8 font-bold">
                 <input className="w-8 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 border-collapse py-1 px-1">
+              <td className="border border-zinc-500 border-collapse py-1 px-1">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200 w-8"></td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200 w-8"></td>
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 p-0 w-14">
+              <td className="border border-zinc-500 p-0 w-14">
                 <input type="text" className="w-14 m-0 text-center" />
               </td>
-              <td className="border border-zinc-400 border-collapse p-0">
+              <td className="border border-zinc-500 border-collapse p-0">
                 <input className="w-16 m-0 text-center" type="text" />
               </td>
-              <td className="border border-zinc-400 border-collapse p-0">
+              <td className="border border-zinc-500 border-collapse p-0">
                 <input className="w-16 m-0 text-center" type="text"></input>
               </td>
             </tr>
           ))}
-          <tr className="border-separate border border-zinc-400 font-bold bg-gray-200">
+          <tr className="border-separate border border-zinc-500 font-bold bg-gray-200">
             <td
-              className="border border-zinc-400 border-collapse p-0"
+              className="border border-zinc-500 border-collapse p-0"
               colSpan={3}
             >
               مجموع الساعات الضائعة
             </td>
             <td
-              className="border border-zinc-400 border-collapse w-8 p-0"
+              className="border border-zinc-500 border-collapse w-8 p-0"
               colSpan={1}
             >
               <input
@@ -504,13 +482,13 @@ export default function Ta9rirYawmi({
               />
             </td>
             <td
-              className="border border-zinc-400 border-collapse p-0"
+              className="border border-zinc-500 border-collapse p-0"
               colSpan={5}
             >
               الحجم الساعي اليومي
             </td>
             <td
-              className="border border-zinc-400 border-collapse p-0 bg-white"
+              className="border border-zinc-500 border-collapse p-0 bg-white"
               colSpan={1}
             >
               <input
@@ -522,12 +500,12 @@ export default function Ta9rirYawmi({
               />
             </td>
             <td
-              className="border border-zinc-400 border-collapse p-0"
+              className="border border-zinc-500 border-collapse p-0"
               colSpan={4}
             >
               نسبة الساعات الضائعة
             </td>
-            <td className="border border-zinc-400 border-collapse p-0 bg-white">
+            <td className="border border-zinc-500 border-collapse p-0 bg-white">
               {"% " +
                 (
                   (Number(missedHoursByTeachers) * 100) /
@@ -552,12 +530,12 @@ export default function Ta9rirYawmi({
       <table className="w-full mb-4 text-xm">
         <thead>
           <tr>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               1 ثانوي
             </th>
             {Object.keys(studentsGroupedByClass1).map((student) => {
               return (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                   {student}
                 </th>
               );
@@ -568,22 +546,22 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass1).length,
               }).map(() => (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"></th>
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"></th>
               ))}
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               المجموع
             </th>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               نسبة الغياب
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">التعداد</td>
+            <td className="border border-zinc-500 border-collapse">التعداد</td>
             {Object.keys(studentsGroupedByClass1).map((student) => {
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {studentsGroupedByClass1[student].length}
                 </td>
               );
@@ -594,12 +572,12 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass1).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {studentsGroupedByLevel["أولى"].length}
             </td>
-            <td rowSpan={2} className="border border-zinc-400 border-collapse">
+            <td rowSpan={2} className="border border-zinc-500 border-collapse">
               {(
                 (absencesGroupedByLevel["أولى"].length * 100) /
                 studentsGroupedByLevel["أولى"].length
@@ -607,13 +585,13 @@ export default function Ta9rirYawmi({
             </td>
           </tr>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">الغياب</td>
+            <td className="border border-zinc-500 border-collapse">الغياب</td>
             {Object.keys(studentsGroupedByClass1).map((student) => {
               const numberOfAbsences = absencesGroupedByClass[student]?.length
                 ? absencesGroupedByClass[student]?.length
                 : 0;
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {numberOfAbsences}
                 </td>
               );
@@ -624,21 +602,21 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass1).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {absencesGroupedByLevel["أولى"].length}
             </td>
           </tr>
         </tbody>
         <thead>
           <tr>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               2 ثانوي
             </th>
             {Object.keys(studentsGroupedByClass2).map((student) => {
               return (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                   {student}
                 </th>
               );
@@ -649,22 +627,22 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass2).length,
               }).map(() => (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"></th>
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"></th>
               ))}
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               المجموع
             </th>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               نسبة الغياب
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">التعداد</td>
+            <td className="border border-zinc-500 border-collapse">التعداد</td>
             {Object.keys(studentsGroupedByClass2).map((student) => {
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {studentsGroupedByClass2[student].length}
                 </td>
               );
@@ -675,12 +653,12 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass2).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {studentsGroupedByLevel["ثانية"].length}
             </td>
-            <td rowSpan={2} className="border border-zinc-400 border-collapse">
+            <td rowSpan={2} className="border border-zinc-500 border-collapse">
               {(
                 (absencesGroupedByLevel["ثانية"].length * 100) /
                 studentsGroupedByLevel["ثانية"].length
@@ -688,13 +666,13 @@ export default function Ta9rirYawmi({
             </td>
           </tr>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">الغياب</td>
+            <td className="border border-zinc-500 border-collapse">الغياب</td>
             {Object.keys(studentsGroupedByClass2).map((student) => {
               const numberOfAbsences = absencesGroupedByClass[student]?.length
                 ? absencesGroupedByClass[student]?.length
                 : 0;
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {numberOfAbsences}
                 </td>
               );
@@ -705,21 +683,21 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass2).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {absencesGroupedByLevel["ثانية"].length}
             </td>
           </tr>
         </tbody>
         <thead>
           <tr>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               3 ثانوي
             </th>
             {Object.keys(studentsGroupedByClass3).map((student) => {
               return (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                   {student}
                 </th>
               );
@@ -730,22 +708,22 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass3).length,
               }).map(() => (
-                <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"></th>
+                <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"></th>
               ))}
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               المجموع
             </th>
-            <th className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               نسبة الغياب
             </th>
           </tr>
         </thead>
         <tbody>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">التعداد</td>
+            <td className="border border-zinc-500 border-collapse">التعداد</td>
             {Object.keys(studentsGroupedByClass3).map((student) => {
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {studentsGroupedByClass3[student].length}
                 </td>
               );
@@ -756,12 +734,12 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass3).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {studentsGroupedByLevel["ثالثة"].length}
             </td>
-            <td rowSpan={2} className="border border-zinc-400 border-collapse">
+            <td rowSpan={2} className="border border-zinc-500 border-collapse">
               {(
                 (absencesGroupedByLevel["ثالثة"].length * 100) /
                 studentsGroupedByLevel["ثالثة"].length
@@ -769,13 +747,13 @@ export default function Ta9rirYawmi({
             </td>
           </tr>
           <tr className="text-center">
-            <td className="border border-zinc-400 border-collapse">الغياب</td>
+            <td className="border border-zinc-500 border-collapse">الغياب</td>
             {Object.keys(studentsGroupedByClass3).map((student) => {
               const numberOfAbsences = absencesGroupedByClass[student]?.length
                 ? absencesGroupedByClass[student]?.length
                 : 0;
               return (
-                <td className="border border-zinc-400 border-collapse">
+                <td className="border border-zinc-500 border-collapse">
                   {numberOfAbsences}
                 </td>
               );
@@ -786,9 +764,9 @@ export default function Ta9rirYawmi({
                   minNumberOfCells -
                   Object.keys(studentsGroupedByClass3).length,
               }).map(() => (
-                <td className="border border-zinc-400 border-collapse"></td>
+                <td className="border border-zinc-500 border-collapse"></td>
               ))}
-            <td className="border border-zinc-400 border-collapse">
+            <td className="border border-zinc-500 border-collapse">
               {absencesGroupedByLevel["ثالثة"].length}
             </td>
           </tr>
@@ -797,37 +775,37 @@ export default function Ta9rirYawmi({
           <tr>
             <th
               colSpan={minNumberOfCells - 5}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"
             >
               التعداد الكلي للتلاميذ
             </th>
             <th
               colSpan={1}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-500 py-1 px-1 bg-white"
             >
               {todayCount.length}
             </th>
             <th
               colSpan={4}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"
             >
               التعداد الكلي للغياب
             </th>
             <th
-              rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              rowSpan={1}
+              className="border-separate border border-zinc-500 py-1 px-1 bg-white"
             >
               {data?.length}
             </th>
             <th
-              rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              rowSpan={1}
+              className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200"
             >
               نسبة الغياب
             </th>
             <th
-              rowSpan={2}
-              className="border-separate border border-zinc-400 py-1 px-1 bg-gray-200"
+              rowSpan={1}
+              className="border-separate border border-zinc-500 py-1 px-1 bg-white"
             >
               {((data?.length * 100) / todayCount?.length).toFixed(2) + " %"}
             </th>
@@ -835,7 +813,7 @@ export default function Ta9rirYawmi({
         </thead>
       </table>
       <div className="flex justify-between">
-        <table className="w-2/3 text-xm">
+        <table className="w-2/3 text-center">
           <thead>
             <tr>
               <TableHead colSpan={2} rowSpan={2}>
@@ -858,8 +836,8 @@ export default function Ta9rirYawmi({
               <TableHead>إ</TableHead>
             </tr>
           </thead>
-          <tbody className="text-center">
-            <tr className="text-center">
+          <tbody className="text-center text-sm font-bold">
+            <tr>
               <TableCell colSpan={2}>تعداد الأمس</TableCell>
               <TableCell>
                 {
@@ -1025,7 +1003,7 @@ export default function Ta9rirYawmi({
                 <TableHead>سبب الغياب</TableHead>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="font-bold text-sm">
               <tr>
                 <TableCell>1</TableCell>
                 <TableCell>
@@ -1084,7 +1062,7 @@ export default function Ta9rirYawmi({
         </div>
       </div>
       <div className="flex gap-4 justify-between my-4">
-        <table className="text-center w-full text-xs">
+        <table className="text-center w-full font-bold">
           <caption className="font-bold text-lg">1.4. الدخول الجديد:</caption>
           <thead>
             <tr>
@@ -1105,7 +1083,7 @@ export default function Ta9rirYawmi({
                     <TableCell>{s.class_abbriviation}</TableCell>
                     <TableCell>{s.student_status}</TableCell>
                     <TableCell>
-                      <input type="text" className="w-20 text-center" />
+                      <input type="text" className="w-32 m-0 text-center" />
                     </TableCell>
                   </tr>
                 );
@@ -1121,13 +1099,13 @@ export default function Ta9rirYawmi({
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
                   <TableCell>
-                    <input type="text" className="w-20 text-center" />
+                    <input type="text" className="w-32 m-0 text-center" />
                   </TableCell>
                 </tr>
               ))}
           </tbody>
         </table>
-        <table className="text-center w-full text-xs">
+        <table className="text-center w-full font-bold">
           <caption className="font-bold text-lg">2.4. الخروج الجديد:</caption>
           <thead>
             <tr>
@@ -1148,7 +1126,7 @@ export default function Ta9rirYawmi({
                     <TableCell>{s.class_abbriviation}</TableCell>
                     <TableCell>{s.student_status}</TableCell>
                     <TableCell>
-                      <input type="text" className="w-20 text-center" />
+                      <input type="text" className="w-32 m-0 text-center" />
                     </TableCell>
                   </tr>
                 );
@@ -1164,14 +1142,14 @@ export default function Ta9rirYawmi({
                   <TableCell> </TableCell>
                   <TableCell> </TableCell>
                   <TableCell>
-                    <input type="text" className="w-20 text-center" />
+                    <input type="text" className="w-32 m-0 text-center" />
                   </TableCell>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col  items-end m-8">
+      <div className="flex flex-col  items-end m-2">
         <p className="text-lg font-bold"> مروانة في : {fdate}</p>
       </div>
       <div className="flex justify-between">

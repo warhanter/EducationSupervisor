@@ -41,7 +41,7 @@ export default function MissedModules() {
         قسم: <span>{studentClass}</span>
       </p>
       <div className="m-auto w-max">
-        <table className="m-5 border-separate border border-slate-500">
+        <table className="m-5 border-separate border border-zinc-500 border-slate-500">
           <thead>
             <tr>
               <th className="border border-slate-600 bg-slate-200 p-2">

@@ -45,34 +45,34 @@ export default function MaafiyinPrintTable({
                 القائمة الاسمية لقســـــم: {classname}
               </h1>
               <table className="w-full print:text-[14px] font-medium ">
-                <thead className="border-separate border bg-gray-400">
+                <thead className="border-separate border border-zinc-500 bg-gray-200">
                   <tr>
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       الرقم
                     </th>
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       اللقب
                     </th>
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       الاسم
                     </th>
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       القسم
                     </th>
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       تاريخ الازدياد
                     </th>
                     {table === "moghadirin" && (
-                      <th className="border-separate border py-1 px-1 bg-gray-400">
+                      <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                         تاريخ الخروج
                       </th>
                     )}
                     {table === "wafidin" && (
-                      <th className="border-separate border py-1 px-1 bg-gray-400">
+                      <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                         تاريخ الدخول
                       </th>
                     )}
-                    <th className="border-separate border py-1 px-1 bg-gray-400">
+                    <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       الصفة
                     </th>
                   </tr>
@@ -82,32 +82,32 @@ export default function MaafiyinPrintTable({
                     studentsGroupedByClass[classname].map((student, index) => {
                       return (
                         <tr key={student.student_id}>
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {index + 1}
                           </td>
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.last_name}
                           </td>
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.first_name}
                           </td>
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.full_className}
                           </td>
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.student_DOB?.toLocaleDateString("en-ZA")}
                           </td>
                           {table === "moghadirin" && (
-                            <td className="border border-collapse py-1 px-1">
+                            <td className="border border-collapse border-zinc-500 py-1 px-1">
                               {student?.createdAt?.toLocaleDateString("en-ZA")}
                             </td>
                           )}
                           {table === "wafidin" && (
-                            <td className="border border-collapse py-1 px-1">
+                            <td className="border border-collapse border-zinc-500 py-1 px-1">
                               {student?.student_DOI}
                             </td>
                           )}
-                          <td className="border border-collapse py-1 px-1">
+                          <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.student_status}
                           </td>
                         </tr>
@@ -142,48 +142,48 @@ export default function MaafiyinPrintTable({
         قائمـــــــــة: {title}
       </h1>
       <table className="w-full print:text-[14px] font-medium ">
-        <thead className="border-separate border bg-gray-400">
+        <thead className="border-separate border border-zinc-500 bg-gray-200">
           <tr>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               الرقم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               اللقب
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               الاسم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               القسم
             </th>
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               تاريخ الازدياد
             </th>
             {table === "moghadirin" && (
-              <th className="border-separate border py-1 px-1 bg-gray-400">
+              <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                 تاريخ الخروج
               </th>
             )}
             {table === "wafidin" && (
-              <th className="border-separate border py-1 px-1 bg-gray-400">
+              <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                 تاريخ الدخول
               </th>
             )}
-            <th className="border-separate border py-1 px-1 bg-gray-400">
+            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               الصفة
             </th>
             {table === "marda" && (
-              <th className="border-separate border py-1 px-1 bg-gray-400">
+              <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                 المرض
               </th>
             )}
             {table === "mandoubin" && (
-              <th className="border-separate border py-1 px-1 bg-gray-400">
+              <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                 المندوب
               </th>
             )}
             {table === "yatama" && (
-              <th className="border-separate border py-1 px-1 bg-gray-400">
+              <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                 يتيم
               </th>
             )}
@@ -194,46 +194,46 @@ export default function MaafiyinPrintTable({
             data.map((student, index) => {
               return (
                 <tr key={student._id.toString()}>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {index + 1}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.last_name}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.first_name}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.full_className}
                   </td>
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.student_DOB?.toLocaleDateString("en-ZA")}
                   </td>
                   {table === "moghadirin" && (
-                    <td className="border border-collapse py-1 px-1">
+                    <td className="border border-collapse border-zinc-500 py-1 px-1">
                       {student?.createdAt?.toLocaleDateString("en-ZA")}
                     </td>
                   )}
                   {table === "wafidin" && (
-                    <td className="border border-collapse py-1 px-1">
+                    <td className="border border-collapse border-zinc-500 py-1 px-1">
                       {student?.student_DOI}
                     </td>
                   )}
-                  <td className="border border-collapse py-1 px-1">
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.student_status}
                   </td>
                   {table === "marda" && (
-                    <td className="border border-collapse py-1 px-1">
+                    <td className="border border-collapse border-zinc-500 py-1 px-1">
                       {student?.sickness}
                     </td>
                   )}
                   {table === "mandoubin" && (
-                    <td className="border border-collapse py-1 px-1">
+                    <td className="border border-collapse border-zinc-500 py-1 px-1">
                       {student?.mandoub_name}
                     </td>
                   )}
                   {table === "yatama" && (
-                    <td className="border border-collapse py-1 px-1">
+                    <td className="border border-collapse border-zinc-500 py-1 px-1">
                       {student?.yatim_name}
                     </td>
                   )}
