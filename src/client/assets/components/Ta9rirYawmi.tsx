@@ -220,7 +220,9 @@ export default function Ta9rirYawmi({
         <p className="font-bold text-lg">
           1. الدراســــــــة: <span className="text-sm">دروس لم تقدم</span>
         </p>
-        <p className="font-bold">ليـــــــوم: {fdate}</p>
+        <p className="font-bold">
+          ليـــــــوم: <input className="w-40" defaultValue={fdate}></input>
+        </p>
       </div>
       <table className="text-center w-full mb-4">
         <thead className="border-separate border border-zinc-500 bg-gray-200">
@@ -1150,7 +1152,10 @@ export default function Ta9rirYawmi({
         </table>
       </div>
       <div className="flex flex-col  items-end m-2">
-        <p className="text-lg font-bold"> مروانة في : {fdate}</p>
+        <p className="text-lg font-bold">
+          {" "}
+          مروانة في : <input className="w-40" defaultValue={fdate}></input>
+        </p>
       </div>
       <div className="flex justify-between">
         <p className="font-bold text-xl ">مستشــــار التربيـــــة</p>

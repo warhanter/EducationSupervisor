@@ -15,7 +15,7 @@ import {
 // import TableView from "./TableView";
 // import TableLuncheAbsenceView from "./TableLuncheAbsenceView";
 import { Student, useStudents } from "@/client/providers/StudentProvider";
-import _, { groupBy } from "lodash";
+import _, { groupBy, sortBy } from "lodash";
 import { AlertInfo } from "./Alert";
 import LoadingSpinnerNew from "./LoadingSpinnerNew";
 import PDFPrintTables from "./PDFPrintTables";
@@ -23,6 +23,7 @@ import LuncAbsencePrintTable from "./LuncAbsencePrintTable";
 import MedicalLeavePrintTable from "./MedicalLeavePrintTable";
 import MaafiyinPrintTable from "./MaafiyinPrintTale";
 import Ta9rirYawmi from "./Ta9rirYawmi";
+import TeachersIsti9bal from "./TeachersIstibal";
 
 function PDFPrint() {
   const {
@@ -34,8 +35,9 @@ function PDFPrint() {
     moghadirin,
     wafidin,
     motamadrisin,
+    professors,
+    classrooms,
   } = useStudents();
-
   const [loading, setLoading] = useState(true);
   const [absencesData, setabsencesData] = useState<Student[]>();
   const [table, setTable] = useState("ghiyabat");
@@ -47,7 +49,6 @@ function PDFPrint() {
     new Date().setHours(23)
   );
   const studentsGroupedByClass = groupBy(motamadrisin, "full_className");
-
   const filtredghiyabat = absences?.filter(
     (student) =>
       !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
@@ -390,6 +391,17 @@ function PDFPrint() {
           <Button
             variant="outline"
             className={cn(
+              table === "isti9bal" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("isti9bal");
+            }}
+          >
+            ساعات الاستقبال
+          </Button>
+          <Button
+            variant="outline"
+            className={cn(
               table === "ta9rir" && "bg-accent text-accent-foreground"
             )}
             onClick={() => {
@@ -566,6 +578,16 @@ function PDFPrint() {
                 )}
                 date={rapportDate}
                 title="المعفيين من النصف داخلي بتصريح شرفي"
+              />
+            )}
+            {table === "isti9bal" && !loading && (
+              <TeachersIsti9bal
+                table="isti9bal"
+                data={sortBy(professors, "module_name")}
+                data={sortBy(professors, "module_name")}
+                classrooms={classrooms}
+                date={rapportDate}
+                title="ساعات استقبال الأساتذة"
               />
             )}
             {table === "ta9rir" && !loading && (

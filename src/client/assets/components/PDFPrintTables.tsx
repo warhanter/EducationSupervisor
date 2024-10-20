@@ -5,6 +5,7 @@ import { sortBy } from "lodash";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
+  classrooms: Student[] | undefined;
   date: number;
 };
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
