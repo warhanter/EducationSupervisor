@@ -61,7 +61,7 @@ export default function LuncAbsencePrintTable({ data, date }) {
             })}
         </tbody>
       </table>
-      <p className="font-bold text-xl flex justify-end m-8">
+      <p className="font-bold text-base flex justify-end m-8">
         مستشــــار التربيـــــة
       </p>
     </div>

@@ -224,7 +224,7 @@ export default function Ta9rirYawmi({
           ليـــــــوم: <input className="w-40" defaultValue={fdate}></input>
         </p>
       </div>
-      <table className="text-center w-full mb-4">
+      <table className="text-center w-full mb-2">
         <thead className="border-separate border border-zinc-500 bg-gray-200">
           <tr>
             <th
@@ -421,10 +421,10 @@ export default function Ta9rirYawmi({
                 {teacherKeys.length + i + 1}
               </td>
               <td className="border border-zinc-500 border-collapse p-0">
-                <input type="text" className="w-36 m-0 text-center" />
+                <input type="text" className="w-32 m-0 text-center" />
               </td>
               <td className="border border-zinc-500 p-0 border-collapse">
-                <input type="text" className="w-36 m-0 text-center" />
+                <input type="text" className="w-32 m-0 text-center" />
               </td>
               <td className="border border-zinc-500 p-0 w-8 font-bold">
                 <input className="w-8 m-0 text-center" />
@@ -1063,7 +1063,7 @@ export default function Ta9rirYawmi({
           </table>
         </div>
       </div>
-      <div className="flex gap-4 justify-between my-4">
+      <div className="flex gap-4 justify-between my-2">
         <table className="text-center w-full font-bold">
           <caption className="font-bold text-lg">1.4. الدخول الجديد:</caption>
           <thead>
@@ -1151,16 +1151,15 @@ export default function Ta9rirYawmi({
           </tbody>
         </table>
       </div>
-      <div className="flex flex-col  items-end m-2">
-        <p className="text-lg font-bold">
-          {" "}
+      <div className="flex flex-col  items-end m-0">
+        <p className=" font-bold text-base">
           مروانة في : <input className="w-40" defaultValue={fdate}></input>
         </p>
       </div>
-      <div className="flex justify-between">
-        <p className="font-bold text-xl ">مستشــــار التربيـــــة</p>
-        <p className="font-bold text-xl ">الناظـــــــــــر</p>
-        <p className="font-bold text-xl ">المديـــــــــــر</p>
+      <div className="flex justify-between font-bold text-base">
+        <p>مستشــــار التربيـــــة</p>
+        <p>الناظـــــــــــر</p>
+        <p>المديـــــــــــر</p>
       </div>
     </div>
   );

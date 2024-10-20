@@ -115,9 +115,9 @@ export default function MaafiyinPrintTable({
                     })}
                 </tbody>
               </table>
-              <div className="flex flex-col  items-end m-8">
-                <p className="text-lg font-bold"> مروانة في : {fdate}</p>
-                <p className="font-bold text-xl ">مستشــــار التربيـــــة</p>
+              <div className="flex flex-col  items-end m-2">
+                <p className="text-sm font-bold"> مروانة في : {fdate}</p>
+                <p className="font-bold text-sm ">مستشــــار التربيـــــة</p>
               </div>
             </div>
           );
@@ -242,9 +242,9 @@ export default function MaafiyinPrintTable({
             })}
         </tbody>
       </table>
-      <div className="flex flex-col  items-end m-8">
-        <p className="text-lg font-bold"> مروانة في : {fdate}</p>
-        <p className="font-bold text-xl ">مستشــــار التربيـــــة</p>
+      <div className="flex flex-col  items-end m-2">
+        <p className="text-sm font-bold"> مروانة في : {fdate}</p>
+        <p className="font-bold text-sm ">مستشــــار التربيـــــة</p>
       </div>
     </div>
   );
