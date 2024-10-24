@@ -102,26 +102,26 @@ const StudentProvider = ({ children }: StudentsProviderProps) => {
     professors: undefined,
   });
   const fetchData = async () => {
+    const classroomsPromise = mongo?.collection("Classroom").find();
+    const professorsPromise = mongo?.collection("Professor").find();
     const studentsPromise = mongo?.collection("Student").find();
     const absencesPromise = mongo?.collection("Absence").find();
     const addressesPromise = mongo?.collection("Adress").find();
     const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
-    const classroomsPromise = mongo?.collection("Classroom").find();
-    const professorsPromise = mongo?.collection("Professor").find();
     const [
+      classroomsCollection,
+      professorsCollection,
       studentsCollection,
       absencesCollection,
       addressesCollection,
       lunchAbsencesCollection,
-      classroomsCollection,
-      professorsCollection,
     ] = await Promise.all([
+      classroomsPromise,
+      professorsPromise,
       studentsPromise,
       absencesPromise,
       addressesPromise,
       lunchAbsencesPromise,
-      classroomsPromise,
-      professorsPromise,
     ]);
     setStudents({
       students: studentsCollection,

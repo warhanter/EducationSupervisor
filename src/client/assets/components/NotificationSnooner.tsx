@@ -74,6 +74,8 @@ export function SonnerDemo() {
     students,
     lunchAbsences,
     addresses,
+    professors,
+    classrooms,
   } = useStudents();
   const absenceStatus = notification?.fullDocument?.absence_status;
   const title = absenceStatus ? addtitle : returnTitle;
@@ -85,6 +87,8 @@ export function SonnerDemo() {
       absences,
       addresses,
       lunchAbsences,
+      professors,
+      classrooms,
       notification: undefined,
     });
   }, [notification]);

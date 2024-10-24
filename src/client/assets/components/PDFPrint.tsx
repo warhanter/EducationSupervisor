@@ -584,7 +584,6 @@ function PDFPrint() {
               <TeachersIsti9bal
                 table="isti9bal"
                 data={sortBy(professors, "module_name")}
-                data={sortBy(professors, "module_name")}
                 classrooms={classrooms}
                 date={rapportDate}
                 title="ساعات استقبال الأساتذة"
