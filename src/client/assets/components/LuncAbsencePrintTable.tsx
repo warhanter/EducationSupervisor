@@ -265,13 +265,22 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                   غائبون
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliDokourAbsences + nisfDakhiliDokourAbsences}
+                  {data.length === 0
+                    ? dakhiliDokour + nisfDakhiliDokour
+                    : dakhiliDokourAbsences + nisfDakhiliDokourAbsences}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliInathAbsences + nisfDakhiliInathAbsences}
+                  {data.length === 0
+                    ? dakhiliInath + nisfDakhiliInath
+                    : dakhiliInathAbsences + nisfDakhiliInathAbsences}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {data?.length}
+                  {data?.length === 0
+                    ? dakhiliDokour +
+                      nisfDakhiliDokour +
+                      dakhiliInath +
+                      nisfDakhiliInath
+                    : data?.length}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   0
@@ -289,17 +298,19 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                   حاضرون
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {hadirinDokour}
+                  {data.length === 0 ? 0 : hadirinDokour}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {hadirinInath}
+                  {data.length === 0 ? 0 : hadirinInath}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliDokour +
-                    nisfDakhiliDokour +
-                    dakhiliInath +
-                    nisfDakhiliInath -
-                    data?.length}
+                  {data.length === 0
+                    ? 0
+                    : dakhiliDokour +
+                      nisfDakhiliDokour +
+                      dakhiliInath +
+                      nisfDakhiliInath -
+                      data?.length}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   0
