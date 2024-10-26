@@ -178,13 +178,16 @@ function PDFPrint() {
       studentObject.last_name = studentdataobject[0]?.last_name;
       studentObject.first_name = studentdataobject[0]?.first_name;
       studentObject.tableNumber = studentdataobject[0]?.lunch_table_number;
+      studentObject.gender = studentdataobject[0]?.gender;
+      studentObject.student_status = studentdataobject[0]?.student_status;
       studentObject.justification = studentdataobject[0]
         ?.lunch_absence_justification
-        ? "تصريـــح شرفي"
+        ? "تصريح"
         : // : studentdataobject[0]?.is_absent
           // ? "غائب صباحا"
           "";
       studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
+      studentObject.class = studentdataobject[0]?.class_abbriviation;
       result.push(Object.assign({}, studentObject));
     });
     return result;
@@ -423,6 +426,7 @@ function PDFPrint() {
             {table === "nisfdakhili" && !loading && (
               <LuncAbsencePrintTable
                 data={lunchabsenceData}
+                students={motamadrisin}
                 date={rapportDate}
               />
             )}
