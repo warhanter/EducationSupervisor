@@ -77,9 +77,12 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        s.is_new === true &&
-        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0) &&
+        ((s.is_new === true &&
+          new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+          (s.ta7wil_dakhili === true &&
+            new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+              new Date(date).setHours(0, 0, 0, 0))) &&
         s.student_status === student_status &&
         s.gender === gender
     ).length;
@@ -88,9 +91,12 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        s.is_new === true &&
-        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0) &&
+        ((s.is_new === true &&
+          new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+          (s.ta7wil_dakhili === true &&
+            new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+              new Date(date).setHours(0, 0, 0, 0))) &&
         s.gender === gender
     ).length;
   };
@@ -98,18 +104,24 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        s.is_new === true &&
-        new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0)
+        (s.is_new === true &&
+          new Date(s.student_inscription_date).setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+        (s.ta7wil_dakhili === true &&
+          new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0))
     );
   };
   const goneStudents = (student_status, gender) => {
     return filter(
       allStudents,
       (s) =>
-        (s.switched_school || s.is_fired) &&
-        s.student_leave_date.setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0) &&
+        (((s.switched_school || s.is_fired) &&
+          s.student_leave_date.setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+          (s.ta7wil_dakhili === true &&
+            new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+              new Date(date).setHours(0, 0, 0, 0))) &&
         s.student_status === student_status &&
         s.gender === gender
     ).length;
@@ -118,9 +130,12 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        (s.switched_school || s.is_fired) &&
-        s.student_leave_date.setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0) &&
+        (((s.switched_school || s.is_fired) &&
+          s.student_leave_date.setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+          (s.ta7wil_dakhili === true &&
+            new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+              new Date(date).setHours(0, 0, 0, 0))) &&
         s.gender === gender
     ).length;
   };
@@ -128,9 +143,12 @@ export default function Ta9rirYawmi({
     return filter(
       allStudents,
       (s) =>
-        (s.switched_school || s.is_fired) &&
-        s.student_leave_date.setHours(0, 0, 0, 0) ===
-          new Date(date).setHours(0, 0, 0, 0)
+        ((s.switched_school || s.is_fired) &&
+          s.student_leave_date.setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0)) ||
+        (s.ta7wil_dakhili === true &&
+          new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
+            new Date(date).setHours(0, 0, 0, 0))
     );
   };
 
@@ -1082,7 +1100,11 @@ export default function Ta9rirYawmi({
                   <tr>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{s.full_name}</TableCell>
-                    <TableCell>{s.class_abbriviation}</TableCell>
+                    <TableCell>
+                      {s.prev_class_name
+                        ? s.prev_class_name
+                        : s.class_abbriviation}
+                    </TableCell>
                     <TableCell>{s.student_status}</TableCell>
                     <TableCell>
                       <input type="text" className="w-32 m-0 text-center" />
