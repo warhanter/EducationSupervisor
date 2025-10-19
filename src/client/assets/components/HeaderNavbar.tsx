@@ -22,14 +22,14 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { NavigationMenuTrigger } from "@radix-ui/react-navigation-menu";
+import { supabase } from "@/lib/supabaseClient";
 
 function HeaderNavbar() {
-  const { logOut } = useAuth();
   // const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const handleLogout = async () => {
     try {
-      await logOut();
+      await supabase.auth.signOut();
       setLoading(true);
       // setError();
       location.reload();

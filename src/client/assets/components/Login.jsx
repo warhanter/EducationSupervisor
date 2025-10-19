@@ -1,33 +1,36 @@
-import React, { useRef, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import React, { useState } from "react";
 import { Alert, Button, Card, Container, Form } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const { loginApp, currentUser } = useAuth();
-  const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Added error state
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    try {
-      await loginApp(emailRef.current.value, passwordRef.current.value);
-      setLoading(true);
-      setError();
-      location.reload();
-      navigate("/");
-    } catch (error) {
-      setError(error.error);
-    }
+    setLoading(true);
+    setError(""); // Clear previous errors
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
     setLoading(false);
+
+    if (error) {
+      setError(error.message);
+    } else {
+      // Navigate to dashboard or home page after successful login
+      navigate("/"); // Change to your desired route
+    }
   };
 
-  return currentUser ? (
-    <Navigate to={"/"} replace />
-  ) : (
+  return (
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: "100vh" }}
@@ -36,8 +39,7 @@ const Login = () => {
         <Card>
           <h1 className="text-center mt-4">تسجيل الدخول</h1>
           <Card.Body>
-            {currentUser && <Alert>{currentUser.profile.email}</Alert>}
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSignIn}>
               <Form.Group id="email" className="mb-2">
                 <Form.Label>اسم المستخدم</Form.Label>
                 <Form.Control
@@ -45,7 +47,8 @@ const Login = () => {
                   type="text"
                   placeholder="اسم المستخدم"
                   required
-                  ref={emailRef}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)} // Fixed
                 />
               </Form.Group>
               <Form.Group id="password" className="my-2">
@@ -55,19 +58,17 @@ const Login = () => {
                   type="password"
                   placeholder="كلمة المرور"
                   required
-                  ref={passwordRef}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)} // Fixed
                 />
               </Form.Group>
               <Button className="my-4 w-100" type="submit" disabled={loading}>
-                دخول
+                {loading ? "جاري التحميل..." : "دخول"}
               </Button>
               {error && <Alert variant="danger">{error}</Alert>}
             </Form>
           </Card.Body>
         </Card>
-        {/* <div className="w-100 mt-4">
-          Don't have an account? please create one Sign Up
-        </div> */}
       </div>
     </Container>
   );

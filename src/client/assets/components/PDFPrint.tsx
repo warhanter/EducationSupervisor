@@ -51,7 +51,7 @@ function PDFPrint() {
   const studentsGroupedByClass = groupBy(motamadrisin, "full_className");
   const filtredghiyabat = absences?.filter(
     (student) =>
-      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
   );
   const yatama = motamadrisin.filter((student) => student.yatim);
   const marda = motamadrisin.filter((student) => student.sick);
@@ -82,7 +82,7 @@ function PDFPrint() {
         return;
       }
       const studentFROMDB = motamadrisin.filter(
-        (res) => res._id === student.student_id
+        (res) => res.id === student.student_id
       )[0];
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
@@ -161,13 +161,15 @@ function PDFPrint() {
     let filteredAbsenceData = _.filter(
       lunchAbsences,
       (i) =>
-        new Date(i.absence_date).getTime() > date1 &&
-        new Date(i.absence_date).getTime() < date2
+        // new Date(i.absence_date).getTime() > date1 &&
+        // new Date(i.absence_date).getTime() < date2
+        new Date(i.absence_date).toLocaleDateString() ===
+        new Date(rapportDate).toLocaleDateString()
     );
     filteredAbsenceData.map((student, index) => {
       let studentdataobject = _.filter(
         students,
-        (i) => i?._id === student?.student
+        (i) => i?.id === student?.student_id
       );
       let studentObject: any = {};
       i += 1;
@@ -186,8 +188,8 @@ function PDFPrint() {
         : // : studentdataobject[0]?.is_absent
           // ? "غائب صباحا"
           "";
-      studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
-      studentObject.class = studentdataobject[0]?.class_abbriviation;
+      // studentObject.class = `${studentdataobject[0]?.level} ${studentdataobject[0]?.class_name} ${studentdataobject[0]?.class_number}`;
+      studentObject.class = studentdataobject[0]?.class_abbreviation;
       result.push(Object.assign({}, studentObject));
     });
     return result;

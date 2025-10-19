@@ -4,33 +4,33 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useCallback,
+  useMemo,
 } from "react";
-import _ from "lodash";
-import app from "../realm";
+import { supabase } from "@/lib/supabaseClient";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
-type CollectionType = Realm.Services.MongoDB.MongoDBCollection<any> | undefined;
+// Types
 type Notification = {
   fullDocument: Record<string, any> | undefined;
   operationType: string | undefined;
 };
-export type StudentRealm = Record<string, any>[] | undefined;
+
 export type StudentList = Record<string, any>[];
 export type Student = Record<string, any>;
-type StudentsType = {
-  students: StudentRealm;
-  absences: StudentRealm;
-  addresses: StudentRealm;
-  lunchAbsences: StudentRealm;
-  classrooms: StudentRealm;
-  professors: StudentRealm;
-  notification: Notification | undefined;
-};
-type StudentsProviderProps = {
-  children: ReactNode;
+
+type StudentsData = {
+  students: StudentList;
+  absences: StudentList;
+  addresses: StudentList;
+  lunchAbsences: StudentList;
+  classrooms: StudentList;
+  professors: StudentList;
+  notification?: Notification;
 };
 
-type StudentContextType = {
+type StudentContextType = StudentsData & {
   motamadrisin: StudentList;
   wafidin: StudentList;
   moghadirin: StudentList;
@@ -38,24 +38,21 @@ type StudentContextType = {
   nisfDakhili: StudentList;
   otlaMaradiya: StudentList;
   maafiyin: StudentList;
-  students: StudentRealm;
-  absences: StudentRealm;
-  addresses: StudentRealm;
-  lunchAbsences: StudentRealm;
-  classrooms: StudentRealm;
-  professors: StudentRealm;
-  notification: Notification | undefined;
-  setStudents: ({
-    students,
-    absences,
-    addresses,
-    lunchAbsences,
-    notification,
-    professors,
-  }: StudentsType) => void;
+  refreshData: () => Promise<void>;
 };
 
-const defaultValues = {
+// Table names configuration
+const TABLES = {
+  CLASSROOMS: "classrooms",
+  PROFESSORS: "professors",
+  STUDENTS: "students",
+  ABSENCES: "absences",
+  ADDRESSES: "student_addresses",
+  LUNCH_ABSENCES: "lunch_absences",
+} as const;
+
+// Default context values
+const defaultValues: StudentContextType = {
   motamadrisin: [],
   wafidin: [],
   moghadirin: [],
@@ -69,153 +66,202 @@ const defaultValues = {
   lunchAbsences: [],
   classrooms: [],
   professors: [],
-  setStudents: () => {},
-  notification: {
-    fullDocument: undefined,
-    operationType: undefined,
-  },
+  notification: undefined,
+  refreshData: async () => {},
 };
 
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
-const StudentProvider = ({ children }: StudentsProviderProps) => {
-  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
+const StudentProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
-  const [
-    {
-      students,
-      absences,
-      lunchAbsences,
-      addresses,
-      notification,
-      classrooms,
-      professors,
-    },
-    setStudents,
-  ] = useState<StudentsType>({
-    students: undefined,
-    absences: undefined,
-    lunchAbsences: undefined,
-    addresses: undefined,
+  const [data, setData] = useState<StudentsData>({
+    students: [],
+    absences: [],
+    addresses: [],
+    lunchAbsences: [],
+    classrooms: [],
+    professors: [],
     notification: undefined,
-    classrooms: undefined,
-    professors: undefined,
   });
-  const fetchData = async () => {
-    const classroomsPromise = mongo?.collection("Classroom").find();
-    const professorsPromise = mongo?.collection("Professor").find();
-    const studentsPromise = mongo?.collection("Student").find();
-    const absencesPromise = mongo?.collection("Absence").find();
-    const addressesPromise = mongo?.collection("Adress").find();
-    const lunchAbsencesPromise = mongo?.collection("LunchAbsence").find();
-    const [
-      classroomsCollection,
-      professorsCollection,
-      studentsCollection,
-      absencesCollection,
-      addressesCollection,
-      lunchAbsencesCollection,
-    ] = await Promise.all([
-      classroomsPromise,
-      professorsPromise,
-      studentsPromise,
-      absencesPromise,
-      addressesPromise,
-      lunchAbsencesPromise,
-    ]);
-    setStudents({
-      students: studentsCollection,
-      absences: absencesCollection,
-      addresses: addressesCollection,
-      lunchAbsences: lunchAbsencesCollection,
-      classrooms: classroomsCollection,
-      professors: professorsCollection,
-      notification: undefined,
-    });
-    setLoading(false);
-  };
 
-  const watchforCollectionChanges = async (collection: CollectionType) => {
-    if (!!collection) {
-      for await (const change of collection.watch()) {
-        let documentOBJ, operation;
-        switch (change.operationType) {
-          case "insert": {
-            const { fullDocument, operationType } = change;
-            documentOBJ = fullDocument;
-            operation = operationType;
-            break;
-          }
-          case "update": {
-            const { fullDocument, operationType } = change;
-            documentOBJ = fullDocument;
-            operation = operationType;
-            break;
-          }
-        }
-        setStudents({
-          students: await mongo?.collection("Student").find(),
-          absences: await mongo?.collection("Absence").find(),
-          lunchAbsences,
-          addresses,
-          classrooms,
-          professors,
-          notification: {
-            fullDocument: documentOBJ,
-            operationType: operation,
-          },
-        });
+  // Fetch all data from Supabase
+  const fetchData = useCallback(async () => {
+    try {
+      const [
+        { data: classrooms, error: classroomsError },
+        { data: professors, error: professorsError },
+        { data: students, error: studentsError },
+        { data: absences, error: absencesError },
+        { data: addresses, error: addressesError },
+        { data: lunchAbsences, error: lunchAbsencesError },
+      ] = await Promise.all([
+        supabase.from(TABLES.CLASSROOMS).select("*"),
+        supabase.from(TABLES.PROFESSORS).select("*"),
+        supabase.from(TABLES.STUDENTS).select("*"),
+        supabase.from(TABLES.ABSENCES).select("*"),
+        supabase.from(TABLES.ADDRESSES).select("*"),
+        supabase.from(TABLES.LUNCH_ABSENCES).select("*"),
+      ]);
+
+      // Check for errors
+      const errors = [
+        classroomsError,
+        professorsError,
+        studentsError,
+        absencesError,
+        addressesError,
+        lunchAbsencesError,
+      ].filter(Boolean);
+
+      if (errors.length > 0) {
+        console.error("Errors fetching data:", errors);
       }
-    }
-  };
 
-  useEffect(() => {
-    watchforCollectionChanges(mongo?.collection("Absence"));
-    fetchData();
+      setData({
+        students: students || [],
+        absences: absences || [],
+        addresses: addresses || [],
+        lunchAbsences: lunchAbsences || [],
+        classrooms: classrooms || [],
+        professors: professors || [],
+        notification: undefined,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
-  const motamadrisin = _.filter(
-    students,
-    (i) => !i.is_fired && !i.switched_school
+
+  // Refresh only students and absences (for realtime updates)
+  const refreshStudentsAndAbsences = useCallback(async (payload: any) => {
+    try {
+      const [{ data: students }, { data: absences }] = await Promise.all([
+        supabase.from(TABLES.STUDENTS).select("*"),
+        supabase.from(TABLES.ABSENCES).select("*"),
+      ]);
+
+      setData((prev) => ({
+        ...prev,
+        students: students || [],
+        absences: absences || [],
+        notification: {
+          fullDocument: payload.new,
+          operationType: payload.eventType,
+        },
+      }));
+    } catch (error) {
+      console.error("Error refreshing students and absences:", error);
+    }
+  }, []);
+
+  // Setup realtime subscription
+  useEffect(() => {
+    fetchData();
+
+    const channel: RealtimeChannel = supabase
+      .channel("absence-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: TABLES.ABSENCES,
+        },
+        (payload) => {
+          console.log("Absence change received:", payload);
+          refreshStudentsAndAbsences(payload);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchData, refreshStudentsAndAbsences]);
+
+  // Computed/filtered student lists using useMemo for performance
+  const motamadrisin = useMemo(
+    () => data.students.filter((s) => !s.is_fired && !s.switched_school),
+    [data.students]
   );
-  const wafidin = _.filter(motamadrisin, (i) => i.is_new);
-  const moghadirin = _.filter(students, (i) => i.switched_school);
-  const machtobin = _.filter(students, (i) => i.is_fired);
-  const nisfDakhili = _.filter(
-    motamadrisin,
-    (i) => i.student_status === "نصف داخلي"
+
+  const wafidin = useMemo(
+    () => motamadrisin.filter((s) => s.is_new),
+    [motamadrisin]
   );
-  const otlaMaradiya = _.filter(motamadrisin, (i) => i.medical_leave);
-  const maafiyin = _.filter(motamadrisin, (i) => i.sport_inapt);
-  const contextValue = {
-    motamadrisin,
-    wafidin,
-    moghadirin,
-    machtobin,
-    nisfDakhili,
-    otlaMaradiya,
-    maafiyin,
-    students,
-    absences,
-    addresses,
-    lunchAbsences,
-    notification,
-    classrooms,
-    professors,
-    setStudents,
-  };
-  return !loading ? (
+
+  const moghadirin = useMemo(
+    () => data.students.filter((s) => s.switched_school),
+    [data.students]
+  );
+
+  const machtobin = useMemo(
+    () => data.students.filter((s) => s.is_fired),
+    [data.students]
+  );
+
+  const nisfDakhili = useMemo(
+    () => motamadrisin.filter((s) => s.student_status === "نصف داخلي"),
+    [motamadrisin]
+  );
+
+  const otlaMaradiya = useMemo(
+    () => motamadrisin.filter((s) => s.medical_leave),
+    [motamadrisin]
+  );
+
+  const maafiyin = useMemo(
+    () => motamadrisin.filter((s) => s.sport_inapt),
+    [motamadrisin]
+  );
+
+  const contextValue = useMemo(
+    () => ({
+      ...data,
+      motamadrisin,
+      wafidin,
+      moghadirin,
+      machtobin,
+      nisfDakhili,
+      otlaMaradiya,
+      maafiyin,
+      refreshData: fetchData,
+    }),
+    [
+      data,
+      motamadrisin,
+      wafidin,
+      moghadirin,
+      machtobin,
+      nisfDakhili,
+      otlaMaradiya,
+      maafiyin,
+      fetchData,
+    ]
+  );
+
+  if (loading) {
+    return <SkeletonCard />;
+  }
+
+  return (
     <StudentContext.Provider value={contextValue}>
       {children}
     </StudentContext.Provider>
-  ) : (
-    <SkeletonCard />
   );
 };
 
 export default StudentProvider;
 
 /**
- * custom hook to return database collections data as lists.
- * @returns list of {key, value} pair of objects.
+ * Custom hook to access student context data
+ * @returns Student context with filtered lists and data collections
  */
-export const useStudents = () => useContext(StudentContext);
+export const useStudents = () => {
+  const context = useContext(StudentContext);
+  if (!context) {
+    throw new Error("useStudents must be used within a StudentProvider");
+  }
+  return context;
+};

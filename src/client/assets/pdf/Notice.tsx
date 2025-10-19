@@ -48,8 +48,7 @@ const Notice1Page = ({ state, setOpen }) => {
   const noticeName = state.notice;
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
     (address) =>
-      address.student_id == student._id ||
-      address.full_name == student.full_name
+      address.student_id == student.id || address.full_name == student.full_name
   )[0];
   console.log(student);
   console.log(studentAdress);

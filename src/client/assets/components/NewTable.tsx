@@ -80,6 +80,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   React.useEffect(() => {
     setAbsencesData(generateRapportTableData());
   }, [rapportDate]);
+  console.log(students);
   const studentsTablesData: any = () => {
     switch (queryTbale) {
       case "all":
@@ -137,7 +138,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         return;
       }
       const studentFROMDB = motamadrisin.filter(
-        (res) => res._id === student.student_id
+        (res) => res.id === student.student_id
       )[0];
       i += 1;
       const dateOfAbsence = new Date(student.date_of_absence);
@@ -184,7 +185,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       };
       studentObject.number = index.toString();
       studentObject.id = i.toString();
-      studentObject._id = student.student_id;
+      studentObject.id = student.student_id;
       studentObject.full_name = student.full_name;
       studentObject.level = student.class_level;
       studentObject.class_name = student.class_name;
@@ -194,10 +195,10 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       //   student.level + " " + student.class_name + " " + student.class_number;
       studentObject.full_className = student.full_className;
       studentObject.gender = students?.filter(
-        (a) => a._id === student.student_id
+        (a) => a.id === student.student_id
       )[0].gender;
       studentObject.student_DOB = students?.filter(
-        (a) => a._id === student.student_id
+        (a) => a.id === student.student_id
       )[0].student_DOB;
       studentObject.absence_date = new Intl.DateTimeFormat("en-ZA").format(
         dateOfAbsence
@@ -405,7 +406,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
               {tableTitle}
             </h2>
             <div className="flex items-center gap-x-3">
-              {filter(students, (a) => a._id === data[0].student_id)[0]
+              {filter(students, (a) => a.id === data[0].student_id)[0]
                 .gender === "ذكر" ? (
                 <MaleImage />
               ) : (

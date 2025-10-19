@@ -11,7 +11,7 @@ export async function calcAbsences(studentID, studentClass) {
   // remove Machtobin..
   const filtredAbsences = absences?.filter(
     (student) =>
-      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
   );
   const selectedClass = filtredAbsences?.filter(
     (student) => student.student_id === studentID

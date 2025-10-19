@@ -27,6 +27,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@react-pdf/renderer": "^3.1.9",
+    "@supabase/supabase-js": "^2.75.1",
     "@tanstack/react-table": "^8.15.3",
     "@vitejs/plugin-react": "^4.0.0",
     "bootstrap": "^5.2.3",

@@ -49,6 +49,7 @@ const AbsencesTable = ({
     month: "2-digit",
     year: "numeric",
   };
+  console.log("Absences: ", data);
   const generateRapportTableData = () => {
     let result = [];
     let i = 0;

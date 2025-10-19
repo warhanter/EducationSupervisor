@@ -81,6 +81,7 @@ const Students = ({ queryTbale }) => {
     () => [...new Set(absenceByDate().map((s) => s.full_className))].sort(),
     [rapportDate]
   );
+  console.log("Absences: ", absenceByDate);
   const studentsTablesData = () => {
     if (motamadrisin?.length === 0 || !motamadrisin) {
       setError(
