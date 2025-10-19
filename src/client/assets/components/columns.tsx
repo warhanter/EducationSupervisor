@@ -506,7 +506,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
       return (
         <div>
           <div className="flex items-center gap-x-3">
-            {filter(students, (a) => a._id === row.original.student_id)[0]
+            {filter(students, (a) => a.id === row.original.student_id)[0]
               .gender === "ذكر" ? (
               <MaleImage />
             ) : (
@@ -990,7 +990,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
   //     return (
   //       <div>
   //         <div className="flex items-center gap-x-3">
-  //           {filter(students, (a) => a._id === row.original.student_id)[0]
+  //           {filter(students, (a) => a.id=== row.original.student_id)[0]
   //             .gender === "ذكر" ? (
   //             <MaleImage />
   //           ) : (

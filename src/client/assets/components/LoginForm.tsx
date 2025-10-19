@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,44 +10,49 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "../contexts/AuthContext";
 import { Navigate, useNavigate } from "react-router-dom";
 import { AlertDestructive } from "./Alert";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { Loader } from "lucide-react";
-import { lowerCase } from "lodash";
+import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginForm() {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const { loginApp, currentUser } = useAuth();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [passwodInputType, setPasswodInputType] = useState("password");
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { user } = useAuth();
   const navigation = useNavigate();
-  const handleSubmit = async (e) => {
+
+  const handleSignIn = async (e) => {
     e.preventDefault();
-    try {
-      setError(null);
-      setLoading(true);
-      await loginApp(
-        emailRef.current?.value.toLowerCase(),
-        passwordRef.current?.value
-      );
-      location.reload();
+    setLoading(true);
+    setError(""); // Clear previous errors
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      // Navigate to dashboard or home page after successful login
+      setLoading(false);
+      // <Navigate to="/login" replace />;
+      // location.reload();
       navigation("/");
-    } catch (error) {
-      setError(error.error);
     }
-    setLoading(false);
   };
-  return currentUser ? (
+
+  return user ? (
     <Navigate to={"/"} replace />
   ) : (
     <div className="flex  min-h-screen justify-center  items-center  ">
       <Card className="w-full max-w-sm">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSignIn}>
           <CardHeader>
             <CardTitle className="text-2xl">تسجيل الدخول</CardTitle>
             <CardDescription>
@@ -62,7 +67,9 @@ export default function LoginForm() {
                 type="text"
                 placeholder="username"
                 required
-                ref={emailRef}
+                onChange={(e) => setEmail(e.target.value)} // Fixed
+
+                // ref={emailRef}
               />
             </div>
             <div className="grid gap-2">
@@ -73,7 +80,9 @@ export default function LoginForm() {
                   type={passwodInputType}
                   placeholder="password"
                   required
-                  ref={passwordRef}
+                  onChange={(e) => setPassword(e.target.value)} // Fixed
+
+                  // ref={passwordRef}
                 />
                 {passwodInputType === "password" ? (
                   <EyeClosedIcon

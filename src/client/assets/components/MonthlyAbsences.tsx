@@ -9,68 +9,94 @@ import {
 } from "@/components/ui/dialog";
 import _ from "lodash";
 import { SelectItems } from "./SelectItems";
-import app from "../../realm";
-import { Badge } from "@/components/ui/badge";
 
-const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
-const holidaysCollection = mongo?.collection("Holidays");
-const holidays = await holidaysCollection?.find();
-const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
-  {
-    $lookup: {
-      from: "ClassProgram",
-      localField: "class_program",
-      foreignField: "_id",
-      pipeline: [
-        {
-          $lookup: {
-            from: "Professor",
-            localField: "professor",
-            foreignField: "_id",
-            as: "module",
-          },
-        },
-      ],
-      as: "program",
-    },
-  },
-]);
-const absenceStudents = await mongo?.collection("Absence").aggregate([
-  {
-    $group: {
-      _id: "$student_id",
-      total_missed_hours: { $sum: "$missed_hours" },
-      total_justified_missed_hours: { $sum: "$justified_missed_hours" },
-      className: { $first: "$full_className" },
-      fullName: { $first: "$full_name" },
-      dates: {
-        $push: {
-          supervisor_id: "$supervisor_id",
-          missed_hours: "$missed_hours",
-          justified_missed_hours: "$justified_missed_hours",
-          start: "$date_of_absence",
-          return: "$date_of_return",
-          daysOfAbsence: {
-            $floor: {
-              $divide: [
-                { $subtract: ["$date_of_return", "$date_of_absence"] },
-                86400000,
-              ],
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    $addFields: {
-      total: { $add: ["$total_missed_hours", "$total_justified_missed_hours"] },
-    },
-  },
-  {
-    $sort: { total: -1 },
-  },
-]);
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/lib/supabaseClient";
+
+// Fetch holidays
+const { data: holidays, error: holidaysError } = await supabase
+  .from("holidays")
+  .select("*");
+
+if (holidaysError) {
+  console.error("Error fetching holidays:", holidaysError);
+}
+
+// Fetch classroom with program and professor details (JOIN equivalent)
+const { data: selectedClassProgram, error: classProgramError } =
+  await supabase.from("classrooms").select(`
+    *,
+    program:class_programs!classrooms_class_program_fkey (
+      *,
+      module:professors!class_programs_professor_fkey (*)
+    )
+  `);
+
+if (classProgramError) {
+  console.error("Error fetching class program:", classProgramError);
+}
+
+// Fetch all absences with student details
+const { data: absencesData, error: absencesError } = await supabase
+  .from("absences")
+  .select("*")
+  .order("student_id");
+
+if (absencesError) {
+  console.error("Error fetching absences:", absencesError);
+}
+
+// Process absences data (GROUP BY equivalent in JavaScript)
+const absenceStudents = absencesData
+  ? Object.values(
+      absencesData.reduce((acc, absence) => {
+        const studentId = absence.student_id;
+
+        if (!acc[studentId]) {
+          acc[studentId] = {
+            _id: studentId,
+            total_missed_hours: 0,
+            total_justified_missed_hours: 0,
+            className: absence.full_className,
+            fullName: absence.full_name,
+            dates: [],
+          };
+        }
+
+        // Aggregate totals
+        acc[studentId].total_missed_hours += absence.missed_hours || 0;
+        acc[studentId].total_justified_missed_hours +=
+          absence.justified_missed_hours || 0;
+
+        // Calculate days of absence
+        const dateOfAbsence = new Date(absence.date_of_absence);
+        const dateOfReturn = new Date(absence.date_of_return);
+        const daysOfAbsence = Math.floor(
+          (dateOfReturn.getTime() - dateOfAbsence.getTime()) / 86400000
+        );
+
+        // Add absence details
+        acc[studentId].dates.push({
+          supervisor_id: absence.supervisor_id,
+          missed_hours: absence.missed_hours,
+          justified_missed_hours: absence.justified_missed_hours,
+          start: absence.date_of_absence,
+          return: absence.date_of_return,
+          daysOfAbsence,
+        });
+
+        return acc;
+      }, {} as Record<string, any>)
+    )
+      // Add total field
+      .map((student) => ({
+        ...student,
+        total:
+          student.total_missed_hours + student.total_justified_missed_hours,
+      }))
+      // Sort by total (descending)
+      .sort((a, b) => b.total - a.total)
+  : [];
 
 Date.prototype.between = function (a, b) {
   let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
@@ -113,7 +139,7 @@ export function MonthlyAbsences({
     _.uniqBy(data, (e) => e.full_className),
     "class_abbriviation"
   );
-  const program = selectedClassProgram.filter(
+  const program = selectedClassProgram?.filter(
     (a) => a?.class_fullName === level
   )[0]?.program;
   const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];

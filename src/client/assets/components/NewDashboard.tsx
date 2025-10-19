@@ -200,11 +200,11 @@ export function NewDashboard() {
   const mamno7in = nisfDakhili?.filter((student) => student.is_mamnouh);
   const filtredAbsences = absences?.filter(
     (student) =>
-      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
   );
   const filtredghiyabat = ghiyab?.filter(
     (student) =>
-      !students?.filter((b) => b._id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
   );
   // returns all students as {key: full_name, value: student_object}
   // to remove dublicates by full_name later.
@@ -355,7 +355,7 @@ export function NewDashboard() {
               {newData &&
                 newData?.slice(0, 10).map((student, index) => {
                   const gender = students?.filter(
-                    (bb) => bb._id === student.student_id
+                    (bb) => bb.id === student.student_id
                   )[0]?.gender;
                   return (
                     <StudentCard

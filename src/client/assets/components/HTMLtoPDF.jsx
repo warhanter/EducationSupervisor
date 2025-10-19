@@ -141,7 +141,7 @@ const MyDocument = () => {
     filteredAbsenceData.map((student, index) => {
       let studentdataobject = _.filter(
         students,
-        (i) => i?._id === student?.student
+        (i) => i?.id === student?.student
       );
       let studentObject = {};
       i += 1;
