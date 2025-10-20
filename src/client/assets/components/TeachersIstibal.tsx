@@ -21,7 +21,7 @@ export default function TeachersIsti9bal({
     dateStyle: "full",
   });
 
-  const studentsGroupedByClass = groupBy(data, "full_className");
+  const studentsGroupedByClass = groupBy(data, "full_class_name");
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="text-center">
@@ -65,7 +65,7 @@ export default function TeachersIsti9bal({
           {data &&
             data.map((student, index) => {
               return (
-                <tr key={student._id.toString()}>
+                <tr key={student.id.toString()}>
                   <td className="border border-collapse border-zinc-500 p-1">
                     {index + 1}
                   </td>
@@ -96,7 +96,7 @@ export default function TeachersIsti9bal({
                           filter(
                             classrooms,
                             (classroom) =>
-                              classroom._id.toString() === c.toString()
+                              classroom.id.toString() === c.toString()
                           )[0]?.class_prefix +
                           " "}
                       </span>

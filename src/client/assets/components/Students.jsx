@@ -48,7 +48,7 @@ const Students = ({ queryTbale }) => {
   const [error, setError] = useState();
   const searchRef = useRef();
   const allClasses = [
-    ...new Set(motamadrisin.map((s) => s.full_className)),
+    ...new Set(motamadrisin.map((s) => s.full_class_name)),
   ].sort();
 
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
@@ -62,7 +62,7 @@ const Students = ({ queryTbale }) => {
       setSelectedClass(value);
       setCurrentItems(
         studentsTablesData().filter(
-          (student) => student.full_className === value
+          (student) => student.full_class_name === value
         )
       );
     },
@@ -78,7 +78,7 @@ const Students = ({ queryTbale }) => {
     );
   }, [rapportDate, absences]);
   const allAbsenceClasses = useMemo(
-    () => [...new Set(absenceByDate().map((s) => s.full_className))].sort(),
+    () => [...new Set(absenceByDate().map((s) => s.full_class_name))].sort(),
     [rapportDate]
   );
   console.log("Absences: ", absenceByDate);
@@ -138,7 +138,7 @@ const Students = ({ queryTbale }) => {
         i.first_name.search(fistName) >= 0 ||
         i.last_name.search(fistName) >= 0 ||
         (i.last_name + " " + i.first_name).search(fistName) >= 0 ||
-        new Date(i.student_DOB).toLocaleDateString("fr").search(fistName) >= 0
+        new Date(i.student_dob).toLocaleDateString("fr").search(fistName) >= 0
     );
     setCurrentItems(filtredData);
     setPageCount(1);

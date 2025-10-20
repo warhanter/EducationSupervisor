@@ -22,13 +22,13 @@ export async function calcAbsences(studentID, studentClass) {
       $lookup: {
         from: "ClassProgram",
         localField: "class_program",
-        foreignField: "_id",
+        foreignField: "id",
         pipeline: [
           {
             $lookup: {
               from: "Professor",
               localField: "professor",
-              foreignField: "_id",
+              foreignField: "id",
               as: "module",
             },
           },

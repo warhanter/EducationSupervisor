@@ -54,10 +54,10 @@ const absenceStudents = absencesData
 
         if (!acc[studentId]) {
           acc[studentId] = {
-            _id: studentId,
+            id: studentId,
             total_missed_hours: 0,
             total_justified_missed_hours: 0,
-            className: absence.full_className,
+            className: absence.full_class_name,
             fullName: absence.full_name,
             dates: [],
           };
@@ -136,8 +136,8 @@ export function MonthlyAbsences({
   const [month, setMonth] = useState(1);
   const [year, setYear] = useState(2024);
   const levels = _.sortBy(
-    _.uniqBy(data, (e) => e.full_className),
-    "class_abbriviation"
+    _.uniqBy(data, (e) => e.full_class_name),
+    "class_abbreviation"
   );
   const program = selectedClassProgram?.filter(
     (a) => a?.class_fullName === level
@@ -148,12 +148,12 @@ export function MonthlyAbsences({
   const allClassStudents = useMemo(
     () =>
       students
-        .filter((student) => student.full_className === level)
+        .filter((student) => student.full_class_name === level)
         .sort((a, b) => a.full_name.localeCompare(b.full_name)),
     [level]
   );
   const absentClassData = useMemo(
-    () => data.filter((student) => student.full_className === level),
+    () => data.filter((student) => student.full_class_name === level),
     [level]
   );
   const selectedDates = _.filter(
@@ -166,7 +166,7 @@ export function MonthlyAbsences({
     studentsData.push({
       number: i + 1,
       name: student.full_name,
-      className: student.full_className,
+      className: student.full_class_name,
       missedHours: missedHours(
         student.date_of_absence.getTime(),
         date,
@@ -251,7 +251,7 @@ export function MonthlyAbsences({
                 iconTitle="اختر القسم"
                 title="الاقسام"
                 items={levels}
-                itemName="full_className"
+                itemName="full_class_name"
                 setLevel={setLevel}
               />
               <p>الشهر</p>
@@ -259,7 +259,7 @@ export function MonthlyAbsences({
                 iconTitle="اختر الشهر"
                 title="الأشهر"
                 items={months}
-                itemName="full_className"
+                itemName="full_class_name"
                 setLevel={setMonth}
               />
               <p>السنة</p>
@@ -267,7 +267,7 @@ export function MonthlyAbsences({
                 iconTitle="اختر السنة"
                 title="السنوات"
                 items={years}
-                itemName="full_className"
+                itemName="full_class_name"
                 setLevel={setYear}
               />
             </div>
@@ -311,10 +311,10 @@ export function MonthlyAbsences({
                             const missedH =
                               studentsData2[
                                 `${year}-${month}-${num + 1}`
-                              ]?.filter((a) => a.id === student._id).length > 0
+                              ]?.filter((a) => a.id === student.id).length > 0
                                 ? studentsData2[
                                     `${year}-${month}-${num + 1}`
-                                  ].filter((a) => a.id === student._id)[0]
+                                  ].filter((a) => a.id === student.id)[0]
                                     .missedHours
                                 : 0;
                             total += missedH;

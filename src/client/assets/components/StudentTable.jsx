@@ -30,7 +30,7 @@ const StudentTable = ({ data, tableName, itemOffset }) => {
                 <td>{student.first_name}</td>
                 <td>
                   {reverseString(
-                    new Date(student.student_DOB).toLocaleDateString("fr"),
+                    new Date(student.student_dob).toLocaleDateString("fr"),
                     "/"
                   )}
                 </td>

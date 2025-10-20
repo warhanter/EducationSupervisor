@@ -60,7 +60,7 @@ export default function MedicalLeavePrintTable({ data, date, title }) {
                     {student.first_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.full_className}
+                    {student.full_class_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.medical_leave_startDate.toLocaleDateString(

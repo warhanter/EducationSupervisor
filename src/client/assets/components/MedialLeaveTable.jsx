@@ -22,7 +22,7 @@ const MedicalLeaveTable = ({ data }) => {
       <tbody>
         {data &&
           data.map((student, i) => {
-            const student_DOI = new Date(student.student_DOB);
+            const student_DOI = new Date(student.student_dob);
             const startDate = new Date(student.medical_leave_startDate);
             const endDate = new Date(student.medical_leave_endDate);
             const todayDate = new Date();

@@ -12,7 +12,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
-  const absencesData = sortBy(data, (student) => student.class_abbriviation);
+  const absencesData = sortBy(data, (student) => student.class_abbreviation);
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="flex justify-between">

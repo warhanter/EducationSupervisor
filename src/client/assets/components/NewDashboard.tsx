@@ -175,7 +175,7 @@ function StudentCard({ student, gender, total }: StudentCardProps) {
                 {student.full_name}
               </span>
               <span className="block text-xs md:text-sm text-gray-500">
-                {student.full_className}
+                {student.full_class_name}
               </span>
             </div>
           </div>

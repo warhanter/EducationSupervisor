@@ -172,13 +172,11 @@ const Notice1Page = ({ state, setOpen }) => {
         </p>
         <p>
           {gender.birth} بتاريخ:{" "}
-          <span className="font-bold">
-            {student.student_DOB?.toLocaleDateString("en-ZA")}
-          </span>
+          <span className="font-bold">{student.student_dob}</span>
         </p>
         <p>
           القســـــم:{" "}
-          <span className="font-bold">{student.full_className}</span>
+          <span className="font-bold">{student.full_class_name}</span>
         </p>
         <p>
           قـد {gender.absence} عـن الدراسـة منـذ{" "}

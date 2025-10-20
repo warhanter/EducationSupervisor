@@ -185,12 +185,12 @@ const AbsencesTable = ({
           : "شطب";
       };
       studentObject.student_id = student.student_id;
-      studentObject.absence_id = student._id;
+      studentObject.absence_id = student.id;
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
       studentObject.student_status = student.student_status;
       studentObject.absence_status = student.absence_status;
-      studentObject.full_className = student.full_className;
+      studentObject.full_class_name = student.full_class_name;
       studentObject.absence_date = new Intl.DateTimeFormat(
         "fr",
         date_format2
@@ -228,11 +228,11 @@ const AbsencesTable = ({
         .db("2024")
         .collection("Absence");
       StudentCollection.updateOne(
-        { _id: deleteData?.student_id },
+        { id: deleteData?.student_id },
         { $set: { is_absent: false, absence_date: null } }
       );
       AbsenceCollection.updateOne(
-        { _id: deleteData?.absence_id },
+        { id: deleteData?.absence_id },
         {
           $set: {
             absence_status: false,
@@ -329,7 +329,7 @@ const AbsencesTable = ({
                   <td>{itemOffset + i + 1}</td>
                   <td>{student.last_name}</td>
                   <td>{student.first_name}</td>
-                  <td>{student.full_className}</td>
+                  <td>{student.full_class_name}</td>
                   <td>{reverseString(student.absence_date, "/")}</td>
                   <td>{student.missed_hours}</td>
                   <td>{student.absence_days}</td>

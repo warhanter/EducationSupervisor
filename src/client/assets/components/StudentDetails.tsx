@@ -18,7 +18,7 @@ type DialogDemoProps = {
 export function StudentDialog({ open, setOpen, student }: DialogDemoProps) {
   const { addresses } = useStudents();
   const studentAddress = addresses?.filter(
-    (address) => address.student_id === student._id
+    (address) => address.student_id === student.id
   )[0];
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -34,7 +34,7 @@ export function StudentDialog({ open, setOpen, student }: DialogDemoProps) {
               </Label>
               <Input
                 id="name"
-                defaultValue={student._id}
+                defaultValue={student.id}
                 className="col-span-3 disabled:font-bold"
                 disabled
               />
@@ -56,7 +56,7 @@ export function StudentDialog({ open, setOpen, student }: DialogDemoProps) {
               </Label>
               <Input
                 id="username"
-                defaultValue={student.full_className}
+                defaultValue={student.full_class_name}
                 className="col-span-3 disabled:font-bold"
                 disabled
               />
@@ -91,7 +91,7 @@ export function StudentDialog({ open, setOpen, student }: DialogDemoProps) {
               </Label>
               <Input
                 id="username"
-                defaultValue={student.student_DOB?.toLocaleDateString("en-ZA")}
+                defaultValue={student.student_dob}
                 className="col-span-3 disabled:font-bold"
                 disabled
               />

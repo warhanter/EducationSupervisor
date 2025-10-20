@@ -191,15 +191,15 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       studentObject.class_name = student.class_name;
       studentObject.class_number = student.class_number;
       studentObject.student_status = student.student_status;
-      // studentObject.full_className =
+      // studentObject.full_class_name =
       //   student.level + " " + student.class_name + " " + student.class_number;
-      studentObject.full_className = student.full_className;
+      studentObject.full_class_name = student.full_class_name;
       studentObject.gender = students?.filter(
         (a) => a.id === student.student_id
       )[0].gender;
-      studentObject.student_DOB = students?.filter(
+      studentObject.student_dob = students?.filter(
         (a) => a.id === student.student_id
-      )[0].student_DOB;
+      )[0].student_dob;
       studentObject.absence_date = new Intl.DateTimeFormat("en-ZA").format(
         dateOfAbsence
       );
@@ -272,7 +272,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       !student.lunch_paid &&
       !student.is_mamnouh
   ).length;
-  const labels = table.getColumn("full_className")?.getFacetedUniqueValues();
+  const labels = table.getColumn("full_class_name")?.getFacetedUniqueValues();
   const labels2 = new Map([
     ["نصف داخلي", nisfDakhili.length],
     ["الممنوحين", mamnouhin],
@@ -285,7 +285,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   labels?.forEach((_, b) => vals.push({ label: b, value: b }));
   labels2?.forEach((a, b) => vals2.push({ label: b + ": " + a, value: b }));
   vals.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
-  const isFiltered1 = table.getColumn("full_className")?.getIsFiltered();
+  const isFiltered1 = table.getColumn("full_class_name")?.getIsFiltered();
   return (
     <div className="flex min-h-screen w-full flex-col">
       <HeaderNavbar />
@@ -316,9 +316,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                 />
               </div>
               <div className="flex content-center justify-center gap-4">
-                {table.getColumn("full_className") && (
+                {table.getColumn("full_class_name") && (
                   <DataTableFacetedFilter
-                    column={table.getColumn("full_className")}
+                    column={table.getColumn("full_class_name")}
                     title="القسم"
                     options={vals}
                   />
@@ -417,7 +417,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   {data[0].full_name}
                 </span>
                 <span className="block text-sm text-gray-500">
-                  {data[0].full_className}
+                  {data[0].full_class_name}
                 </span>
               </div>
             </div>
