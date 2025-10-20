@@ -27,7 +27,7 @@ type AbsenceAlertProps = {
 // Components
 const AbsenceAlert = ({ notification, title }: AbsenceAlertProps) => {
   const fullName = notification?.fullDocument?.full_name;
-  const className = notification?.fullDocument?.full_className;
+  const className = notification?.fullDocument?.full_class_name;
   const dateOfAbsence = notification?.fullDocument?.date_of_absence;
 
   return (

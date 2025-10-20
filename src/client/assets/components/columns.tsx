@@ -23,14 +23,14 @@ import Convocation from "./Convocation";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { NoticeDialog } from "./NoticeDialog";
 export type Student = {
-  _id: number;
+  id: number;
   student_id: number;
   class_number: number;
   total_missedH: number;
   total_Justified?: number;
   total_NonJustified?: number;
   class_name: string;
-  full_className: string;
+  full_class_name: string;
   full_name: string;
   level: string;
   gender: string;
@@ -38,7 +38,7 @@ export type Student = {
   is_new: boolean;
   idmaj: boolean;
   switched_school: boolean;
-  student_DOB: Date;
+  student_dob: Date;
   student_status: string;
   noticeName: string;
   absence_days: string;
@@ -123,7 +123,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "full_className",
+    accessorKey: "full_class_name",
     header: ({ column }) => {
       return (
         <Button
@@ -140,7 +140,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       return (
         <div className="p-0">
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_className")}
+            {row.getValue("full_class_name")}
           </span>
         </div>
       );
@@ -182,7 +182,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "student_DOB",
+    accessorKey: "student_dob",
     header: ({ column }) => {
       return (
         <Button
@@ -196,7 +196,7 @@ export const studentsColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("student_DOB");
+      const date: Date = row.getValue("student_dob");
 
       return (
         <div className="text-right font-medium text-gray-500 ml-10">
@@ -319,7 +319,7 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "full_className",
+    accessorKey: "full_class_name",
     header: ({ column }) => {
       return (
         <Button
@@ -336,7 +336,7 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
       return (
         <div className="p-0">
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_className")}
+            {row.getValue("full_class_name")}
           </span>
         </div>
       );
@@ -390,7 +390,7 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "student_DOB",
+    accessorKey: "student_dob",
     header: ({ column }) => {
       return (
         <Button
@@ -404,7 +404,7 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("student_DOB");
+      const date: Date = row.getValue("student_dob");
 
       return (
         <div className="text-right font-medium text-gray-500 ml-10">
@@ -526,7 +526,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "full_className",
+    accessorKey: "full_class_name",
     header: ({ column }) => {
       return (
         <Button
@@ -543,7 +543,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
       return (
         <div>
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_className")}
+            {row.getValue("full_class_name")}
           </span>
         </div>
       );
@@ -676,7 +676,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
                   navigate("/studentMissedModules", {
                     state: {
                       studentID: row.original.student_id,
-                      studentClass: row.original.full_className,
+                      studentClass: row.original.full_class_name,
                       name: row.original.full_name,
                     },
                   });
@@ -722,7 +722,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "_id",
+    accessorKey: "id",
     header: "الرقم",
     cell: ({ row, table }) => (
       <div className="text-base font-bold m-0 p-0">
@@ -765,7 +765,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
     },
   },
   {
-    accessorKey: "full_className",
+    accessorKey: "full_class_name",
     header: ({ column }) => {
       return (
         <Button
@@ -781,7 +781,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
       return (
         <div className="p-0">
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_className")}
+            {row.getValue("full_class_name")}
           </span>
         </div>
       );
@@ -877,7 +877,7 @@ export const absencesColumns: ColumnDef<Student>[] = [
                   navigate("/studentAbsencesRecords", {
                     state: filter(
                       absences,
-                      (a) => a.student_id === row.original._id
+                      (a) => a.student_id === row.original.id
                     ),
                   });
                 }}
@@ -960,7 +960,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "_id",
+    accessorKey: "id",
     header: "الرقم",
     cell: ({ row, table }) => (
       <div className="text-base font-bold m-0 p-0">
@@ -1010,7 +1010,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
   //   },
   // },
   // {
-  //   accessorKey: "full_className",
+  //   accessorKey: "full_class_name",
   //   header: ({ column }) => {
   //     return (
   //       <Button
@@ -1027,7 +1027,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
   //     return (
   //       <div className="p-0">
   //         <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-  //           {row.getValue("full_className")}
+  //           {row.getValue("full_class_name")}
   //         </span>
   //       </div>
   //     );

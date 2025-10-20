@@ -48,7 +48,7 @@ function PDFPrint() {
   const [rapportDate, setRapportDate] = useState<number>(
     new Date().setHours(23)
   );
-  const studentsGroupedByClass = groupBy(motamadrisin, "full_className");
+  const studentsGroupedByClass = groupBy(motamadrisin, "full_class_name");
   const filtredghiyabat = absences?.filter(
     (student) =>
       !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
@@ -135,7 +135,7 @@ function PDFPrint() {
       studentObject.medical_leave = medicalLeave ? "ش طبية" : "";
       studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
       studentObject.level = student.class_level;
-      studentObject.class_abbriviation = student.class_abbriviation;
+      studentObject.class_abbreviation = student.class_abbreviation;
       studentObject.absence_date = new Intl.DateTimeFormat("fr", {
         day: "2-digit",
         month: "2-digit",
@@ -435,9 +435,9 @@ function PDFPrint() {
             {table === "otla" && !loading && (
               <MedicalLeavePrintTable
                 data={otlaMaradiya.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -448,9 +448,9 @@ function PDFPrint() {
             {table === "maafiyin" && !loading && (
               <MaafiyinPrintTable
                 data={maafiyin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -462,9 +462,9 @@ function PDFPrint() {
             {table === "yatama" && !loading && (
               <MaafiyinPrintTable
                 data={yatama.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -476,9 +476,9 @@ function PDFPrint() {
             {table === "mo3wazin" && !loading && (
               <MaafiyinPrintTable
                 data={mo3wazin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -490,9 +490,9 @@ function PDFPrint() {
             {table === "mandoubin" && !loading && (
               <MaafiyinPrintTable
                 data={mandoubin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -504,9 +504,9 @@ function PDFPrint() {
             {table === "marda" && !loading && (
               <MaafiyinPrintTable
                 data={marda.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -518,9 +518,9 @@ function PDFPrint() {
             {table === "wafidin" && !loading && (
               <MaafiyinPrintTable
                 data={wafidin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -546,9 +546,9 @@ function PDFPrint() {
             {table === "motamadrisin" && !loading && (
               <MaafiyinPrintTable
                 data={motamadrisin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -560,9 +560,9 @@ function PDFPrint() {
             {table === "motamadrisinByclass" && !loading && (
               <MaafiyinPrintTable
                 data={motamadrisin.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}
@@ -576,9 +576,9 @@ function PDFPrint() {
               <MaafiyinPrintTable
                 table="tasrih_charafi"
                 data={tasrih_charafi.sort((a, b) =>
-                  a.class_abbriviation > b.class_abbriviation
+                  a.class_abbreviation > b.class_abbreviation
                     ? 1
-                    : b.class_abbriviation > a.class_abbriviation
+                    : b.class_abbreviation > a.class_abbreviation
                     ? -1
                     : 0
                 )}

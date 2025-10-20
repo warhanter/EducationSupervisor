@@ -20,7 +20,7 @@ export default function MaafiyinPrintTable({
     dateStyle: "full",
   });
 
-  const studentsGroupedByClass = groupBy(data, "full_className");
+  const studentsGroupedByClass = groupBy(data, "full_class_name");
 
   return multi ? (
     <div id="section-to-print">
@@ -92,10 +92,10 @@ export default function MaafiyinPrintTable({
                             {student.first_name}
                           </td>
                           <td className="border border-collapse border-zinc-500 py-1 px-1">
-                            {student.full_className}
+                            {student.full_class_name}
                           </td>
                           <td className="border border-collapse border-zinc-500 py-1 px-1">
-                            {student.student_DOB?.toLocaleDateString("en-ZA")}
+                            {student.student_dob}
                           </td>
                           {table === "moghadirin" && (
                             <td className="border border-collapse border-zinc-500 py-1 px-1">
@@ -193,7 +193,7 @@ export default function MaafiyinPrintTable({
           {data &&
             data.map((student, index) => {
               return (
-                <tr key={student._id.toString()}>
+                <tr key={student.id.toString()}>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {index + 1}
                   </td>
@@ -204,10 +204,10 @@ export default function MaafiyinPrintTable({
                     {student.first_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.full_className}
+                    {student.full_class_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.student_DOB?.toLocaleDateString("en-ZA")}
+                    {student.student_dob}
                   </td>
                   {table === "moghadirin" && (
                     <td className="border border-collapse border-zinc-500 py-1 px-1">

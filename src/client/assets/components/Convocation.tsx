@@ -36,7 +36,7 @@ type ConvocationProps = {
 export default function Convocation({ data, title }: ConvocationProps) {
   const { addresses } = useStudents();
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
-    (address) => address.student_id == data._id
+    (address) => address.student_id == data.id
   )[0];
   const [fatherName, setFatherName] = useState(
     studentAdress?.last_name + " " + studentAdress?.father_name
@@ -128,7 +128,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
               </p>
               <p className="mt-4">
                 وهذا للأسباب المذكورة أسفله التي تهم إبنكم / إبنتكم من القسم :
-                <span className="font-bold">{data.full_className}</span>
+                <span className="font-bold">{data.full_class_name}</span>
               </p>
 
               <ul className="mt-5 mb-2">

@@ -41,7 +41,7 @@ export default function Ta9rirYawmi({
   const todayCount = filter(
     allStudents,
     (student) =>
-      student.student_inscription_date < todayDate &&
+      new Date(student.student_inscription_date) < todayDate &&
       !(
         (student.switched_school == true || student.is_fired == true) &&
         student.student_leave_date < todayDate
@@ -50,25 +50,25 @@ export default function Ta9rirYawmi({
   const studentsGroupedByLevel = groupBy(todayCount, "level");
   const absencesGroupedByLevel = groupBy(data, "level");
   const studentsGroupedByClass1 = groupBy(
-    sortBy(studentsGroupedByLevel["أولى"], "class_abbriviation"),
-    "class_abbriviation"
+    sortBy(studentsGroupedByLevel["أولى"], "class_abbreviation"),
+    "class_abbreviation"
   );
   const studentsGroupedByClass2 = groupBy(
-    sortBy(studentsGroupedByLevel["ثانية"], "class_abbriviation"),
-    "class_abbriviation"
+    sortBy(studentsGroupedByLevel["ثانية"], "class_abbreviation"),
+    "class_abbreviation"
   );
   const studentsGroupedByClass3 = groupBy(
-    sortBy(studentsGroupedByLevel["ثالثة"], "class_abbriviation"),
-    "class_abbriviation"
+    sortBy(studentsGroupedByLevel["ثالثة"], "class_abbreviation"),
+    "class_abbreviation"
   );
-  const absencesGroupedByClass = groupBy(data, "class_abbriviation");
-  // const studentsGroupedByClass1 = groupBy(data, "full_className");
+  const absencesGroupedByClass = groupBy(data, "class_abbreviation");
+  // const studentsGroupedByClass1 = groupBy(data, "full_class_name");
 
   const minNumberOfCells = max(
     Object.keys(studentsGroupedByLevel).map(
       (level) =>
         Object.keys(
-          groupBy(studentsGroupedByLevel[level], "class_abbriviation")
+          groupBy(studentsGroupedByLevel[level], "class_abbreviation")
         ).length
     )
   );
@@ -1094,7 +1094,7 @@ export default function Ta9rirYawmi({
             </tr>
           </thead>
           <tbody>
-            {sortBy(allNewStudents(), (s) => s.class_abbriviation)?.map(
+            {sortBy(allNewStudents(), (s) => s.class_abbreviation)?.map(
               (s, index) => {
                 return (
                   <tr>
@@ -1103,7 +1103,7 @@ export default function Ta9rirYawmi({
                     <TableCell>
                       {s.prev_class_name
                         ? s.prev_class_name
-                        : s.class_abbriviation}
+                        : s.class_abbreviation}
                     </TableCell>
                     <TableCell>{s.student_status}</TableCell>
                     <TableCell>
@@ -1141,13 +1141,13 @@ export default function Ta9rirYawmi({
             </tr>
           </thead>
           <tbody>
-            {sortBy(AllGoneStudents(), (s) => s.class_abbriviation)?.map(
+            {sortBy(AllGoneStudents(), (s) => s.class_abbreviation)?.map(
               (s, index) => {
                 return (
                   <tr>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{s.full_name}</TableCell>
-                    <TableCell>{s.class_abbriviation}</TableCell>
+                    <TableCell>{s.class_abbreviation}</TableCell>
                     <TableCell>{s.student_status}</TableCell>
                     <TableCell>
                       <input type="text" className="w-32 m-0 text-center" />
