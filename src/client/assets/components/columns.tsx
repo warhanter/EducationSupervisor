@@ -196,12 +196,10 @@ export const studentsColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("student_dob");
+      const date: string = row.getValue("student_dob");
 
       return (
-        <div className="text-right font-medium text-gray-500 ml-10">
-          {date?.toLocaleDateString("en-ZA")}
-        </div>
+        <div className="text-right font-medium text-gray-500 ml-10">{date}</div>
       );
     },
   },
@@ -404,12 +402,10 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("student_dob");
+      const date: string = row.getValue("student_dob");
 
       return (
-        <div className="text-right font-medium text-gray-500 ml-10">
-          {date?.toLocaleDateString("en-ZA")}
-        </div>
+        <div className="text-right font-medium text-gray-500 ml-10">{date}</div>
       );
     },
   },
