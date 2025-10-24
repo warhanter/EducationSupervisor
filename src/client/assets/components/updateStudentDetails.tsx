@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -30,10 +30,34 @@ type DialogDemoProps = {
 const STUDENT_STATUS_OPTIONS = ["داخلي", "نصف داخلي", "خارجي"];
 const GENDER_OPTIONS = ["ذكر", "أنثى"];
 
+function useClasses(students: Student[], student: Student) {
+  return useMemo(() => {
+    const seen = new Set();
+    const classes: Student[] = [];
+
+    for (const s of students) {
+      if (s.class_name === student.class_name && !seen.has(s.class_number)) {
+        seen.add(s.class_number);
+        classes.push(s);
+      }
+    }
+
+    return classes.sort((a, b) =>
+      b.class_number > a.class_number
+        ? -1
+        : b.class_number > a.class_number
+        ? 1
+        : 0
+    );
+  }, [students, student.class_name]);
+}
+
 export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
-  const { addresses } = useStudents();
+  const { addresses, students } = useStudents();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const CLASSES = useClasses(students, student);
+  console.log("uniqe_classes: ", CLASSES);
 
   const studentAddress = addresses?.filter(
     (address) => address.student_id === student.id
@@ -76,6 +100,12 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
         .update({
           full_name: formData.full_name,
           full_class_name: formData.full_class_name,
+          class_number: Number(
+            formData.full_class_name.split(" ")[
+              formData.full_class_name.split(" ").length - 1
+            ]
+          ),
+          prev_class_number: Number(student.class_number),
           student_status: formData.student_status,
           student_dob: formData.student_dob,
           gender: formData.gender,
@@ -90,7 +120,6 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
 
       if (studentError) throw studentError;
 
-      // Update student_addresses table
       if (studentAddress) {
         // Update existing address
         const { error: addressError } = await supabase
@@ -110,6 +139,10 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
             student_id: student.id,
             father_name: formData.father_name,
             address: formData.address,
+            last_name: student.full_name.split(" ")[0],
+            first_name: student.full_name.split(" ")[1],
+            full_name: student.full_name,
+            date_of_birth: new Date(student.student_dob),
           });
 
         if (addressError) throw addressError;
@@ -121,9 +154,9 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
       });
 
       // Delay closing to allow toast to show
-      setTimeout(() => {
-        setOpen(false);
-      }, 100);
+      // setTimeout(() => {
+      //   setOpen(false);
+      // }, 100);
     } catch (error) {
       console.error("Error updating student:", error);
       toast({
@@ -180,10 +213,14 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                   <SelectValue placeholder="اختر القسم" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* TODO: Add your class options here */}
-                  <SelectItem value={student.full_class_name}>
-                    {student.full_class_name}
-                  </SelectItem>
+                  {CLASSES.map((classroom) => (
+                    <SelectItem
+                      key={classroom.full_class_name}
+                      value={classroom.full_class_name}
+                    >
+                      {classroom.full_class_name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
