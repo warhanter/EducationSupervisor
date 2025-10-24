@@ -17,6 +17,7 @@ import { ResponsiveChartContainer } from "@mui/x-charts";
 import HeaderNavbar from "./HeaderNavbar";
 import { SonnerDemo } from "./NotificationSnooner";
 import { calcAbsences } from "@/client/functions/calcAbsences";
+import { calculateMissedHours } from "@/utils/calculateMissedHours";
 
 type DataProps = {
   id: number;
@@ -240,6 +241,10 @@ export function NewDashboard() {
     });
     return removedDubs;
   }
+
+  console.log(
+    calculateMissedHours(new Date("10-10-2025"), new Date("10-15-2025"))
+  );
 
   return (
     <div className="flex min-h-screen w-full flex-col">

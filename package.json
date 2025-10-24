@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server/main.js -w src/server",
+    "dev:vite": "vite",
     "start": "NODE_ENV=production node src/server/main.js",
     "build": "vite build",
     "preview": "vite preview --port 8080"
@@ -26,6 +27,7 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.2.15",
     "@react-pdf/renderer": "^3.1.9",
     "@supabase/supabase-js": "^2.75.1",
     "@tanstack/react-table": "^8.15.3",

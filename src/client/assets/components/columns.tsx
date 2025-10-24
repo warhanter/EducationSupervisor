@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import Convocation from "./Convocation";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { NoticeDialog } from "./NoticeDialog";
+import { StudentDialogEdit } from "./updateStudentDetails";
 export type Student = {
   id: number;
   student_id: number;
@@ -209,9 +210,15 @@ export const studentsColumns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       const [open, setOpen] = useState(false);
+      const [openEdit, setOpenEdit] = useState(false);
       return (
         <>
           <StudentDialog open={open} setOpen={setOpen} student={student} />
+          <StudentDialogEdit
+            open={openEdit}
+            setOpen={setOpenEdit}
+            student={student}
+          />
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -228,6 +235,13 @@ export const studentsColumns: ColumnDef<Student>[] = [
                   }}
                 >
                   عرض بيانات التلميذ
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setOpenEdit(true);
+                  }}
+                >
+                  تعديل بيانات التلميذ
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuLabel>وثائق</DropdownMenuLabel>
@@ -639,6 +653,7 @@ export const sortedColumns: ColumnDef<Student>[] = [
       return (
         <>
           <StudentDialog open={open} setOpen={setOpen} student={student} />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
