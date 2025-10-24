@@ -200,6 +200,17 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 className="col-span-3"
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">
+                العنوان
+              </Label>
+              <Input
+                id="address"
+                value={formData.address}
+                onChange={(e) => handleInputChange("address", e.target.value)}
+                className="col-span-3"
+              />
+            </div>
           </div>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -258,17 +269,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="address" className="text-right">
-                العنوان
-              </Label>
-              <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleInputChange("address", e.target.value)}
-                className="col-span-3"
-              />
-            </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="i3ada" className="text-right">
                 معيد
