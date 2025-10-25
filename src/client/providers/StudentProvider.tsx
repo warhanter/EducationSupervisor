@@ -17,8 +17,14 @@ type Notification = {
   operationType: string | undefined;
 };
 
+type DailyNote = {
+  note: string;
+  report_date: string;
+};
+
 export type StudentList = Record<string, any>[];
 export type Student = Record<string, any>;
+type DailyNoteList = DailyNote[];
 
 type StudentsData = {
   students: StudentList;
@@ -28,6 +34,7 @@ type StudentsData = {
   classrooms: StudentList;
   professors: StudentList;
   notification?: Notification;
+  daily_notes: DailyNoteList;
 };
 
 type StudentContextType = StudentsData & {
@@ -49,6 +56,7 @@ const TABLES = {
   ABSENCES: "absences",
   ADDRESSES: "student_addresses",
   LUNCH_ABSENCES: "lunch_absences",
+  DAILY_NOTES: "daily_notes",
 } as const;
 
 // Default context values
@@ -66,6 +74,7 @@ const defaultValues: StudentContextType = {
   lunchAbsences: [],
   classrooms: [],
   professors: [],
+  daily_notes: [],
   notification: undefined,
   refreshData: async () => {},
 };
@@ -81,6 +90,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
     lunchAbsences: [],
     classrooms: [],
     professors: [],
+    daily_notes: [],
     notification: undefined,
   });
 
@@ -94,6 +104,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
         { data: absences, error: absencesError },
         { data: addresses, error: addressesError },
         { data: lunchAbsences, error: lunchAbsencesError },
+        { data: daily_notes, error: daily_notesError },
       ] = await Promise.all([
         supabase.from(TABLES.CLASSROOMS).select("*"),
         supabase.from(TABLES.PROFESSORS).select("*"),
@@ -101,6 +112,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
         supabase.from(TABLES.ABSENCES).select("*"),
         supabase.from(TABLES.ADDRESSES).select("*"),
         supabase.from(TABLES.LUNCH_ABSENCES).select("*"),
+        supabase.from(TABLES.DAILY_NOTES).select("*"),
       ]);
 
       // Check for errors
@@ -111,6 +123,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
         absencesError,
         addressesError,
         lunchAbsencesError,
+        daily_notesError,
       ].filter(Boolean);
 
       if (errors.length > 0) {
@@ -124,6 +137,8 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
         lunchAbsences: lunchAbsences || [],
         classrooms: classrooms || [],
         professors: professors || [],
+        daily_notes: daily_notes || [],
+
         notification: undefined,
       });
     } catch (error) {

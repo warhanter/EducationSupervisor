@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { reverseString } from "../contexts/AppFunctions";
-import { Student } from "@/client/providers/StudentProvider";
+import { DailyNoteList, Student } from "@/client/providers/StudentProvider";
 import { sortBy } from "lodash";
+import { supabase } from "@/lib/supabaseClient";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
@@ -9,10 +10,48 @@ export type PDFPrintTablesProps = {
   date: number;
 };
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
+  const [daily_note, setDaily_note] = useState<string | null>(null);
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
   const absencesData = sortBy(data, (student) => student.class_abbreviation);
+
+  const fetchNotes = async () => {
+    let { data: note, error } = await supabase
+      .from("daily_notes")
+      .select("*")
+      .eq("report_date", new Date(date).toLocaleDateString())
+      .maybeSingle();
+    if (error) console.error("Errors fetching data:", error);
+    console.log("fetching ", note);
+    if (note) {
+      setDaily_note(note.note);
+    }
+  };
+  useEffect(() => {
+    fetchNotes();
+  }, [date]);
+  console.log("daily_notes", daily_note);
+  const handleUpsertNote = async (noteContent: string) => {
+    const { data, error } = await supabase
+      .from("daily_notes")
+      .upsert(
+        {
+          report_date: new Date(date).toLocaleDateString(), // Replace with your specific date
+          note: noteContent,
+        },
+        {
+          onConflict: "report_date",
+        }
+      )
+      .select();
+
+    if (error) {
+      console.error("Error saving note:", error);
+    } else {
+      console.log("Note saved:", data);
+    }
+  };
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="flex justify-between">
@@ -111,14 +150,17 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
           </tr>
         </thead>
         <tbody>
-          <tr className="">
-            <td className="border border-collapse border-zinc-500 ">
+          <tr>
+            <td className="border border-zinc-500">
               <textarea
+                className="resize-none w-full p-2 border-none outline-none focus:ring-2 focus:ring-blue-500"
                 rows={5}
-                className="resize-none w-full m-0 py-0 px-5"
-              ></textarea>
+                onBlur={(e) => handleUpsertNote(e.target.value)}
+                defaultValue={daily_note || ""}
+                placeholder="ادخل الملاحظات... الملاحظات تحفظ تلقائيا."
+              />
             </td>
-            <td className="border border-collapse border-zinc-500 px-1"></td>
+            <td className="border border-zinc-500 px-1"></td>
           </tr>
         </tbody>
       </table>
