@@ -157,7 +157,6 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
                 rows={5}
                 onBlur={(e) => handleUpsertNote(e.target.value)}
                 defaultValue={daily_note || ""}
-                placeholder="ادخل الملاحظات... الملاحظات تحفظ تلقائيا."
               />
             </td>
             <td className="border border-zinc-500 px-1"></td>

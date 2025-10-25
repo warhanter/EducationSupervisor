@@ -414,7 +414,6 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                     type="text"
                     defaultValue={lunch_plates || ""}
                     onBlur={(e) => handleUpsertLunchPlates(e.target.value)}
-                    placeholder="ادخل وجبة اليوم... الحفظ يكون تلقائيا بعد الكتابة."
                   />
                 </td>
               </tr>
@@ -450,7 +449,6 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                     className="resize-none w-full m-0 py-0 px-5"
                     defaultValue={lunch_note || ""}
                     onBlur={(e) => handleUpsertLunchNote(e.target.value)}
-                    placeholder="ادخل ملاحظة اليوم ان وجدت... الحفظ يكون تلقائيا بعد الكتابة."
                   />
                 </td>
                 <td className="border border-collapse border-zinc-500 px-1"></td>
