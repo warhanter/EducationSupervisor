@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { reverseString } from "../contexts/AppFunctions";
-import { DailyNoteList, Student } from "@/client/providers/StudentProvider";
+import { Student } from "@/client/providers/StudentProvider";
 import { sortBy } from "lodash";
 import { supabase } from "@/lib/supabaseClient";
 

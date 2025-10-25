@@ -1,7 +1,69 @@
+import { supabase } from "@/lib/supabaseClient";
 import { filter } from "lodash";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function LuncAbsencePrintTable({ data, date, students }) {
+  const [lunch_note, setLunch_note] = useState<string | null>(null);
+  const [lunch_plates, setLunch_Plates] = useState<string | null>(null);
+  const fetchNotes = async () => {
+    let { data: note, error } = await supabase
+      .from("daily_notes")
+      .select("*")
+      .eq("report_date", new Date(date).toLocaleDateString())
+      .maybeSingle();
+    if (error) console.error("Errors fetching data:", error);
+    console.log("fetching ", note);
+    if (note) {
+      setLunch_note(note.lunch_note);
+      setLunch_Plates(note.lunch_plates);
+    }
+  };
+  useEffect(() => {
+    fetchNotes();
+  }, [date]);
+
+  const handleUpsertLunchNote = async (noteContent: string) => {
+    const { data, error } = await supabase
+      .from("daily_notes")
+      .upsert(
+        {
+          report_date: new Date(date).toLocaleDateString(), // Replace with your specific date
+          lunch_note: noteContent,
+        },
+        {
+          onConflict: "report_date",
+        }
+      )
+      .select();
+
+    if (error) {
+      console.error("Error saving note:", error);
+    } else {
+      console.log("Note saved:", data);
+    }
+  };
+
+  const handleUpsertLunchPlates = async (noteContent: string) => {
+    const { data, error } = await supabase
+      .from("daily_notes")
+      .upsert(
+        {
+          report_date: new Date(date).toLocaleDateString(), // Replace with your specific date
+          lunch_plates: noteContent,
+        },
+        {
+          onConflict: "report_date",
+        }
+      )
+      .select();
+
+    if (error) {
+      console.error("Error saving note:", error);
+    } else {
+      console.log("Note saved:", data);
+    }
+  };
+
   const dakhiliDokour = filter(
     students,
     (student) => student.student_status === "داخلي" && student.gender === "ذكر"
@@ -350,6 +412,9 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                   <input
                     className="w-80 text-center font-bold m-0"
                     type="text"
+                    defaultValue={lunch_plates || ""}
+                    onBlur={(e) => handleUpsertLunchPlates(e.target.value)}
+                    placeholder="ادخل وجبة اليوم... الحفظ يكون تلقائيا بعد الكتابة."
                   />
                 </td>
               </tr>
@@ -378,12 +443,15 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
               </tr>
             </thead>
             <tbody>
-              <tr className="">
+              <tr>
                 <td className="border border-collapse border-zinc-500 ">
                   <textarea
                     rows={5}
                     className="resize-none w-full m-0 py-0 px-5"
-                  ></textarea>
+                    defaultValue={lunch_note || ""}
+                    onBlur={(e) => handleUpsertLunchNote(e.target.value)}
+                    placeholder="ادخل ملاحظة اليوم ان وجدت... الحفظ يكون تلقائيا بعد الكتابة."
+                  />
                 </td>
                 <td className="border border-collapse border-zinc-500 px-1"></td>
               </tr>
