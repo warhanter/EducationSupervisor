@@ -39,6 +39,9 @@ type StudentsData = {
 
 type StudentContextType = StudentsData & {
   motamadrisin: StudentList;
+  mo3idin: StudentList;
+  mamnouhin: StudentList;
+  mosadidin: StudentList;
   wafidin: StudentList;
   moghadirin: StudentList;
   machtobin: StudentList;
@@ -62,7 +65,10 @@ const TABLES = {
 // Default context values
 const defaultValues: StudentContextType = {
   motamadrisin: [],
+  mo3idin: [],
   wafidin: [],
+  mamnouhin: [],
+  mosadidin: [],
   moghadirin: [],
   machtobin: [],
   nisfDakhili: [],
@@ -205,6 +211,10 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
     () => motamadrisin.filter((s) => s.is_new),
     [motamadrisin]
   );
+  const mo3idin = useMemo(
+    () => motamadrisin.filter((s) => s.i3ada),
+    [motamadrisin]
+  );
 
   const moghadirin = useMemo(
     () => data.students.filter((s) => s.switched_school),
@@ -230,6 +240,20 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
     () => motamadrisin.filter((s) => s.sport_inapt),
     [motamadrisin]
   );
+  const mamnouhin = useMemo(
+    () =>
+      motamadrisin.filter(
+        (s) => s.student_status === "نصف داخلي" && s.is_mamnouh
+      ),
+    [motamadrisin]
+  );
+  const mosadidin = useMemo(
+    () =>
+      motamadrisin.filter(
+        (s) => s.student_status === "نصف داخلي" && !s.is_mamnouh
+      ),
+    [motamadrisin]
+  );
 
   const contextValue = useMemo(
     () => ({
@@ -241,6 +265,9 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
       nisfDakhili,
       otlaMaradiya,
       maafiyin,
+      mo3idin,
+      mamnouhin,
+      mosadidin,
       refreshData: fetchData,
     }),
     [
@@ -252,6 +279,9 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
       nisfDakhili,
       otlaMaradiya,
       maafiyin,
+      mo3idin,
+      mamnouhin,
+      mosadidin,
       fetchData,
     ]
   );

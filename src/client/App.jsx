@@ -58,6 +58,16 @@ function App() {
           <Route
             path="/maafiyin"
             element={<NewTable queryTbale="maafiyin" />}
+          />{" "}
+          <Route path="/mo3idin" element={<NewTable queryTbale="mo3idin" />} />{" "}
+          <Route
+            path="/mosadidin"
+            element={<NewTable queryTbale="mosadidin" />}
+          />
+          .
+          <Route
+            path="/mamnouhin"
+            element={<NewTable queryTbale="mamnouhin" />}
           />
           <Route
             path="/otlaMaradiya"

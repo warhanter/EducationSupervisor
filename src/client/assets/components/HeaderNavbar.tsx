@@ -64,6 +64,9 @@ function HeaderNavbar() {
                   <AppLink to="/moghadirin" link="المغادرين" subLink />
                   <AppLink to="/wafidin" link="الوافدين" subLink />
                   <AppLink to="/otlaMaradiya" link="العطل المرضية" subLink />
+                  <AppLink to="/mo3idin" link="المعيدين" subLink />
+                  <AppLink to="/mamnouhin" link="الممنوحين" subLink />
+                  <AppLink to="/mosadidin" link="المسددين" subLink />
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>

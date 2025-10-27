@@ -75,12 +75,26 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     motamadrisin,
     nisfDakhili,
     wafidin,
+    mo3idin,
+    mamnouhin,
+    mosadidin,
   } = useStudents();
   const [rapportDate, setRapportDate] = React.useState(new Date().setHours(23));
   React.useEffect(() => {
     setAbsencesData(generateRapportTableData());
   }, [rapportDate]);
-  console.log(students);
+  // console.log(students);
+  // const mosadidin = nisfDakhili?.filter(
+  //   (student) => student.student_status === "نصف داخلي" && student.lunch_paid
+  // ).length;
+  const ghayrMosadidin = nisfDakhili?.filter(
+    (student) =>
+      student.student_status === "نصف داخلي" &&
+      !student.lunch_paid &&
+      !student.is_mamnouh
+  ).length;
+  // const mamnouhin = motamadrisin.filter(s => s.i3adda);
+  // const mosadidin = motamadrisin.filter(s => s.i3adda);
   const studentsTablesData: any = () => {
     switch (queryTbale) {
       case "all":
@@ -97,6 +111,12 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         return { title: "المشطوبين", data: machtobin };
       case "maafiyin":
         return { title: "المعفيين من الرياضة", data: maafiyin };
+      case "mo3idin":
+        return { title: "المعيدين", data: mo3idin };
+      case "mosadidin":
+        return { title: "المسددين", data: mosadidin };
+      case "mamnouhin":
+        return { title: "الممنوحين", data: mamnouhin };
       case "lunchAbsences":
         return { title: "غيابات المطعم", data: lunchAbsences };
       case "otlaMaradiya":
@@ -260,23 +280,12 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       rowSelection,
     },
   });
-  const mamnouhin = nisfDakhili?.filter(
-    (student) => student.student_status === "نصف داخلي" && student.is_mamnouh
-  ).length;
-  const mosadidin = nisfDakhili?.filter(
-    (student) => student.student_status === "نصف داخلي" && student.lunch_paid
-  ).length;
-  const ghayrMosadidin = nisfDakhili?.filter(
-    (student) =>
-      student.student_status === "نصف داخلي" &&
-      !student.lunch_paid &&
-      !student.is_mamnouh
-  ).length;
+
   const labels = table.getColumn("full_class_name")?.getFacetedUniqueValues();
   const labels2 = new Map([
     ["نصف داخلي", nisfDakhili.length],
-    ["الممنوحين", mamnouhin],
-    ["المسددين", mosadidin],
+    ["الممنوحين", mamnouhin.length],
+    ["المسددين", mosadidin.length],
     ["الغير مسددين", ghayrMosadidin],
   ]);
 
