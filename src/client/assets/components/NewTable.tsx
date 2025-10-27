@@ -35,7 +35,7 @@ import { filter } from "lodash";
 import HeaderNavbar from "./HeaderNavbar";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { FemaleImage, MaleImage } from "./images";
 import { Badge } from "@/components/ui/badge";
 import { MonthlyAbsences } from "./MonthlyAbsences";

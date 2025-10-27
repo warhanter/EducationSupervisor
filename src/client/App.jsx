@@ -20,6 +20,7 @@ import { CreatePDFNotice1 } from "./assets/pdf/Notice";
 import HeaderNavbar from "./assets/components/HeaderNavbar";
 import MissedModules from "./assets/components/MissedModules";
 import PDFPrintTables from "./assets/components/PDFPrintTables";
+import MaafiyinPrintTable2 from "./assets/components/tables/table-header";
 
 function App() {
   const router = createHashRouter(
@@ -69,6 +70,7 @@ function App() {
             path="/mamnouhin"
             element={<NewTable queryTbale="mamnouhin" />}
           />
+          <Route path="/print-tables" element={<MaafiyinPrintTable2 />} />
           <Route
             path="/otlaMaradiya"
             element={<NewTable queryTbale="otlaMaradiya" />}

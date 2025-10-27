@@ -1,6 +1,6 @@
 import React from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
-import { groupBy } from "lodash";
+import { groupBy, sortBy } from "lodash";
 import { Student, StudentList } from "@/client/providers/StudentProvider";
 
 type MaafiyinPrintTableProps = PDFPrintTablesProps & {
@@ -20,7 +20,14 @@ export default function MaafiyinPrintTable({
     dateStyle: "full",
   });
 
-  const studentsGroupedByClass = groupBy(data, "full_class_name");
+  const sortedStudents = sortBy(
+    data,
+    (s) => !s.is_mamnouh,
+    (s) => s.student_status !== "نصف داخلي",
+    "last_name"
+  );
+
+  const studentsGroupedByClass = groupBy(sortedStudents, "full_class_name");
 
   return multi ? (
     <div id="section-to-print">
@@ -75,6 +82,16 @@ export default function MaafiyinPrintTable({
                     <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
                       الصفة
                     </th>
+                    {table === "motamadrisinByclass" && (
+                      <>
+                        <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
+                          المنحة
+                        </th>
+                        <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
+                          الإعادة
+                        </th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody key={classname}>
@@ -110,6 +127,16 @@ export default function MaafiyinPrintTable({
                           <td className="border border-collapse border-zinc-500 py-1 px-1">
                             {student.student_status}
                           </td>
+                          {table === "motamadrisinByclass" && (
+                            <>
+                              <td className="border border-collapse border-zinc-500 py-1 px-1">
+                                {student?.is_mamnouh ? "ممنوح" : "/"}
+                              </td>
+                              <td className="border border-collapse border-zinc-500 py-1 px-1">
+                                {student?.i3ada ? "نعم" : ""}
+                              </td>
+                            </>
+                          )}
                         </tr>
                       );
                     })}
