@@ -51,6 +51,9 @@ export type Student = {
   absence_status: boolean;
   is_mamnouh: boolean;
   lunch_paid: boolean;
+  sport_inapt?: boolean;
+  i3ada?: boolean;
+  father_name?: string;
 };
 
 // const navigate = useNavigate();
