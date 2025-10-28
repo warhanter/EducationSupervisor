@@ -91,7 +91,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
                 <h3> الرقم : ...............</h3>
               </div>
               <div className="flex flex-col items-center text-center">
-                <h3>السنة الدراسية : 2025/2024</h3>
+                <h3>السنة الدراسية : 2026/2025</h3>
                 <h3>الى السيد(ة):</h3>
                 <h3 className="font-bold">{fatherName}</h3>
                 <h3 className="font-bold mb-4">العنوان: {address}</h3>

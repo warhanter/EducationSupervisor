@@ -24,6 +24,7 @@ import MedicalLeavePrintTable from "./MedicalLeavePrintTable";
 import MaafiyinPrintTable from "./MaafiyinPrintTale";
 import Ta9rirYawmi from "./Ta9rirYawmi";
 import TeachersIsti9bal from "./TeachersIstibal";
+import StatsTable from "./StatsTable";
 
 function PDFPrint() {
   const {
@@ -338,7 +339,7 @@ function PDFPrint() {
           >
             المعفيين من الرياضة
           </Button>
-          <Button
+          {/* <Button
             variant="outline"
             className={cn(
               table === "yatama" && "bg-accent text-accent-foreground"
@@ -348,6 +349,17 @@ function PDFPrint() {
             }}
           >
             التلاميذ اليتامى
+          </Button> */}
+          <Button
+            variant="outline"
+            className={cn(
+              table === "stats" && "bg-accent text-accent-foreground"
+            )}
+            onClick={() => {
+              setTable("stats");
+            }}
+          >
+            احصائيات
           </Button>
           <Button
             variant="outline"
@@ -471,6 +483,20 @@ function PDFPrint() {
                 table="yatama"
                 date={rapportDate}
                 title="التلاميذ اليتامى"
+              />
+            )}
+            {table === "stats" && !loading && (
+              <StatsTable
+                data={motamadrisin.sort((a, b) =>
+                  a.class_abbreviation > b.class_abbreviation
+                    ? 1
+                    : b.class_abbreviation > a.class_abbreviation
+                    ? -1
+                    : 0
+                )}
+                table="stats"
+                date={rapportDate}
+                title="احصائيات عامة"
               />
             )}
             {table === "mo3wazin" && !loading && (

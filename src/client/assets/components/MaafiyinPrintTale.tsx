@@ -45,7 +45,7 @@ export default function MaafiyinPrintTable({
                   <h3>ثانوية : المختلطة مروانة</h3>
                 </div>
                 <div className="flex flex-col items-center text-center">
-                  <h3>السنة الدراسية : 2025/2024</h3>
+                  <h3>السنة الدراسية : 2026/2025</h3>
                 </div>
               </div>
               <h1 className="text-xl font-bold my-5 text-center">
@@ -162,7 +162,7 @@ export default function MaafiyinPrintTable({
           <h3>ثانوية : المختلطة مروانة</h3>
         </div>
         <div className="flex flex-col items-center text-center">
-          <h3>السنة الدراسية : 2025/2024</h3>
+          <h3>السنة الدراسية : 2026/2025</h3>
         </div>
       </div>
       <h1 className="text-xl font-bold my-5 text-center">

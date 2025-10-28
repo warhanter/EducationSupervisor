@@ -34,7 +34,7 @@ export default function TeachersIsti9bal({
           <h3>ثانوية : المختلطة مروانة</h3>
         </div>
         <div className="flex flex-col items-center text-center">
-          <h3>السنة الدراسية : 2025/2024</h3>
+          <h3>السنة الدراسية : 2026/2025</h3>
         </div>
       </div>
       <h1 className="text-xl font-bold mb-2 text-center">{title}</h1>
