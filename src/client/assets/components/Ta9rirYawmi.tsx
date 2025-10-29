@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
 import { filter, groupBy, max, sortBy } from "lodash";
 import { StudentList, useStudents } from "@/client/providers/StudentProvider";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabaseClient";
 
 type Ta9rirYawmiProps = PDFPrintTablesProps & {
   title: string;
@@ -19,12 +20,49 @@ export default function Ta9rirYawmi({
   table,
 }: Ta9rirYawmiProps) {
   const { professors } = useStudents();
+  const [report_number, setReport_number] = useState<number | null>(null);
   const [supervisors, setSupervisors] = useState("");
   const [totalhours, setTotalHours] = useState("");
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
+
+  const fetchNotes = async () => {
+    let { data: note, error } = await supabase
+      .from("daily_notes")
+      .select("*")
+      .eq("report_date", new Date(date).toLocaleDateString())
+      .maybeSingle();
+    if (error) console.error("Errors fetching data:", error);
+    console.log("fetching ", note);
+    if (note) {
+      setReport_number(note.report_number);
+    }
+  };
+  useEffect(() => {
+    fetchNotes();
+  }, [date]);
   const lastEducationDay = new Date("2025-06-30");
+  const handleUpsertNote = async (noteContent: string) => {
+    const { data, error } = await supabase
+      .from("daily_notes")
+      .upsert(
+        {
+          report_date: new Date(date).toLocaleDateString(), // Replace with your specific date
+          report_number: Number(noteContent),
+        },
+        {
+          onConflict: "report_date",
+        }
+      )
+      .select();
+
+    if (error) {
+      console.error("Error saving note:", error);
+    } else {
+      console.log("Note saved:", data);
+    }
+  };
 
   const yesterdayDate = new Date(new Date(date).setHours(0, 0, 0));
   const todayDate = new Date(new Date(date).setHours(23, 0, 0));
@@ -231,7 +269,13 @@ export default function Ta9rirYawmi({
         </div>
       </div>
       <h1 className="text-xl font-bold  text-center">
-        {title} <input type="text" className="w-10" />
+        {title}{" "}
+        <input
+          onBlur={(e) => handleUpsertNote(e.target.value)}
+          defaultValue={report_number || ""}
+          type="number"
+          className="w-10"
+        />
       </h1>
 
       <div className="flex justify-between">
