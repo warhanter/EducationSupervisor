@@ -168,7 +168,7 @@ export function MonthlyAbsences({
       name: student.full_name,
       className: student.full_class_name,
       missedHours: missedHours(
-        student.date_of_absence.getTime(),
+        new Date(student.date_of_absence).getTime(),
         date,
         program
       ),
@@ -213,7 +213,7 @@ export function MonthlyAbsences({
       stdata.push({
         id: student.student_id,
         missedHours: missedHours(
-          student.date_of_absence.getTime(),
+          new Date(student.date_of_absence).getTime(),
           newDate,
           eachDayMissedHours
         ),
