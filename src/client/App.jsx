@@ -34,8 +34,8 @@ function App() {
           }
           errorElement={<ErrorPage />}
         >
-          {/* <Route path="/" element={<NewDashboard />} /> */}
-          <Route path="/" element={<StudentCard />} />
+          <Route path="/" element={<NewDashboard />} />
+          {/* <Route path="/" element={<StudentCard />} /> */}
           <Route path="/allStudents" element={<NewTable queryTbale="all" />} />
           <Route path="/students" element={<NewTable queryTbale="Student" />} />
           <Route path="/absences" element={<NewTable queryTbale="Absence" />} />
