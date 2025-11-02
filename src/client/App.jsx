@@ -20,6 +20,7 @@ import { CreatePDFNotice1 } from "./assets/pdf/Notice";
 import HeaderNavbar from "./assets/components/HeaderNavbar";
 import MissedModules from "./assets/components/MissedModules";
 import PDFPrintTables from "./assets/components/PDFPrintTables";
+import StudentCard from "./assets/components/StudentCard";
 
 function App() {
   const router = createHashRouter(
@@ -33,7 +34,8 @@ function App() {
           }
           errorElement={<ErrorPage />}
         >
-          <Route path="/" element={<NewDashboard />} />
+          {/* <Route path="/" element={<NewDashboard />} /> */}
+          <Route path="/" element={<StudentCard />} />
           <Route path="/allStudents" element={<NewTable queryTbale="all" />} />
           <Route path="/students" element={<NewTable queryTbale="Student" />} />
           <Route path="/absences" element={<NewTable queryTbale="Absence" />} />
@@ -83,7 +85,7 @@ function App() {
           />
           <Route path="/studentMissedModules" element={<MissedModules />} />
           <Route path="/print-pdf" element={<PDFPrint />} />
-          <Route path="/print-pdf" element={<PDFPrint />} />
+          <Route path="/student-cards" element={<StudentCard />} />
           <Route path="/print-notice" element={<CreatePDFNotice1 />} />
         </Route>
         <Route path="/login" element={<LoginForm />} />

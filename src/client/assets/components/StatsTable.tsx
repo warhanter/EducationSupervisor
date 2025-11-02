@@ -83,7 +83,12 @@ const DocumentFooter = ({ date }: { date: string }) => {
   );
 };
 
-const TableRowData = ({ text, colSpan = 1, rowSpan = 1, type = "data" }) => {
+export const TableRowData = ({
+  text,
+  colSpan = 1,
+  rowSpan = 1,
+  type = "data",
+}) => {
   if (type === "head") {
     return (
       <th
