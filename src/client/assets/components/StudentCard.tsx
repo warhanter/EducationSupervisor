@@ -49,10 +49,15 @@ export default function StudentCard() {
                         <td>2025/2026</td>
                       </tr>
                       <tr>
-                        <td className="text-xs font-bold py-4">
+                        <td className="font-bold text-sm">
+                          المنحة: {student.is_mamnouh ? "نعم" : "لا"}
+                        </td>
+                        <td rowSpan={2}>الطاولة: {MaleTableNumber}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-xs font-bold p-1">
                           القسم: {student.full_class_name}
                         </td>
-                        <td>الطاولة: {MaleTableNumber}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -104,10 +109,15 @@ export default function StudentCard() {
                         <td>2025/2026</td>
                       </tr>
                       <tr>
-                        <td className="text-xs font-bold py-4">
+                        <td className="font-bold text-sm">
+                          المنحة: {student.is_mamnouh ? "نعم" : "لا"}
+                        </td>
+                        <td rowSpan={2}>الطاولة: {FemaleTableNumber}</td>
+                      </tr>
+                      <tr>
+                        <td className="text-xs font-bold p-1">
                           القسم: {student.full_class_name}
                         </td>
-                        <td>الطاولة: {FemaleTableNumber}</td>
                       </tr>
                     </tbody>
                   </table>
