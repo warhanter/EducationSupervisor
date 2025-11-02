@@ -20,6 +20,7 @@ export default function StudentCard() {
 
             return (
               <>
+                {index % 8 === 0 && <div className="col-span-full h-4 p-0" />}
                 <div>
                   <table className="p-4">
                     <tbody className="border text-center">
@@ -63,7 +64,7 @@ export default function StudentCard() {
                   </table>
                 </div>
                 {(index + 1) % 8 === 0 && (
-                  <div className="col-span-full chapter mb-10" />
+                  <div className="col-span-full chapter" />
                 )}
               </>
             );
@@ -80,6 +81,7 @@ export default function StudentCard() {
 
             return (
               <>
+                {index % 8 === 0 && <div className="col-span-full h-4 p-0" />}
                 <div>
                   <table className="p-4">
                     <tbody className="border text-center">
@@ -123,7 +125,7 @@ export default function StudentCard() {
                   </table>
                 </div>
                 {(index + 1) % 8 === 0 && (
-                  <div className="col-span-full chapter mb-10" />
+                  <div className="col-span-full chapter" />
                 )}
               </>
             );
