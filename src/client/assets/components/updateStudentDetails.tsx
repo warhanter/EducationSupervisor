@@ -76,6 +76,8 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
     is_mamnouh: student.is_mamnouh || false,
     is_new: student.is_new || false,
     sport_inapt: student.sport_inapt || false,
+    switched_school: student.switched_school || false,
+    is_fired: student.is_fired || false,
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -84,7 +86,9 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
       field === "idmaj" ||
       field === "is_mamnouh" ||
       field === "sport_inapt" ||
-      field === "is_new"
+      field === "is_new" ||
+      field === "switched_school" ||
+      field === "is_fired"
     ) {
       setFormData((prev) => ({ ...prev, [field]: value === "true" }));
     } else {
@@ -118,6 +122,8 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
           sport_inapt: formData.sport_inapt,
           fathers_name: formData.father_name,
           student_address: formData.address,
+          switched_school: formData.switched_school,
+          is_fired: formData.is_fired,
         })
         .eq("id", student.id);
 
@@ -273,8 +279,6 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="student_dob" className="text-right">
                 تاريخ الازدياد
@@ -309,7 +313,8 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 </SelectContent>
               </Select>
             </div>
-
+          </div>
+          <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="i3ada" className="text-right">
                 معيد
@@ -401,6 +406,50 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 onValueChange={(value) =>
                   handleInputChange(
                     "sport_inapt",
+                    value === "نعم" ? "true" : "false"
+                  )
+                }
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="اختر" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="نعم">نعم</SelectItem>
+                  <SelectItem value="لا">لا</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="switched_school" className="text-right">
+                تغيير مؤسسة
+              </Label>
+              <Select
+                value={formData.switched_school ? "نعم" : "لا"}
+                onValueChange={(value) =>
+                  handleInputChange(
+                    "switched_school",
+                    value === "نعم" ? "true" : "false"
+                  )
+                }
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="اختر" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="نعم">نعم</SelectItem>
+                  <SelectItem value="لا">لا</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="is_fired" className="text-right">
+                شطب غياب
+              </Label>
+              <Select
+                value={formData.is_fired ? "نعم" : "لا"}
+                onValueChange={(value) =>
+                  handleInputChange(
+                    "is_fired",
                     value === "نعم" ? "true" : "false"
                   )
                 }
