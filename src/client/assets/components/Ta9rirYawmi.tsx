@@ -73,7 +73,7 @@ export default function Ta9rirYawmi({
       student.student_inscription_date < yesterdayDate &&
       !(
         (student.switched_school == true || student.is_fired == true) &&
-        yesterdayDate > student.student_leave_date
+        yesterdayDate > new Date(student.student_leave_date)
       )
   );
   const todayCount = filter(
@@ -82,7 +82,7 @@ export default function Ta9rirYawmi({
       new Date(student.student_inscription_date) < todayDate &&
       !(
         (student.switched_school == true || student.is_fired == true) &&
-        student.student_leave_date < todayDate
+        new Date(student.student_leave_date) < todayDate
       )
   );
   const studentsGroupedByLevel = groupBy(todayCount, "level");
@@ -155,7 +155,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         (((s.switched_school || s.is_fired) &&
-          s.student_leave_date.setHours(0, 0, 0, 0) ===
+          new Date(s.student_leave_date).setHours(0, 0, 0, 0) ===
             new Date(date).setHours(0, 0, 0, 0)) ||
           (s.ta7wil_dakhili === true &&
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
@@ -169,7 +169,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         (((s.switched_school || s.is_fired) &&
-          s.student_leave_date.setHours(0, 0, 0, 0) ===
+          new Date(s.student_leave_date).setHours(0, 0, 0, 0) ===
             new Date(date).setHours(0, 0, 0, 0)) ||
           (s.ta7wil_dakhili === true &&
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
@@ -182,7 +182,7 @@ export default function Ta9rirYawmi({
       allStudents,
       (s) =>
         ((s.switched_school || s.is_fired) &&
-          s.student_leave_date.setHours(0, 0, 0, 0) ===
+          new Date(s.student_leave_date).setHours(0, 0, 0, 0) ===
             new Date(date).setHours(0, 0, 0, 0)) ||
         (s.ta7wil_dakhili === true &&
           new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
@@ -1047,7 +1047,7 @@ export default function Ta9rirYawmi({
                     (s) =>
                       !(
                         (s.switched_school == true || s.is_fired) &&
-                        s.student_leave_date < todayDate
+                        new Date(s.student_leave_date) < todayDate
                       )
                   )?.length
                 }
