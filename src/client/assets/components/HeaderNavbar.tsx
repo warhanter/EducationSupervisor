@@ -51,6 +51,7 @@ function HeaderNavbar() {
         <AppLink to="/" link="الرئيسية" />
         <AppLink to="/allStudents" link="كل التلاميذ" />
         <AppLink to="/absences" link="الغيابات" />
+        <AppLink to="/mark-absences" link="تسجيل الغيابات" />
         {/* <AppLink to="/absences" link="اشعارات" /> */}
         <NavigationMenu className="text-right">
           <NavigationMenuList>
@@ -74,6 +75,7 @@ function HeaderNavbar() {
         </NavigationMenu>
         <AppLink to="/print-pdf" link="طباعة" />
         <AppLink to="/student-cards" link="بطاقات" />
+        <AppLink to="/add-student" link="إضافة تلميذ" />
         {/* <AppLink to="/daily-report" link="التقرير اليومي" /> */}
       </nav>
       <Sheet>
@@ -95,6 +97,7 @@ function HeaderNavbar() {
             <AppLink to="/" link="الرئيسية" />
             <AppLink to="/allStudents" link="كل التلاميذ" />
             <AppLink to="/absences" link="الغيابات" />
+            <AppLink to="/mark-absences" link="تسجيل الغيابات" />
             {/* <AppLink to="/Absence" link="اشعارات" /> */}
             <AppLink to="/print-pdf" link="طباعة" />
             {/* <AppLink to="/daily-report" link="التقرير اليومي" /> */}

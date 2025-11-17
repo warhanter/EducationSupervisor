@@ -23,6 +23,9 @@ import Convocation from "./Convocation";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { NoticeDialog } from "./NoticeDialog";
 import { StudentDialogEdit } from "./updateStudentDetails";
+import { Input } from "@/components/ui/input";
+import { MarkAbsenceDialog } from "./MarkAbsenceDialog";
+import DateTimePicker from "./AppDatePicker";
 export type Student = {
   id: number;
   student_id: number;
@@ -761,16 +764,23 @@ export const absencesColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
+      const { students } = useStudents();
+      const student_id = row.getValue("id");
+      const full_name = students.filter((s) => s.id === student_id)[0]
+        ?.full_name;
+      const student_status = students.filter((s) => s.id === student_id)[0]
+        ?.student_status;
+      const gender = students.filter((s) => s.id === student_id)[0]?.gender;
       return (
         <div>
           <div className="flex items-center gap-x-3">
-            {row.original.gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
+            {gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
             <div className="grow">
               <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-                {row.getValue("full_name")}
+                {full_name}
               </span>
               <span className="block text-sm text-gray-500">
-                {row.original.student_status}
+                {student_status}
               </span>
             </div>
           </div>
@@ -792,10 +802,14 @@ export const absencesColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
+      const { students } = useStudents();
+      const student_id = row.getValue("id");
+      const full_class_name = students.filter((s) => s.id === student_id)[0]
+        ?.full_class_name;
       return (
         <div className="p-0">
           <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {row.getValue("full_class_name")}
+            {full_class_name}
           </span>
         </div>
       );
@@ -944,6 +958,143 @@ export const absencesColumns: ColumnDef<Student>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
         </>
+      );
+    },
+  },
+];
+export const markAbsenceColumns: ColumnDef<Student>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        className="mx-4 dark:border-black"
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        className="mr-4"
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "id",
+    header: "الرقم",
+    cell: ({ row, table }) => (
+      <div className="text-base font-bold m-0 p-0">
+        {table
+          .getSortedRowModel()
+          ?.flatRows?.findIndex((flatRow) => flatRow.id === row.id) + 1 ||
+          0 + 1}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "full_name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          اللقب والاسم
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div>
+          <div className="flex items-center gap-x-3">
+            {row.original.gender === "ذكر" ? <MaleImage /> : <FemaleImage />}
+            <div className="grow">
+              <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+                {row.getValue("full_name")}
+              </span>
+              <span className="block text-sm text-gray-500">
+                {row.original.student_status}
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "full_class_name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+          القسم
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="p-0">
+          <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+            {row.getValue("full_class_name")}
+          </span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
+    accessorKey: "absence_date",
+    header: ({ column }) => {
+      const { students } = useStudents();
+      const numOfAbsences = students.filter((s) => s.is_absent).length;
+      return (
+        <div className="flex justify-between">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+            تاريخ وتوقيت الغياب
+          </Button>
+          <Button className="ml-4 bg-emerald-300" variant={"outline"}>
+            عدد الغيابات: {numOfAbsences}
+          </Button>
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const student = row.original;
+      return (
+        <div className="flex justify-between items-center">
+          <div className="text-right font-medium text-gray-900">
+            {/* {absenceDate} */}
+
+            {student.absence_date !== null ? (
+              <DateTimePicker studentAbsenceDate={student.absence_date} />
+            ) : (
+              <Badge variant={"secondary"}>حاضــــــــــر</Badge>
+            )}
+          </div>
+          <MarkAbsenceDialog
+            full_name={student.full_name}
+            studentAbsenceDate={student.absence_date}
+            studentID={student.id}
+          />
+        </div>
       );
     },
   },

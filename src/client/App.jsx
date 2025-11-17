@@ -21,6 +21,8 @@ import HeaderNavbar from "./assets/components/HeaderNavbar";
 import MissedModules from "./assets/components/MissedModules";
 import PDFPrintTables from "./assets/components/PDFPrintTables";
 import StudentCard from "./assets/components/StudentCard";
+import StudentForm from "./assets/components/addStudent";
+import { DateProvider } from "./assets/contexts/DateContext";
 
 function App() {
   const router = createHashRouter(
@@ -80,12 +82,17 @@ function App() {
             element={<NewTable queryTbale="sortedAbsences" />}
           />
           <Route
+            path="/mark-absences"
+            element={<NewTable queryTbale="markAbsences" />}
+          />
+          <Route
             path="/studentAbsencesRecords"
             element={<NewTable queryTbale="studentAbsencesRecords" />}
           />
           <Route path="/studentMissedModules" element={<MissedModules />} />
           <Route path="/print-pdf" element={<PDFPrint />} />
           <Route path="/student-cards" element={<StudentCard />} />
+          <Route path="/add-student" element={<StudentForm />} />
           <Route path="/print-notice" element={<CreatePDFNotice1 />} />
         </Route>
         <Route path="/login" element={<LoginForm />} />
@@ -94,11 +101,13 @@ function App() {
   );
   return (
     <AuthProvider>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <div className="container px-3">
-          <RouterProvider router={router} />
-        </div>
-      </ThemeProvider>
+      <DateProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <div className="container px-3">
+            <RouterProvider router={router} />
+          </div>
+        </ThemeProvider>
+      </DateProvider>
     </AuthProvider>
   );
 }

@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
-import { RealtimeChannel } from "@supabase/supabase-js";
 
 // Types
 type Notification = {
@@ -115,7 +114,9 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
         supabase.from(TABLES.CLASSROOMS).select("*"),
         supabase.from(TABLES.PROFESSORS).select("*"),
         supabase.from(TABLES.STUDENTS).select("*"),
-        supabase.from(TABLES.ABSENCES).select("*"),
+        supabase
+          .from(TABLES.ABSENCES)
+          .select(`*, students (full_name, full_class_name)`),
         supabase.from(TABLES.ADDRESSES).select("*"),
         supabase.from(TABLES.LUNCH_ABSENCES).select("*"),
         supabase.from(TABLES.DAILY_NOTES).select("*"),
@@ -180,22 +181,84 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     fetchData();
 
-    const channel: RealtimeChannel = supabase
-      .channel("absence-changes")
+    // 1️⃣ Subscribe to changes
+    const channel = supabase
+      .channel("students-changes")
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
           schema: "public",
-          table: TABLES.ABSENCES,
+          table: "students",
         },
         (payload) => {
-          console.log("Absence change received:", payload);
-          refreshStudentsAndAbsences(payload);
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            setData((prev) => ({
+              ...prev,
+              students: [...prev.students, payload.new],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            setData((prev) => ({
+              ...prev,
+              students: prev.students.map((s: Student) =>
+                s.id === payload.new.id ? payload.new : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              students: prev.students.filter(
+                (s: Student) => s.id !== payload.old.id
+              ),
+            }));
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "absences",
+        },
+        (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            setData((prev) => ({
+              ...prev,
+              absences: [...prev.absences, payload.new],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            setData((prev) => ({
+              ...prev,
+              absences: prev.absences.map((s: Student) =>
+                s.id === payload.new.id ? payload.new : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              absences: prev.absences.filter(
+                (s: Student) => s.id !== payload.old.id
+              ),
+            }));
+          }
         }
       )
       .subscribe();
 
+    // 2️⃣ Cleanup when component unmounts
     return () => {
       supabase.removeChannel(channel);
     };
@@ -255,6 +318,20 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
     [motamadrisin]
   );
 
+  const markAbsenceData = useMemo(
+    () =>
+      motamadrisin.sort((a, b) => {
+        if (!a.absence_date) return 1;
+        if (!b.absence_date) return -1;
+        return (
+          new Date(b.absence_date).getTime() -
+          new Date(a.absence_date).getTime()
+        );
+      }),
+
+    [motamadrisin]
+  );
+
   const contextValue = useMemo(
     () => ({
       ...data,
@@ -269,6 +346,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
       mamnouhin,
       mosadidin,
       refreshData: fetchData,
+      markAbsenceData,
     }),
     [
       data,
@@ -283,6 +361,7 @@ const StudentProvider = ({ children }: { children: ReactNode }) => {
       mamnouhin,
       mosadidin,
       fetchData,
+      markAbsenceData,
     ]
   );
 

@@ -51,7 +51,7 @@ export default function StudentCard() {
                       </tr>
                       <tr>
                         <td className="font-bold text-sm">
-                          المنحة: {student.is_mamnouh ? "نعم" : "لا"}
+                          ممنوح: {student.is_mamnouh ? "نعم" : "لا"}
                         </td>
                         <td rowSpan={2}>الطاولة: {MaleTableNumber}</td>
                       </tr>
@@ -112,7 +112,7 @@ export default function StudentCard() {
                       </tr>
                       <tr>
                         <td className="font-bold text-sm">
-                          المنحة: {student.is_mamnouh ? "نعم" : "لا"}
+                          ممنوح: {student.is_mamnouh ? "نعم" : "لا"}
                         </td>
                         <td rowSpan={2}>الطاولة: {FemaleTableNumber}</td>
                       </tr>

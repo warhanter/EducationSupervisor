@@ -19,6 +19,7 @@ import {
   recordsColumns,
   sortedColumns,
   studentsColumns,
+  markAbsenceColumns,
 } from "./columns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useStudents } from "@/client/providers/StudentProvider";
-import { filter } from "lodash";
+import { filter, sortBy } from "lodash";
 import HeaderNavbar from "./HeaderNavbar";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Cross2Icon } from "@radix-ui/react-icons";
@@ -48,6 +49,7 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { arDZ } from "date-fns/locale/ar-DZ";
 import { format } from "date-fns";
+import MarkAbsences from "./mark-absences";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -60,6 +62,8 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       ? recordsColumns
       : queryTbale === "nisfdakhili"
       ? nisfdakhiliColumns
+      : queryTbale === "markAbsences"
+      ? markAbsenceColumns
       : studentsColumns;
   const [absencesData, setAbsencesData] = React.useState<Record<string, any>>(
     []
@@ -78,6 +82,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     mo3idin,
     mamnouhin,
     mosadidin,
+    markAbsenceData,
   } = useStudents();
   const [rapportDate, setRapportDate] = React.useState(new Date().setHours(23));
   React.useEffect(() => {
@@ -133,6 +138,11 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
           title: "الغيابات اليومية للتلاميذ",
           data: absencesData,
         };
+      case "markAbsences":
+        return {
+          title: "تسجيل الغيابات اليومية للتلاميذ",
+          data: markAbsenceData,
+        };
       default:
         return [];
     }
@@ -144,8 +154,6 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         (new Date(i.date_of_return).getTime() > rapportDate ||
           !i.date_of_return) &&
         new Date(i.date_of_absence).getTime() <= rapportDate
-      // motamadrisin,
-      // (i) => i.is_absent
     );
   }, [rapportDate, absences]);
   const generateRapportTableData = () => {
@@ -206,14 +214,14 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       studentObject.number = index.toString();
       studentObject.id = i.toString();
       studentObject.id = student.student_id;
-      studentObject.full_name = student.full_name;
+      studentObject.full_name = student.students.full_name;
       studentObject.level = student.class_level;
       studentObject.class_name = student.class_name;
       studentObject.class_number = student.class_number;
       studentObject.student_status = student.student_status;
       // studentObject.full_class_name =
       //   student.level + " " + student.class_name + " " + student.class_number;
-      studentObject.full_class_name = student.full_class_name;
+      studentObject.full_class_name = student.students.full_class_name;
       studentObject.gender = students?.filter(
         (a) => a.id === student.student_id
       )[0].gender;
@@ -381,6 +389,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                 {queryTbale === "Absence" && (
                   <>
                     <MonthlyAbsences data={absences} students={students} />
+                    <MarkAbsences />
                     <Popover>
                       <PopoverTrigger className="print:hidden" asChild>
                         <Button>
