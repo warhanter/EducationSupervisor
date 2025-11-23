@@ -23,6 +23,8 @@ import PDFPrintTables from "./assets/components/PDFPrintTables";
 import StudentCard from "./assets/components/StudentCard";
 import StudentForm from "./assets/components/addStudent";
 import { DateProvider } from "./assets/contexts/DateContext";
+import ClassProgramForm from "./assets/components/ClassesProgram";
+import Isnad from "./assets/components/Isnad";
 
 function App() {
   const router = createHashRouter(
@@ -93,6 +95,8 @@ function App() {
           <Route path="/print-pdf" element={<PDFPrint />} />
           <Route path="/student-cards" element={<StudentCard />} />
           <Route path="/add-student" element={<StudentForm />} />
+          <Route path="/classprogram" element={<ClassProgramForm />} />
+          <Route path="/isnad" element={<Isnad />} />
           <Route path="/print-notice" element={<CreatePDFNotice1 />} />
         </Route>
         <Route path="/login" element={<LoginForm />} />

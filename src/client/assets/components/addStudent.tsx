@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2, User, School } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/lib/supabaseClient";
+import HeaderNavbar from "./HeaderNavbar";
+import { useStudents } from "@/client/providers/StudentProvider";
+import _ from "lodash";
 
 const studentSchema = z.object({
   first_name: z.string().min(2, "الاسم يجب أن يحتوي على حرفين على الأقل"),
@@ -48,6 +51,30 @@ const StudentForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const { classrooms } = useStudents();
+
+  const divisions = useMemo(
+    () =>
+      _.uniqBy(
+        classrooms.filter(
+          (classroom) => classroom.class_level === formData.level
+        ),
+        "class_name"
+      ),
+    [formData.level, classrooms]
+  );
+  const class_numbers = useMemo(
+    () =>
+      _.sortBy(
+        classrooms.filter(
+          (classroom) =>
+            classroom.class_level === formData.level &&
+            classroom.class_name === formData.class_name
+        ),
+        "class_number"
+      ),
+    [classrooms, formData.class_name]
+  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -109,7 +136,6 @@ const StudentForm = () => {
         student_inscription_date: new Date().toISOString(),
         full_name: `${validatedData.last_name} ${validatedData.first_name}`,
         full_class_name: `${validatedData.level} ${validatedData.class_name} ${validatedData.class_number}`,
-        id: 1500,
       };
 
       const { data, error } = await supabase
@@ -122,7 +148,7 @@ const StudentForm = () => {
 
       setSubmitStatus({
         type: "success",
-        message: `Student ${studentData.full_name} registered successfully!`,
+        message: `تم تسجيل التلميذ ${studentData.full_name} بنجاح!`,
       });
 
       // Reset form
@@ -148,7 +174,8 @@ const StudentForm = () => {
       setSubmitStatus({
         type: "error",
         message:
-          error.message || "Failed to register student. Please try again.",
+          error.message ||
+          "فشل تسجيل التلميذ، تحقق من البيانات وحاول مرة أخرى.",
       });
     } finally {
       setIsSubmitting(false);
@@ -156,21 +183,16 @@ const StudentForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+    <div className="flex min-h-screen w-full flex-col" dir="rtl">
+      <HeaderNavbar />
+      <div className="w-full mx-auto">
+        <div className="bg-white shadow-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-                <School className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">تسجيل تلميذ</h1>
-                <p className="text-blue-100 text-sm mt-1">
-                  اكمل ملئ الخانات لتسجيل التلميذ
-                </p>
-              </div>
+          <div className="bg-gradient-to-r bg-slate-800 text-white">
+            <div className="flex justify-center items-center  p-6">
+              <h1 className="text-2xl md:text-3xl text-center font-bold">
+                تسجيل تلميذ
+              </h1>
             </div>
           </div>
 
@@ -194,120 +216,297 @@ const StudentForm = () => {
               </div>
             )}
 
-            {/* Personal Information */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600" />
-                المعلومات الشخصية
-              </h2>
+            <div className="grid grid-cols-2 gap-8">
+              {/* Personal Information */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <User className="w-5 h-5 text-blue-600" />
+                  المعلومات الشخصية
+                </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      الاسم <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.first_name
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      placeholder="الاسم"
+                    />
+                    {errors.first_name && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.first_name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      اللقب <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.last_name
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      placeholder="اللقب"
+                    />
+                    {errors.last_name && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.last_name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      تاريخ الازدياد <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      name="student_dob"
+                      value={formData.student_dob}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.student_dob
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                    />
+                    {errors.student_dob && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.student_dob}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      مكان الميلاد <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="student_pob"
+                      value={formData.student_pob}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.student_pob
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      placeholder="مكان الميلاد"
+                    />
+                    {errors.student_pob && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.student_pob}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      الجنس <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.gender
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">اختر الجنس</option>
+                      <option value="ذكر">ذكر</option>
+                      <option value="أنثى">أنثى</option>
+                    </select>
+                    {errors.gender && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.gender}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      اسم الأب <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="fathers_name"
+                      value={formData.fathers_name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.fathers_name
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                      placeholder="اسم الأب"
+                    />
+                    {errors.fathers_name && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.fathers_name}
+                      </p>
+                    )}
+                  </div>
+                </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    الاسم <span className="text-red-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-1 mt-5">
+                    العنوان <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={formData.first_name}
+                  <textarea
+                    name="student_address"
+                    value={formData.student_address}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.first_name
+                    rows="2"
+                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition resize-none ${
+                      errors.student_address
                         ? "border-red-500 bg-red-50"
                         : "border-gray-300"
                     }`}
-                    placeholder="الاسم"
+                    placeholder="Student's full address"
                   />
-                  {errors.first_name && (
+                  {errors.student_address && (
                     <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" />
-                      {errors.first_name}
+                      {errors.student_address}
                     </p>
                   )}
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    اللقب <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.last_name
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    placeholder="اللقب"
-                  />
-                  {errors.last_name && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.last_name}
-                    </p>
-                  )}
+              {/* Academic Information */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <School className="w-5 h-5 text-blue-600" />
+                  المعلومات الأكاديمية
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      المستوى <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="level"
+                      value={formData.level}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.level
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">اختر المستوى</option>
+                      <option value="أولى">أولى</option>
+                      <option value="ثانية">ثانية</option>
+                      <option value="ثالثة">ثالثة</option>
+                    </select>
+                    {errors.level && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.level}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      الشعبة <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="class_name"
+                      value={formData.class_name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.class_name
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">اختر المستوى</option>
+                      {divisions.map((division) => (
+                        <option value={division.class_name}>
+                          {division.class_name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.class_name && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.class_name}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      رقم الفوج <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="class_number"
+                      value={formData.class_number}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                        errors.class_number
+                          ? "border-red-500 bg-red-50"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <option value="">اختر المستوى</option>
+                      {class_numbers.map((division) => (
+                        <option value={division.class_number}>
+                          {division.class_number}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.class_number && (
+                      <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.class_number}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div>
+                <div className="mb-5">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    تاريخ الازدياد <span className="text-red-500">*</span>
+                    الصفة
                   </label>
-                  <input
-                    type="date"
-                    name="student_dob"
-                    value={formData.student_dob}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.student_dob
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                  />
-                  {errors.student_dob && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.student_dob}
-                    </p>
-                  )}
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    مكان الميلاد <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="student_pob"
-                    value={formData.student_pob}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.student_pob
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    placeholder="مكان الميلاد"
-                  />
-                  {errors.student_pob && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.student_pob}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    الجنس <span className="text-red-500">*</span>
-                  </label>
                   <select
-                    name="gender"
-                    value={formData.gender}
+                    name="student_status"
+                    value={formData.student_status}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
@@ -316,230 +515,65 @@ const StudentForm = () => {
                         : "border-gray-300"
                     }`}
                   >
-                    <option value="">اختر الجنس</option>
-                    <option value="ذكر">ذكر</option>
-                    <option value="أنثى">أنثى</option>
+                    <option value="">اختر الصفة</option>
+                    <option value="داخلي">داخلي</option>
+                    <option value="نصف داخلي">نصف داخلي</option>
+                    <option value="خارجي">خارجي</option>
                   </select>
-                  {errors.gender && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.gender}
-                    </p>
-                  )}
                 </div>
+                <div className="mb-8">
+                  <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                    الحالة
+                  </h2>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="is_new"
+                        checked={formData.is_new}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">تلميذ جديد</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="i3ada"
+                        checked={formData.i3ada}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">الإعادة</span>
+                    </label>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    اسم الأب <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="fathers_name"
-                    value={formData.fathers_name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.fathers_name
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    placeholder="اسم الأب"
-                  />
-                  {errors.fathers_name && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.fathers_name}
-                    </p>
-                  )}
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="idmaj"
+                        checked={formData.idmaj}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">إدماج</span>
+                    </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="is_mamnouh"
+                        checked={formData.is_mamnouh}
+                        onChange={handleChange}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm text-gray-700">ممنوح</span>
+                    </label>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1 mt-5">
-                  العنوان <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="student_address"
-                  value={formData.student_address}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  rows="2"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition resize-none ${
-                    errors.student_address
-                      ? "border-red-500 bg-red-50"
-                      : "border-gray-300"
-                  }`}
-                  placeholder="Student's full address"
-                />
-                {errors.student_address && (
-                  <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.student_address}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Academic Information */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <School className="w-5 h-5 text-blue-600" />
-                المعلومات الأكاديمية
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    المستوى <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    name="level"
-                    value={formData.level}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.gender
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    <option value="">اختر المستوى</option>
-                    <option value="أولى">أولى</option>
-                    <option value="ثانية">ثانية</option>
-                    <option value="ثالثة">ثالثة</option>
-                  </select>
-                  {errors.level && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.level}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    الشعبة <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="class_name"
-                    value={formData.class_name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.class_name
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    placeholder="A"
-                  />
-                  {errors.class_name && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.class_name}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    رقم الفوج <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="class_number"
-                    value={formData.class_number}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                      errors.class_number
-                        ? "border-red-500 bg-red-50"
-                        : "border-gray-300"
-                    }`}
-                    placeholder="01"
-                  />
-                  {errors.class_number && (
-                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" />
-                      {errors.class_number}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  الصفة
-                </label>
-
-                <select
-                  name="student_status"
-                  value={formData.student_status}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`w-full bg-white px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
-                    errors.gender
-                      ? "border-red-500 bg-red-50"
-                      : "border-gray-300"
-                  }`}
-                >
-                  <option value="">اختر الصفة</option>
-                  <option value="داخلي">داخلي</option>
-                  <option value="نصف داخلي">نصف داخلي</option>
-                  <option value="خارجي">خارجي</option>
-                </select>
               </div>
             </div>
 
             {/* Status Checkboxes */}
-            <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                الحالة
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="is_new"
-                    checked={formData.is_new}
-                    onChange={handleChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">تلميذ جديد</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="i3ada"
-                    checked={formData.i3ada}
-                    onChange={handleChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">الإعادة</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="idmaj"
-                    checked={formData.idmaj}
-                    onChange={handleChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">إدماج</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="is_mamnouh"
-                    checked={formData.is_mamnouh}
-                    onChange={handleChange}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">ممنوح</span>
-                </label>
-              </div>
-            </div>
 
             {/* Submit Button */}
             <button

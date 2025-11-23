@@ -77,6 +77,8 @@ function HeaderNavbar() {
           <AppLink to="/print-pdf" link="طباعة" />
           <AppLink to="/student-cards" link="بطاقات" />
           <AppLink to="/add-student" link="إضافة تلميذ" />
+          <AppLink to="/classprogram" link="التوزيع الزمني" />
+          <AppLink to="/isnad" link="الإسناد" />
           {/* <AppLink to="/daily-report" link="التقرير اليومي" /> */}
         </nav>
         <Sheet>
