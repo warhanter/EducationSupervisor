@@ -185,7 +185,7 @@ const StudentForm = () => {
   return (
     <div className="flex min-h-screen w-full flex-col" dir="rtl">
       <HeaderNavbar />
-      <div className="w-full bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
+      <div className="bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
         <div className="bg-white shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r bg-slate-800 text-white">

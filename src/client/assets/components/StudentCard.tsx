@@ -29,7 +29,7 @@ export default function StudentCard() {
   return (
     <div className="w-full">
       <HeaderNavbar />
-      <div className="w-full bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
+      <div className="bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
         <div className="bg-gradient-to-r bg-slate-800 text-white mb-4">
           <div className="flex justify-center items-center  p-6">
             <h1 className="text-2xl md:text-3xl text-center font-bold">
