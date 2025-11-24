@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import HeaderNavbar from "./HeaderNavbar";
 import { useStudents } from "@/client/providers/StudentProvider";
-import _ from "lodash";
+import _, { padStart } from "lodash";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -264,15 +264,15 @@ function ClassProgramForm() {
                 <div className="space-y-2">
                   <div>
                     <label className="text-sm font-semibold text-gray-700">
-                      المواد المتاحة:{" "}
-                      <span className="font-bold text-blue-600">
-                        {classProgrmas.length}
+                      المواد المسندة لهذا القسم:{"    "}
+                      <span className="font-bold text-blue-600 px-2 py-1 border border-slate-600 rounded-sm">
+                        {padStart(String(classProgrmas.length), 2, "0")}
                       </span>
                     </label>
                   </div>
                   <Button className="h-12" variant={"outline"} asChild>
                     <div className="flex gap-4">
-                      <Link to={"/isnad"}>إضافة مادة</Link>
+                      <Link to={"/isnad"}>تحيين الإسناد</Link>
                       <PlusCircle />
                     </div>
                   </Button>

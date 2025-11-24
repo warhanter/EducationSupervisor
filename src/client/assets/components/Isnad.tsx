@@ -483,7 +483,7 @@ function Isnad() {
                               )}
                               dir="rtl"
                             >
-                              <SelectValue placeholder="اختر القسم">
+                              <SelectValue placeholder="...">
                                 {schedule[rightSlot]?.classroom || ""}
                               </SelectValue>
                             </SelectTrigger>
@@ -547,7 +547,7 @@ function Isnad() {
                               )}
                               dir="rtl"
                             >
-                              <SelectValue placeholder="اختر القسم">
+                              <SelectValue placeholder="...">
                                 {schedule[leftSlot]?.classroom || ""}
                               </SelectValue>
                             </SelectTrigger>
