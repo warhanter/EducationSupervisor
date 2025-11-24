@@ -177,6 +177,7 @@ function PDFPrint() {
 
       studentObject.number = index.toString();
       studentObject.id = i.toString();
+      studentObject.ids = studentdataobject[0].id;
       studentObject.absence_date = student.absence_date;
       studentObject.last_name = studentdataobject[0]?.last_name;
       studentObject.first_name = studentdataobject[0]?.first_name;

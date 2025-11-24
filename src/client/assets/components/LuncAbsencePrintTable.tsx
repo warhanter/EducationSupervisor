@@ -1,8 +1,47 @@
 import { supabase } from "@/lib/supabaseClient";
-import { filter } from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { Student } from "./columns";
 
-export default function LuncAbsencePrintTable({ data, date, students }) {
+type LunchAbsencesProps = {
+  data: Student[];
+  date: Date;
+  students: Student[];
+};
+
+export const calculateStudentStats = (array: Student[]) => {
+  const initCounts = () => ({
+    داخلي: { ذكر: 0, أنثى: 0, الكل: 0 },
+    "نصف داخلي": { ذكر: 0, أنثى: 0, الكل: 0 },
+    المطعم: { ذكر: 0, أنثى: 0, الكل: 0 },
+    خارجي: { ذكر: 0, أنثى: 0, الكل: 0 },
+    الكل: { ذكر: 0, أنثى: 0, الكل: 0 },
+  });
+
+  const stats = array.reduce((acc, s) => {
+    if (
+      acc[s.student_status] &&
+      acc[s.student_status][s.gender] !== undefined
+    ) {
+      acc[s.student_status][s.gender]++;
+      acc[s.student_status]["الكل"]++;
+      acc["الكل"][s.gender]++;
+      acc["الكل"]["الكل"]++;
+      if (s.student_status === "داخلي" || s.student_status === "نصف داخلي") {
+        acc["المطعم"][s.gender]++;
+        acc["المطعم"]["الكل"]++;
+      }
+    }
+    return acc;
+  }, initCounts());
+
+  return stats;
+};
+
+export default function LuncAbsencePrintTable({
+  data,
+  date,
+  students,
+}: LunchAbsencesProps) {
   const [lunch_note, setLunch_note] = useState<string | null>(null);
   const [lunch_plates, setLunch_Plates] = useState<string | null>(null);
   const fetchNotes = async () => {
@@ -21,6 +60,18 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
   useEffect(() => {
     fetchNotes();
   }, [date]);
+
+  // TO_BE_REMOVED-- this function is specifically for the current school as it requested
+  // because the app doesn't record the lunch Absences in the lunchAbsence Table
+  // instead the current LUNCH_ABSENCE Table have the present students on that lunch day.
+  const allowed = new Set(["داخلي", "نصف داخلي"]);
+  const absences = useMemo(
+    () =>
+      students
+        .filter((a) => !data.some((b) => Number(b.ids) === a.id))
+        .filter((a) => allowed.has(a.student_status)),
+    [data, students]
+  );
 
   const handleUpsertLunchNote = async (noteContent: string) => {
     const { data, error } = await supabase
@@ -64,52 +115,13 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
     }
   };
 
-  const dakhiliDokour = filter(
-    students,
-    (student) => student.student_status === "داخلي" && student.gender === "ذكر"
-  ).length;
-  const dakhiliInath = filter(
-    students,
-    (student) => student.student_status === "داخلي" && student.gender === "إنثى"
-  ).length;
-  const nisfDakhiliDokour = filter(
-    students,
-    (student) =>
-      student.student_status === "نصف داخلي" && student.gender === "ذكر"
-  ).length;
-  const nisfDakhiliInath = filter(
-    students,
-    (student) =>
-      student.student_status === "نصف داخلي" && student.gender === "أنثى"
-  ).length;
-  const dakhiliDokourAbsences = filter(
-    data,
-    (student) => student.student_status === "داخلي" && student.gender === "ذكر"
-  ).length;
-  const dakhiliInathAbsences = filter(
-    data,
-    (student) => student.student_status === "داخلي" && student.gender === "إنثى"
-  ).length;
-  const nisfDakhiliDokourAbsences = filter(
-    data,
-    (student) =>
-      student.student_status === "نصف داخلي" && student.gender === "ذكر"
-  ).length;
-  const nisfDakhiliInathAbsences = filter(
-    data,
-    (student) =>
-      student.student_status === "نصف داخلي" && student.gender === "أنثى"
-  ).length;
+  const studentsStats = calculateStudentStats(students);
+  const absencesStats = calculateStudentStats(absences);
+
   const hadirinDokour =
-    dakhiliDokour +
-    nisfDakhiliDokour -
-    dakhiliDokourAbsences -
-    nisfDakhiliDokourAbsences;
+    studentsStats["المطعم"]["ذكر"] - absencesStats["المطعم"]["ذكر"];
   const hadirinInath =
-    dakhiliInath +
-    nisfDakhiliInath -
-    dakhiliInathAbsences -
-    nisfDakhiliInathAbsences;
+    studentsStats["المطعم"]["أنثى"] - absencesStats["المطعم"]["أنثى"];
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
@@ -300,16 +312,13 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                   مسجلون
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliDokour + nisfDakhiliDokour}
+                  {studentsStats["المطعم"]["ذكر"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliInath + nisfDakhiliInath}
+                  {studentsStats["المطعم"]["أنثى"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
-                  {dakhiliDokour +
-                    nisfDakhiliDokour +
-                    dakhiliInath +
-                    nisfDakhiliInath}
+                  {studentsStats["المطعم"]["الكل"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   0
@@ -328,21 +337,18 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   {data.length === 0
-                    ? dakhiliDokour + nisfDakhiliDokour
-                    : dakhiliDokourAbsences + nisfDakhiliDokourAbsences}
+                    ? studentsStats["المطعم"]["ذكر"]
+                    : absencesStats["المطعم"]["ذكر"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   {data.length === 0
-                    ? dakhiliInath + nisfDakhiliInath
-                    : dakhiliInathAbsences + nisfDakhiliInathAbsences}
+                    ? studentsStats["المطعم"]["أنثى"]
+                    : absencesStats["المطعم"]["أنثى"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   {data?.length === 0
-                    ? dakhiliDokour +
-                      nisfDakhiliDokour +
-                      dakhiliInath +
-                      nisfDakhiliInath
-                    : data?.length}
+                    ? studentsStats["المطعم"]["الكل"]
+                    : absencesStats["المطعم"]["الكل"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   0
@@ -368,11 +374,8 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                 <td className="border border-collapse border-zinc-500 p-1">
                   {data.length === 0
                     ? 0
-                    : dakhiliDokour +
-                      nisfDakhiliDokour +
-                      dakhiliInath +
-                      nisfDakhiliInath -
-                      data?.length}
+                    : studentsStats["المطعم"]["الكل"] -
+                      absencesStats["المطعم"]["الكل"]}
                 </td>
                 <td className="border border-collapse border-zinc-500 p-1">
                   0
@@ -530,8 +533,8 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
               </tr>
             </thead>
             <tbody className="text-sm font-bold">
-              {data &&
-                data.map((student, index) => {
+              {absences &&
+                absences.map((student, index) => {
                   return (
                     <tr key={student.id}>
                       <td className="border border-collapse border-zinc-500 py-0 px-1">
@@ -550,7 +553,8 @@ export default function LuncAbsencePrintTable({ data, date, students }) {
                         {student.tableNumber}
                       </td>
                       <td className="border border-collapse border-zinc-500 py-0 px-1">
-                        {student.justification}
+                        {/* {student.justification} */}
+                        {student.student_status}
                       </td>
                     </tr>
                   );

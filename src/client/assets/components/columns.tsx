@@ -26,6 +26,8 @@ import { StudentDialogEdit } from "./updateStudentDetails";
 import { Input } from "@/components/ui/input";
 import { MarkAbsenceDialog } from "./MarkAbsenceDialog";
 import DateTimePicker from "./AppDatePicker";
+type Status = "داخلي" | "نصف داخلي" | "خارجي";
+type Gender = "ذكر" | "أنثى";
 export type Student = {
   id: number;
   student_id: number;
@@ -37,13 +39,13 @@ export type Student = {
   full_class_name: string;
   full_name: string;
   level: string;
-  gender: string;
+  gender: Gender;
   is_fired: boolean;
   is_new: boolean;
   idmaj: boolean;
   switched_school: boolean;
   student_dob: Date;
-  student_status: string;
+  student_status: Status;
   noticeName: string;
   absence_days: string;
   absence_date: Date;
@@ -57,6 +59,11 @@ export type Student = {
   sport_inapt?: boolean;
   i3ada?: boolean;
   father_name?: string;
+  last_name?: string;
+  first_name?: string;
+  class?: string;
+  tableNumber?: number;
+  ids?: number;
 };
 
 // const navigate = useNavigate();
