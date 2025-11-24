@@ -359,7 +359,7 @@ function Isnad() {
     <div className="flex min-h-screen w-full flex-col" dir="rtl">
       <HeaderNavbar />
       <div className="w-full mx-auto">
-        <Card className="shadow-xl w-full">
+        <Card className="w-full bg-white border border-gray-200 m-8 max-sm:mx-0 max-sm:my-4 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
           <CardHeader className="bg-gradient-to-r bg-slate-800 text-white">
             <CardTitle className="text-2xl md:text-3xl text-center font-bold">
               الإسناد

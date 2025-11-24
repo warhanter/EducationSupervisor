@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { reverseString } from "../contexts/AppFunctions";
 import { Student } from "@/client/providers/StudentProvider";
-import { sortBy } from "lodash";
+import _ from "lodash";
 import { supabase } from "@/lib/supabaseClient";
+import { AppSelectItems } from "./AppSelectItems";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
@@ -11,10 +12,25 @@ export type PDFPrintTablesProps = {
 };
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const [daily_note, setDaily_note] = useState<string | null>(null);
+  const [selectedClass, setSelectedClass] = useState<string>("الكل");
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
-  const absencesData = sortBy(data, (student) => student.class_abbreviation);
+  const absencesData = useMemo(
+    () =>
+      _.sortBy(
+        _.filter(data, (d) =>
+          selectedClass === "الكل" ? true : d.class === selectedClass
+        ),
+        (student) => student.class_abbreviation
+      ),
+    [data, selectedClass]
+  );
+
+  const classes = useMemo(
+    () => _.uniq(absencesData.map((student) => student.class).sort()),
+    []
+  );
 
   const fetchNotes = async () => {
     let { data: note, error } = await supabase
@@ -54,13 +70,19 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   };
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
-      <div className="flex justify-between">
-        <p className="text-base font-bold mb-4">
+      <div className="flex  items-center justify-between mb-1">
+        <p className="text-base font-bold">
           التلاميذ الغائبين الى غاية نهاية يوم: {fdate}
         </p>
-        <p className="text-base font-bold mb-4">
-          عدد الغيابات : {data?.length}
-        </p>
+        <div className="flex justify-center items-center gap-4">
+          <p className="text-base font-bold">عدد الغيابات : {data?.length}</p>
+          <AppSelectItems
+            selectLabel="القسم"
+            selectedClass={selectedClass}
+            setSelectedClass={setSelectedClass}
+            items={classes}
+          />
+        </div>
       </div>
       <table className="w-full   print:text-[13px] font-medium ">
         <thead className="border-separate border border-zinc-500 bg-gray-200">

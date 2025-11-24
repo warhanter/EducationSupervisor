@@ -102,6 +102,11 @@ export default function DateTimePicker({
           disabled={studentAbsenceDate ? true : false}
         />
       </div>
+      <div>
+        <Button disabled variant="outline" className="">
+          {time && Number(time.split(":")[0]) < 12 ? "صباحا" : "مساء"}
+        </Button>
+      </div>
     </div>
   );
 }
