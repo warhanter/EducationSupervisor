@@ -64,6 +64,9 @@ export type Student = {
   class?: string;
   tableNumber?: number;
   ids?: number;
+  class_abbreviation?: string;
+  lunch_table_number?: string;
+  lunch_leave_justification?: string;
 };
 
 // const navigate = useNavigate();

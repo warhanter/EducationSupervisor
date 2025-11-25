@@ -12,6 +12,7 @@ import {
 
 type SelectProps = {
   selectLabel: string;
+  firstItem: string;
   items: string[] | null;
   selectedClass: string;
   setSelectedClass: React.Dispatch<React.SetStateAction<string>>;
@@ -22,6 +23,7 @@ export function AppSelectItems({
   items,
   selectedClass,
   setSelectedClass,
+  firstItem,
 }: SelectProps) {
   return (
     <Select value={selectedClass} onValueChange={setSelectedClass} dir="rtl">
@@ -31,7 +33,7 @@ export function AppSelectItems({
       <SelectContent>
         <SelectGroup>
           <SelectLabel>{selectLabel}</SelectLabel>
-          <SelectItem value={"الكل"}>كل الأقسام</SelectItem>
+          <SelectItem value={"الكل"}>{firstItem}</SelectItem>
           {items &&
             items.map((item) => <SelectItem value={item}>{item}</SelectItem>)}
         </SelectGroup>

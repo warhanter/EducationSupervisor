@@ -488,6 +488,42 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "lunch_absences",
+        },
+        (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            setData((prev) => ({
+              ...prev,
+              lunchAbsences: [...prev.lunchAbsences, payload.new],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            setData((prev) => ({
+              ...prev,
+              lunchAbsences: prev.lunchAbsences.map((s: Student) =>
+                s.id === payload.new.id ? payload.new : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              lunchAbsences: prev.lunchAbsences.filter(
+                (s: Student) => s.id !== payload.old.id
+              ),
+            }));
+          }
+        }
+      )
       .subscribe();
 
     // 2️⃣ Cleanup when component unmounts

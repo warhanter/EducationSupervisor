@@ -130,6 +130,7 @@ function PDFPrint() {
       studentObject.id = i.toString();
       studentObject.last_name = student.last_name;
       studentObject.first_name = student.first_name;
+      studentObject.supervisor_id = studentFROMDB.supervisor_id;
       const medicalLeave =
         studentFROMDB?.medical_leave === true &&
         rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
@@ -181,6 +182,8 @@ function PDFPrint() {
       studentObject.absence_date = student.absence_date;
       studentObject.last_name = studentdataobject[0]?.last_name;
       studentObject.first_name = studentdataobject[0]?.first_name;
+      studentObject.supervisor_id = studentdataobject[0]?.supervisor_id;
+
       studentObject.tableNumber = studentdataobject[0]?.lunch_table_number;
       studentObject.gender = studentdataobject[0]?.gender;
       studentObject.student_status = studentdataobject[0]?.student_status;

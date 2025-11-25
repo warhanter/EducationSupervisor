@@ -13,16 +13,18 @@ export type PDFPrintTablesProps = {
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const [daily_note, setDaily_note] = useState<string | null>(null);
   const [selectedClass, setSelectedClass] = useState<string>("الكل");
+  const [supervisors, setSupervisors] = useState<Record<string, any>>([]);
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
   const absencesData = useMemo(
     () =>
-      _.sortBy(
-        _.filter(data, (d) =>
-          selectedClass === "الكل" ? true : d.class === selectedClass
-        ),
-        (student) => student.class_abbreviation
+      _.filter(data, (d) =>
+        selectedClass === "الكل"
+          ? true
+          : d.supervisor_id ===
+            supervisors.filter((s) => s.full_name === selectedClass)[0]
+              .supervisor_id
       ),
     [data, selectedClass]
   );
@@ -30,6 +32,11 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const classes = useMemo(
     () => _.uniq(absencesData.map((student) => student.class).sort()),
     []
+  );
+
+  const supervisorsNames = useMemo(
+    () => _.uniq(supervisors.map((s) => s.full_name).sort()),
+    [supervisors]
   );
 
   const fetchNotes = async () => {
@@ -44,6 +51,20 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
       setDaily_note(note.note);
     }
   };
+
+  const fetchSupervisors = async () => {
+    let { data: supervisors, error } = await supabase
+      .from("supervisors")
+      .select("*");
+    if (error) console.error("Errors fetching data:", error);
+    console.log("fetching ", supervisors);
+    if (supervisors) {
+      setSupervisors(supervisors);
+    }
+  };
+  useEffect(() => {
+    fetchSupervisors();
+  }, []);
   useEffect(() => {
     fetchNotes();
   }, [date]);
@@ -76,12 +97,16 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
         </p>
         <div className="flex justify-center items-center gap-4">
           <p className="text-base font-bold">عدد الغيابات : {data?.length}</p>
-          <AppSelectItems
-            selectLabel="القسم"
-            selectedClass={selectedClass}
-            setSelectedClass={setSelectedClass}
-            items={classes}
-          />
+
+          <div className="print:hidden">
+            <AppSelectItems
+              selectLabel="المشرفين"
+              firstItem="كل المشرفين"
+              selectedClass={selectedClass}
+              setSelectedClass={setSelectedClass}
+              items={supervisorsNames}
+            />
+          </div>
         </div>
       </div>
       <table className="w-full   print:text-[13px] font-medium ">
@@ -153,84 +178,90 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
             })}
         </tbody>
       </table>
-      {/* <p className="font-bold text-xl flex justify-end m-8">
-        مستشــــار التربيـــــة
-      </p> */}
-      <table className="w-full   print:text-[13px] font-medium mt-8">
-        <thead>
-          <tr>
-            <th className="border border-collapse border-zinc-500 py-1 px-1">
-              ملاحظات مستشار التربية:{" "}
-              <span className="text-xs">
-                (النظافة،الصيانة،الإتلافات،الحوادث،النشاط الثقافي و الرياضي،دروس
-                الدعم،الزيارات)
-              </span>
-            </th>
-            <th className="border border-collapse border-zinc-500 py-1 px-1">
-              الختم و الإمضاء
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="border border-zinc-500">
-              <textarea
-                className="resize-none w-full p-2 border-none outline-none focus:ring-2 focus:ring-blue-500"
-                rows={5}
-                onBlur={(e) => handleUpsertNote(e.target.value)}
-                defaultValue={daily_note || ""}
-              />
-            </td>
-            <td className="border border-zinc-500 px-1"></td>
-          </tr>
-        </tbody>
-      </table>
-      <table className="w-full   print:text-[13px] font-medium mt-2">
-        <thead>
-          <tr>
-            <th className="border border-collapse border-zinc-500 py-1 px-60">
-              اقتراحــات النـاظـــــــــر:
-            </th>
-            <th className="border border-collapse border-zinc-500 py-1 px-1">
-              الختم و الإمضاء
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="">
-            <td className="border border-collapse border-zinc-500 ">
-              <textarea
-                rows={3}
-                className="resize-none w-full m-0 py-0 px-5"
-              ></textarea>
-            </td>
-            <td className="border border-collapse border-zinc-500 px-1"></td>
-          </tr>
-        </tbody>
-      </table>
-      <table className="w-full   print:text-[13px] font-medium mt-2">
-        <thead>
-          <tr>
-            <th className="border border-collapse border-zinc-500 py-1 px-56">
-              توصيات مدير المؤسسة:
-            </th>
-            <th className="border border-collapse border-zinc-500 py-1 px-1">
-              الختم و الإمضاء
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="">
-            <td className="border border-collapse border-zinc-500 ">
-              <textarea
-                rows={3}
-                className="resize-none w-full m-0 py-0 px-5"
-              ></textarea>
-            </td>
-            <td className="border border-collapse border-zinc-500 px-1"></td>
-          </tr>
-        </tbody>
-      </table>
+
+      {selectedClass === "الكل" ? (
+        <>
+          <table className="w-full   print:text-[13px] font-medium mt-8">
+            <thead>
+              <tr>
+                <th className="border border-collapse border-zinc-500 py-1 px-1">
+                  ملاحظات مستشار التربية:{" "}
+                  <span className="text-xs">
+                    (النظافة،الصيانة،الإتلافات،الحوادث،النشاط الثقافي و
+                    الرياضي،دروس الدعم،الزيارات)
+                  </span>
+                </th>
+                <th className="border border-collapse border-zinc-500 py-1 px-1">
+                  الختم و الإمضاء
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-zinc-500">
+                  <textarea
+                    className="resize-none w-full p-2 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={5}
+                    onBlur={(e) => handleUpsertNote(e.target.value)}
+                    defaultValue={daily_note || ""}
+                  />
+                </td>
+                <td className="border border-zinc-500 px-1"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="w-full   print:text-[13px] font-medium mt-2">
+            <thead>
+              <tr>
+                <th className="border border-collapse border-zinc-500 py-1 px-60">
+                  اقتراحــات النـاظـــــــــر:
+                </th>
+                <th className="border border-collapse border-zinc-500 py-1 px-1">
+                  الختم و الإمضاء
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="">
+                <td className="border border-collapse border-zinc-500 ">
+                  <textarea
+                    rows={3}
+                    className="resize-none w-full m-0 py-0 px-5"
+                  ></textarea>
+                </td>
+                <td className="border border-collapse border-zinc-500 px-1"></td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="w-full   print:text-[13px] font-medium mt-2">
+            <thead>
+              <tr>
+                <th className="border border-collapse border-zinc-500 py-1 px-56">
+                  توصيات مدير المؤسسة:
+                </th>
+                <th className="border border-collapse border-zinc-500 py-1 px-1">
+                  الختم و الإمضاء
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="">
+                <td className="border border-collapse border-zinc-500 ">
+                  <textarea
+                    rows={3}
+                    className="resize-none w-full m-0 py-0 px-5"
+                  ></textarea>
+                </td>
+                <td className="border border-collapse border-zinc-500 px-1"></td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      ) : (
+        <p className="font-bold text-xl flex justify-end m-8">
+          مستشــــار التربيـــــة
+        </p>
+      )}
     </div>
   );
 }

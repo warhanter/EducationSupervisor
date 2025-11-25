@@ -213,6 +213,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 القسم
               </Label>
               <Select
+                dir="rtl"
                 value={formData.full_class_name}
                 onValueChange={(value) =>
                   handleInputChange("full_class_name", value)
@@ -262,6 +263,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 الصفة
               </Label>
               <Select
+                dir="rtl"
                 value={formData.student_status}
                 onValueChange={(value) =>
                   handleInputChange("student_status", value)
@@ -290,7 +292,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 onChange={(e) =>
                   handleInputChange("student_dob", e.target.value)
                 }
-                className="col-span-3"
+                className="col-span-3 flex  justify-end"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -298,6 +300,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 الجنس
               </Label>
               <Select
+                dir="rtl"
                 value={formData.gender}
                 onValueChange={(value) => handleInputChange("gender", value)}
               >
@@ -320,6 +323,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 معيد
               </Label>
               <Select
+                dir="rtl"
                 value={formData.i3ada ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange("i3ada", value === "نعم" ? "true" : "false")
@@ -339,6 +343,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 إدماج
               </Label>
               <Select
+                dir="rtl"
                 value={formData.idmaj ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange("idmaj", value === "نعم" ? "true" : "false")
@@ -358,6 +363,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 ممنوح
               </Label>
               <Select
+                dir="rtl"
                 value={formData.is_mamnouh ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange(
@@ -380,6 +386,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 وافد جديد
               </Label>
               <Select
+                dir="rtl"
                 value={formData.is_new ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange(
@@ -402,6 +409,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 اعفاء من الرياضة
               </Label>
               <Select
+                dir="rtl"
                 value={formData.sport_inapt ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange(
@@ -424,6 +432,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 تغيير مؤسسة
               </Label>
               <Select
+                dir="rtl"
                 value={formData.switched_school ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange(
@@ -446,6 +455,7 @@ export function StudentDialogEdit({ open, setOpen, student }: DialogDemoProps) {
                 شطب غياب
               </Label>
               <Select
+                dir="rtl"
                 value={formData.is_fired ? "نعم" : "لا"}
                 onValueChange={(value) =>
                   handleInputChange(
