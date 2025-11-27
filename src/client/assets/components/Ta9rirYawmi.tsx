@@ -330,7 +330,7 @@ export default function Ta9rirYawmi({
               colSpan={4}
               className="border-separate border border-zinc-500 p-0 bg-gray-200"
             >
-              مساء
+              مساءََ
             </th>
             <th
               rowSpan={2}

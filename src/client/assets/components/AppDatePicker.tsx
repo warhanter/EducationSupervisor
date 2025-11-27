@@ -104,7 +104,7 @@ export default function DateTimePicker({
       </div>
       <div>
         <Button disabled variant="outline" className="">
-          {time && Number(time.split(":")[0]) < 12 ? "صباحا" : "مساء"}
+          {time && Number(time.split(":")[0]) < 12 ? "صباحا" : "مساءََ"}
         </Button>
       </div>
     </div>

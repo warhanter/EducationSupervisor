@@ -10,6 +10,7 @@ const studentSchema = z.object({
   first_name: z.string().min(2, "الاسم يجب أن يحتوي على حرفين على الأقل"),
   last_name: z.string().min(2, "اللقب يجب أن يحتوي على حرفين على الأقل"),
   student_dob: z.string().min(1, "تاريخ الميلاد مطلوب"),
+  student_inscription_date: z.string().min(1, "تاريخ التسجيل مطلوب"),
   student_pob: z.string().min(2, "مكان الميلاد مطلوب"),
   gender: z.enum(["ذكر", "أنثى"], { message: "الجنس مطلوب" }),
   level: z.enum(["أولى", "ثانية", "ثالثة"], {
@@ -35,6 +36,7 @@ const StudentForm = () => {
     last_name: "",
     student_dob: "",
     student_pob: "",
+    student_inscription_date: "",
     gender: "",
     level: "",
     class_name: "",
@@ -133,7 +135,6 @@ const StudentForm = () => {
       // Prepare data for insertion
       const studentData = {
         ...validatedData,
-        student_inscription_date: new Date().toISOString(),
         full_name: `${validatedData.last_name} ${validatedData.first_name}`,
         full_class_name: `${validatedData.level} ${validatedData.class_name} ${validatedData.class_number}`,
       };
@@ -157,6 +158,7 @@ const StudentForm = () => {
         last_name: "",
         student_dob: "",
         student_pob: "",
+        student_inscription_date: "",
         gender: "",
         level: "",
         class_name: "",
@@ -520,6 +522,29 @@ const StudentForm = () => {
                     <option value="نصف داخلي">نصف داخلي</option>
                     <option value="خارجي">خارجي</option>
                   </select>
+                </div>
+                <div className="mb-5">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    تاريخ التسجيل <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="student_inscription_date"
+                    value={formData.student_inscription_date}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full flex justify-end px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition ${
+                      errors.student_inscription_date
+                        ? "border-red-500 bg-red-50"
+                        : "border-gray-300"
+                    }`}
+                  />
+                  {errors.student_inscription_date && (
+                    <p className="mt-1 text-xs text-red-600 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.student_inscription_date}
+                    </p>
+                  )}
                 </div>
                 <div className="mb-8">
                   <h2 className="text-lg font-semibold text-gray-800 mb-4">

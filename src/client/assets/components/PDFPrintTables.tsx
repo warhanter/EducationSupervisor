@@ -96,7 +96,9 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
           التلاميذ الغائبين الى غاية نهاية يوم: {fdate}
         </p>
         <div className="flex justify-center items-center gap-4">
-          <p className="text-base font-bold">عدد الغيابات : {data?.length}</p>
+          <p className="text-base font-bold">
+            عدد الغيابات : {absencesData?.length}
+          </p>
 
           <div className="print:hidden">
             <AppSelectItems
