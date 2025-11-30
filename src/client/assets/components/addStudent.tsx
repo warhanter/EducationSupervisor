@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import HeaderNavbar from "./HeaderNavbar";
 import { useStudents } from "@/client/providers/StudentProvider";
 import _ from "lodash";
+import { extractAbbreviation } from "@/utils/extractAbbreviation";
 
 const studentSchema = z.object({
   first_name: z.string().min(2, "الاسم يجب أن يحتوي على حرفين على الأقل"),
@@ -131,12 +132,16 @@ const StudentForm = () => {
 
     try {
       const validatedData = result.data;
+      const full_class_name = `${validatedData.level} ${validatedData.class_name} ${validatedData.class_number}`;
+      const full_name = `${validatedData.last_name} ${validatedData.first_name}`;
+      const class_abbreviation = extractAbbreviation(full_class_name);
 
       // Prepare data for insertion
       const studentData = {
         ...validatedData,
-        full_name: `${validatedData.last_name} ${validatedData.first_name}`,
-        full_class_name: `${validatedData.level} ${validatedData.class_name} ${validatedData.class_number}`,
+        full_name: full_name,
+        full_class_name: full_class_name,
+        class_abbreviation: class_abbreviation,
       };
 
       const { data, error } = await supabase
@@ -166,7 +171,6 @@ const StudentForm = () => {
         student_status: "",
         fathers_name: "",
         student_address: "",
-        i3ada: false,
         idmaj: false,
         is_mamnouh: false,
         is_new: true,
