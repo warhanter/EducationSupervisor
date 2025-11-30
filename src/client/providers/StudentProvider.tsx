@@ -280,6 +280,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // absences changes
       .on(
         "postgres_changes",
         {
@@ -318,6 +319,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // professors changes
       .on(
         "postgres_changes",
         {
@@ -357,6 +359,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // subjects changes
       .on(
         "postgres_changes",
         {
@@ -393,6 +396,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // classroom_professors changes
       .on(
         "postgres_changes",
         {
@@ -444,6 +448,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // class_programs changes
       .on(
         "postgres_changes",
         {
@@ -488,6 +493,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // lunch_absences changes
       .on(
         "postgres_changes",
         {
