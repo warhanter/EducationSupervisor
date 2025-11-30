@@ -42,7 +42,7 @@ export default function Ta9rirYawmi({
   useEffect(() => {
     fetchNotes();
   }, [date]);
-  const lastEducationDay = new Date("2025-06-30");
+  const lastEducationDay = new Date("2026-06-30");
   const handleUpsertNote = async (noteContent: string) => {
     const { data, error } = await supabase
       .from("daily_notes")
@@ -70,7 +70,7 @@ export default function Ta9rirYawmi({
   const yesterdayCount = filter(
     allStudents,
     (student) =>
-      student.student_inscription_date < yesterdayDate &&
+      new Date(student.student_inscription_date) < yesterdayDate &&
       !(
         (student.switched_school == true || student.is_fired == true) &&
         yesterdayDate > new Date(student.student_leave_date)
@@ -273,8 +273,8 @@ export default function Ta9rirYawmi({
         <input
           onBlur={(e) => handleUpsertNote(e.target.value)}
           defaultValue={report_number || ""}
-          type="number"
-          className="w-10"
+          type="text"
+          className="w-10 border-2 border-black text-center rounded-sm"
         />
       </h1>
 
@@ -283,7 +283,7 @@ export default function Ta9rirYawmi({
           1. الدراســــــــة: <span className="text-sm">دروس لم تقدم</span>
         </p>
         <p className="font-bold">
-          ليـــــــوم: <input className="w-40" defaultValue={fdate}></input>
+          ليـــــــوم: <input className="w-40 " defaultValue={fdate}></input>
         </p>
       </div>
       <table className="text-center w-full mb-2">
