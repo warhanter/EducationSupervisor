@@ -619,7 +619,7 @@ function PDFPrint() {
             {table === "isti9bal" && !loading && (
               <TeachersIsti9bal
                 table="isti9bal"
-                data={sortBy(professors, "module_name")}
+                data={professors}
                 classrooms={classrooms}
                 date={rapportDate}
                 title="ساعات استقبال الأساتذة"

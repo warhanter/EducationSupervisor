@@ -10,6 +10,7 @@ import React, {
 import { supabase } from "@/lib/supabaseClient";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
 import { ClassroomProfessor } from "../assets/components/Isnad";
+import { Tables } from "@/supabase/database.types";
 
 // Types
 type Notification = {
@@ -26,31 +27,67 @@ export type StudentList = Record<string, any>[];
 export type Student = Record<string, any>;
 type DailyNoteList = DailyNote[];
 
+// type StudentsData = {
+//   students: StudentList;
+//   absences: StudentList;
+//   addresses: StudentList;
+//   lunchAbsences: StudentList;
+//   classrooms: StudentList;
+//   professors: StudentList;
+//   classroom_professors: ClassroomProfessor[];
+//   class_programs: StudentList;
+//   subjects: StudentList;
+//   notification?: Notification;
+//   daily_notes: DailyNoteList;
+// };
+
 type StudentsData = {
-  students: StudentList;
-  absences: StudentList;
-  addresses: StudentList;
-  lunchAbsences: StudentList;
-  classrooms: StudentList;
-  professors: StudentList;
-  classroom_professors: ClassroomProfessor[];
-  class_programs: StudentList;
-  subjects: StudentList;
+  students: Tables<"students">[];
+  absences: (Tables<"absences"> & { students: Tables<"students"> })[];
+  addresses: Tables<"student_addresses">[];
+  lunchAbsences: Tables<"lunch_absences">[];
+  classrooms: Tables<"classrooms">[];
+  professors: (Tables<"professors"> & { subjects: Tables<"subjects"> })[];
+  classroom_professors: (Tables<"classroom_professors"> & {
+    classrooms: Tables<"classrooms">;
+  } & { professors: Tables<"professors"> } & {
+    subjects: Tables<"subjects">;
+  })[];
+  class_programs: (Tables<"class_programs"> & {
+    classrooms: Tables<"classrooms">;
+  } & {
+    professors: Tables<"professors"> & { subjects: Tables<"subjects"> };
+  })[];
+  subjects: Tables<"subjects">[];
   notification?: Notification;
-  daily_notes: DailyNoteList;
+  daily_notes: Tables<"daily_notes">[];
 };
 
+// type StudentContextType = StudentsData & {
+//   motamadrisin: StudentList;
+//   mo3idin: StudentList;
+//   mamnouhin: StudentList;
+//   mosadidin: StudentList;
+//   wafidin: StudentList;
+//   moghadirin: StudentList;
+//   machtobin: StudentList;
+//   nisfDakhili: StudentList;
+//   otlaMaradiya: StudentList;
+//   maafiyin: StudentList;
+//   refreshData: () => Promise<void>;
+// };
+
 type StudentContextType = StudentsData & {
-  motamadrisin: StudentList;
-  mo3idin: StudentList;
-  mamnouhin: StudentList;
-  mosadidin: StudentList;
-  wafidin: StudentList;
-  moghadirin: StudentList;
-  machtobin: StudentList;
-  nisfDakhili: StudentList;
-  otlaMaradiya: StudentList;
-  maafiyin: StudentList;
+  motamadrisin: Tables<"students">[];
+  mo3idin: Tables<"students">[];
+  mamnouhin: Tables<"students">[];
+  mosadidin: Tables<"students">[];
+  wafidin: Tables<"students">[];
+  moghadirin: Tables<"students">[];
+  machtobin: Tables<"students">[];
+  nisfDakhili: Tables<"students">[];
+  otlaMaradiya: Tables<"students">[];
+  maafiyin: Tables<"students">[];
   refreshData: () => Promise<void>;
 };
 
@@ -153,12 +190,12 @@ function StudentProvider({ children }: { children: ReactNode }) {
           supabase
             .from(TABLES.CLASS_PROFESSORS)
             .select(
-              `*, classrooms (class_full_name), professors (full_name, subjects (subject))`
+              `*, classrooms (class_full_name, class_prefix), professors (full_name, subjects (subject))`
             ),
           supabase
             .from("class_programs")
             .select(
-              `*, classrooms (class_full_name), professors(full_name, subjects (subject))`
+              `*, classrooms (class_full_name, class_prefix), professors(full_name, subjects (subject))`
             ),
           supabase.from(TABLES.PROFESSORS).select(`*, subjects (subject)`),
           supabase.from(TABLES.SUBJECTS).select("*"),
@@ -210,7 +247,12 @@ function StudentProvider({ children }: { children: ReactNode }) {
 
     fetchData();
 
-    const fetchSingleRow = async (table, id, professor_id, classroom_id) => {
+    const fetchSingleRow = async (
+      table: string,
+      id?: string,
+      professor_id?: string,
+      classroom_id?: string
+    ) => {
       // You need to implement specific queries here based on the table
       // This is a simplified example logic
       let query = supabase.from(table).select("*");
@@ -257,15 +299,17 @@ function StudentProvider({ children }: { children: ReactNode }) {
           if (payload.eventType === "INSERT") {
             setData((prev) => ({
               ...prev,
-              students: [...prev.students, payload.new],
+              students: [...prev.students, payload.new as Tables<"students">],
             }));
           }
 
           if (payload.eventType === "UPDATE") {
             setData((prev) => ({
               ...prev,
-              students: prev.students.map((s: Student) =>
-                s.id === payload.new.id ? payload.new : s
+              students: prev.students.map((s: Tables<"students">) =>
+                s.id === payload.new.id
+                  ? (payload.new as Tables<"students">)
+                  : s
               ),
             }));
           }
@@ -303,7 +347,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
             const newItems = await fetchSingleRow("absences", payload.new.id);
             setData((prev) => ({
               ...prev,
-              absences: prev.absences.map((s: Student) =>
+              absences: prev.absences.map((s: Tables<"absences">) =>
                 s.id === payload.new.id ? newItems : s
               ),
             }));
@@ -313,7 +357,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               absences: prev.absences.filter(
-                (s: Student) => s.id !== payload.old.id
+                (s: Tables<"absences">) => s.id !== payload.old.id
               ),
             }));
           }
@@ -331,20 +375,38 @@ function StudentProvider({ children }: { children: ReactNode }) {
           console.log("Change received:", payload);
 
           if (payload.eventType === "INSERT") {
-            const newItems = await fetchSingleRow("professors", payload.new.id);
+            const newItems = (await fetchSingleRow(
+              "professors",
+              payload.new.id
+            )) as Tables<"professors"> & { subjects: Tables<"subjects">[] };
             console.log("professors", newItems);
             setData((prev) => ({
               ...prev,
-              professors: [...prev.professors, newItems],
+              professors: [
+                ...prev.professors,
+                newItems as Tables<"professors"> & {
+                  subjects: Tables<"subjects">[];
+                },
+              ],
             }));
           }
 
           if (payload.eventType === "UPDATE") {
-            const newItems = await fetchSingleRow("professors", payload.new.id);
+            const newItems = (await fetchSingleRow(
+              "professors",
+              payload.new.id
+            )) as Tables<"professors"> & { subjects: Tables<"subjects">[] };
             setData((prev) => ({
               ...prev,
-              professors: prev.professors.map((s: Student) =>
-                s.id === payload.new.id ? newItems : s
+              professors: prev.professors.map(
+                (
+                  s: Tables<"professors"> & { subjects: Tables<"subjects">[] }
+                ) =>
+                  s.id === payload.new.id
+                    ? (newItems as Tables<"professors"> & {
+                        subjects: Tables<"subjects">[];
+                      })
+                    : s
               ),
             }));
           }
@@ -353,8 +415,12 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               professors: prev.professors.filter(
-                (s: Student) => s.id !== payload.old.id
-              ),
+                (
+                  s: Tables<"professors"> & { subjects: Tables<"subjects">[] }
+                ) => s.id !== payload.old.id
+              ) as (Tables<"professors"> & {
+                subjects: Tables<"subjects">[];
+              })[],
             }));
           }
         }
@@ -373,15 +439,17 @@ function StudentProvider({ children }: { children: ReactNode }) {
           if (payload.eventType === "INSERT") {
             setData((prev) => ({
               ...prev,
-              subjects: [...prev.subjects, payload.new],
+              subjects: [...prev.subjects, payload.new as Tables<"subjects">],
             }));
           }
 
           if (payload.eventType === "UPDATE") {
             setData((prev) => ({
               ...prev,
-              subjects: prev.subjects.map((s: Student) =>
-                s.id === payload.new.id ? payload.new : s
+              subjects: prev.subjects.map((s: Tables<"subjects">) =>
+                s.id === payload.new.id
+                  ? (payload.new as Tables<"subjects">)
+                  : s
               ),
             }));
           }
@@ -390,7 +458,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               subjects: prev.subjects.filter(
-                (s: Student) => s.id !== payload.old.id
+                (s: Tables<"subjects">) => s.id !== payload.old.id
               ),
             }));
           }
@@ -410,28 +478,53 @@ function StudentProvider({ children }: { children: ReactNode }) {
           if (payload.eventType === "INSERT") {
             const newItems = await fetchSingleRow(
               "classroom_professors",
-              null,
+              undefined,
               payload.new.professor_id,
               payload.new.classroom_id
             );
             setData((prev) => ({
               ...prev,
-              classroom_professors: [...prev.classroom_professors, newItems],
+              classroom_professors: [
+                ...prev.classroom_professors,
+                newItems as Tables<"classroom_professors"> & {
+                  classrooms: Tables<"classrooms">[];
+                } & {
+                  professors: (Tables<"professors"> & {
+                    subjects: Tables<"subjects">[];
+                  })[];
+                },
+              ],
             }));
           }
 
           if (payload.eventType === "UPDATE") {
             const newItems = await fetchSingleRow(
               "classroom_professors",
-              null,
+              undefined,
               payload.new.professor_id,
               payload.new.classroom_id
             );
             setData((prev) => ({
               ...prev,
               classroom_professors: prev.classroom_professors.map(
-                (s: Student) =>
-                  s.created_at === payload.new.created_at ? newItems : s
+                (
+                  s: Tables<"classroom_professors"> & {
+                    classrooms: Tables<"classrooms">[];
+                  } & {
+                    professors: (Tables<"professors"> & {
+                      subjects: Tables<"subjects">[];
+                    })[];
+                  }
+                ) =>
+                  s.created_at === payload.new.created_at
+                    ? (newItems as Tables<"classroom_professors"> & {
+                        classrooms: Tables<"classrooms">[];
+                      } & {
+                        professors: (Tables<"professors"> & {
+                          subjects: Tables<"subjects">[];
+                        })[];
+                      })
+                    : s
               ),
             }));
           }
@@ -440,10 +533,24 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               classroom_professors: prev.classroom_professors.filter(
-                (s: Student) =>
+                (
+                  s: Tables<"classroom_professors"> & {
+                    classrooms: Tables<"classrooms">[];
+                  } & {
+                    professors: (Tables<"professors"> & {
+                      subjects: Tables<"subjects">[];
+                    })[];
+                  }
+                ) =>
                   s.professor_id !== payload.old.professor_id &&
                   s.classroom_id !== payload.old.classroom_id
-              ),
+              ) as (Tables<"classroom_professors"> & {
+                classrooms: Tables<"classrooms">[];
+              } & {
+                professors: (Tables<"professors"> & {
+                  subjects: Tables<"subjects">[];
+                })[];
+              })[],
             }));
           }
         }
@@ -466,7 +573,10 @@ function StudentProvider({ children }: { children: ReactNode }) {
             );
             setData((prev) => ({
               ...prev,
-              class_programs: [...prev.class_programs, newItems],
+              class_programs: [
+                ...prev.class_programs,
+                newItems as Tables<"class_programs">,
+              ],
             }));
           }
 
@@ -477,8 +587,11 @@ function StudentProvider({ children }: { children: ReactNode }) {
             );
             setData((prev) => ({
               ...prev,
-              class_programs: prev.class_programs.map((s: Student) =>
-                s.id === payload.new.id ? newItems : s
+              class_programs: prev.class_programs.map(
+                (s: Tables<"class_programs">) =>
+                  s.id === payload.new.id
+                    ? (newItems as Tables<"class_programs">)
+                    : s
               ),
             }));
           }
@@ -487,7 +600,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               class_programs: prev.class_programs.filter(
-                (s: Student) => s.id !== payload.old.id
+                (s: Tables<"class_programs">) => s.id !== payload.old.id
               ),
             }));
           }
@@ -507,15 +620,21 @@ function StudentProvider({ children }: { children: ReactNode }) {
           if (payload.eventType === "INSERT") {
             setData((prev) => ({
               ...prev,
-              lunchAbsences: [...prev.lunchAbsences, payload.new],
+              lunchAbsences: [
+                ...prev.lunchAbsences,
+                payload.new as Tables<"lunch_absences">,
+              ],
             }));
           }
 
           if (payload.eventType === "UPDATE") {
             setData((prev) => ({
               ...prev,
-              lunchAbsences: prev.lunchAbsences.map((s: Student) =>
-                s.id === payload.new.id ? payload.new : s
+              lunchAbsences: prev.lunchAbsences.map(
+                (s: Tables<"lunch_absences">) =>
+                  s.id === payload.new.id
+                    ? (payload.new as Tables<"lunch_absences">)
+                    : s
               ),
             }));
           }
@@ -524,7 +643,151 @@ function StudentProvider({ children }: { children: ReactNode }) {
             setData((prev) => ({
               ...prev,
               lunchAbsences: prev.lunchAbsences.filter(
-                (s: Student) => s.id !== payload.old.id
+                (s: Tables<"lunch_absences">) => s.id !== payload.old.id
+              ),
+            }));
+          }
+        }
+      )
+      // daily_notes changes
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "daily_notes",
+        },
+        async (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            const newItems = await fetchSingleRow(
+              "daily_notes",
+              payload.new.id
+            );
+            setData((prev) => ({
+              ...prev,
+              daily_notes: [
+                ...prev.daily_notes,
+                newItems as Tables<"daily_notes">,
+              ],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            const newItems = await fetchSingleRow(
+              "daily_notes",
+              payload.new.id
+            );
+            setData((prev) => ({
+              ...prev,
+              daily_notes: prev.daily_notes.map((s: Tables<"daily_notes">) =>
+                s.id === payload.new.id
+                  ? (newItems as Tables<"daily_notes">)
+                  : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              daily_notes: prev.daily_notes.filter(
+                (s: Tables<"daily_notes">) =>
+                  s.id !== payload.old.id &&
+                  s.report_date !== payload.old.report_date
+              ),
+            }));
+          }
+        }
+      )
+      // addresses changes
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "student_addresses",
+        },
+        async (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            const newItems = await fetchSingleRow(
+              "student_addresses",
+              payload.new.id
+            );
+            setData((prev) => ({
+              ...prev,
+              addresses: [
+                ...prev.addresses,
+                newItems as Tables<"student_addresses">,
+              ],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            const newItems = await fetchSingleRow(
+              "student_addresses",
+              payload.new.id
+            );
+            setData((prev) => ({
+              ...prev,
+              addresses: prev.addresses.map((s: Tables<"student_addresses">) =>
+                s.id === payload.new.id
+                  ? (newItems as Tables<"student_addresses">)
+                  : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              addresses: prev.addresses.filter(
+                (s: Tables<"student_addresses">) => s.id !== payload.old.id
+              ),
+            }));
+          }
+        }
+      )
+      // classrooms changes
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "classrooms",
+        },
+        async (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            const newItems = await fetchSingleRow("classrooms", payload.new.id);
+            setData((prev) => ({
+              ...prev,
+              classrooms: [
+                ...prev.classrooms,
+                newItems as Tables<"classrooms">,
+              ],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            const newItems = await fetchSingleRow("classrooms", payload.new.id);
+            setData((prev) => ({
+              ...prev,
+              classrooms: prev.classrooms.map((s: Tables<"classrooms">) =>
+                s.id === payload.new.id ? (newItems as Tables<"classrooms">) : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              classrooms: prev.classrooms.filter(
+                (s: Tables<"classrooms">) => s.id !== payload.old.id
               ),
             }));
           }
@@ -534,7 +797,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
 
     // 2️⃣ Cleanup when component unmounts
     return () => {
-      supabase.removeChannel(channel);
+      channel.unsubscribe();
     };
   }, []);
 

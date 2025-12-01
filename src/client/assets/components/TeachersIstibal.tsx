@@ -1,27 +1,30 @@
 import React from "react";
-import { PDFPrintTablesProps } from "./PDFPrintTables";
-import { filter, groupBy } from "lodash";
-import { Student, StudentList } from "@/client/providers/StudentProvider";
+import _ from "lodash";
+import { Tables } from "@/supabase/database.types";
+import { useStudents } from "@/client/providers/StudentProvider";
 
-type MaafiyinPrintTableProps = PDFPrintTablesProps & {
+type MaafiyinPrintTableProps = {
   title: string;
-  table?: string;
-  multi?: boolean;
+  data: (Tables<"professors"> & { subjects: Tables<"subjects"> })[];
+  classrooms: Tables<"classrooms">[];
+  date: number;
 };
 
 export default function TeachersIsti9bal({
   data,
-  classrooms,
   date,
   title,
-  table,
-  multi,
 }: MaafiyinPrintTableProps) {
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
 
-  const studentsGroupedByClass = groupBy(data, "full_class_name");
+  const { classroom_professors } = useStudents();
+
+  const professorsWithClassrooms = _.groupBy(
+    _.orderBy(classroom_professors, ["classrooms.class_prefix"], ["asc"]),
+    "professor_id"
+  );
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
       <div className="text-center">
@@ -63,42 +66,39 @@ export default function TeachersIsti9bal({
         </thead>
         <tbody className="text-sm font-bold">
           {data &&
-            data.map((student, index) => {
+            _.orderBy(data, ["subjects.subject"]).map((teacher, index) => {
               return (
-                <tr key={student.id.toString()}>
+                <tr key={teacher.id.toString()}>
                   <td className="border border-collapse border-zinc-500 p-1">
                     {index + 1}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {student.module_name}
+                    {teacher.subjects?.subject}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {student.full_name}
+                    {teacher.full_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {student.isti9bal_time &&
-                      student.isti9bal_time?.toLocaleDateString("ar-DZ", {
-                        weekday: "long",
-                      })}
+                    {teacher.isti9bal_time &&
+                      new Date(teacher.isti9bal_time).toLocaleDateString(
+                        "ar-DZ",
+                        {
+                          weekday: "long",
+                        }
+                      )}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {student.isti9bal_time &&
+                    {teacher.isti9bal_time &&
                       `${
-                        student.isti9bal_time?.getHours() < 13
-                          ? student.isti9bal_time?.getHours() + ":00"
-                          : student.isti9bal_time?.getHours() + ":30"
+                        new Date(teacher.isti9bal_time).getHours() < 13
+                          ? new Date(teacher.isti9bal_time).getHours() + ":00"
+                          : new Date(teacher.isti9bal_time).getHours() + ":30"
                       }`}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1.5">
-                    {student.professor_classes.map((c) => (
+                    {professorsWithClassrooms[teacher.id]?.map((c) => (
                       <span className="bg-gray-100 m-1 border border-zinc-500 rounded-sm text-xs">
-                        {" " +
-                          filter(
-                            classrooms,
-                            (classroom) =>
-                              classroom.id.toString() === c.toString()
-                          )[0]?.class_prefix +
-                          " "}
+                        {" " + c.classrooms.class_prefix + " "}
                       </span>
                     ))}
                   </td>
