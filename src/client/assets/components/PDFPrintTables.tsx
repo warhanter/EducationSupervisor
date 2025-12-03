@@ -4,6 +4,7 @@ import { Student } from "@/client/providers/StudentProvider";
 import _ from "lodash";
 import { supabase } from "@/lib/supabaseClient";
 import { AppSelectItems } from "./AppSelectItems";
+import { Tables } from "@/supabase/database.types";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
@@ -13,7 +14,7 @@ export type PDFPrintTablesProps = {
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const [daily_note, setDaily_note] = useState<string | null>(null);
   const [selectedClass, setSelectedClass] = useState<string>("الكل");
-  const [supervisors, setSupervisors] = useState<Record<string, any>>([]);
+  const [supervisors, setSupervisors] = useState<Tables<"supervisors">[]>([]);
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
   });
@@ -35,7 +36,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   );
 
   const supervisorsNames = useMemo(
-    () => _.uniq(supervisors.map((s) => s.full_name).sort()),
+    () => supervisors.map((s) => s.full_name).sort(),
     [supervisors]
   );
 
