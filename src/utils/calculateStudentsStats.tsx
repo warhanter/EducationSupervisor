@@ -1,6 +1,11 @@
-import { Student } from "@/client/assets/components/columns";
+import { Tables } from "@/supabase/database.types";
 
-export const calculateStudentStats = (array: Student[]) => {
+type ModifiedSudent = Tables<"students"> & {
+  student_status: "داخلي" | "نصف داخلي" | "خارجي";
+  gender: "أنثى" | "ذكر";
+};
+
+export const calculateStudentStats = (array: ModifiedSudent[]) => {
   const initCounts = () => ({
     داخلي: { ذكر: 0, أنثى: 0, الكل: 0 },
     "نصف داخلي": { ذكر: 0, أنثى: 0, الكل: 0 },

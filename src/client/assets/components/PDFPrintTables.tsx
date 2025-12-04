@@ -5,6 +5,7 @@ import _ from "lodash";
 import { supabase } from "@/lib/supabaseClient";
 import { AppSelectItems } from "./AppSelectItems";
 import { Tables } from "@/supabase/database.types";
+import { SelectSupervisor } from "./SelectSupervisor";
 
 export type PDFPrintTablesProps = {
   data: Student[] | undefined;
@@ -13,7 +14,7 @@ export type PDFPrintTablesProps = {
 };
 export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const [daily_note, setDaily_note] = useState<string | null>(null);
-  const [selectedClass, setSelectedClass] = useState<string>("الكل");
+  const [selectSupervisor, setSelectSupervisor] = useState<string>("الكل");
   const [supervisors, setSupervisors] = useState<Tables<"supervisors">[]>([]);
   const fdate = new Date(date).toLocaleDateString("ar-DZ", {
     dateStyle: "full",
@@ -21,13 +22,13 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
   const absencesData = useMemo(
     () =>
       _.filter(data, (d) =>
-        selectedClass === "الكل"
+        selectSupervisor === "الكل"
           ? true
           : d.supervisor_id ===
-            supervisors.filter((s) => s.full_name === selectedClass)[0]
+            supervisors.filter((s) => s.full_name === selectSupervisor)[0]
               .supervisor_id
       ),
-    [data, selectedClass]
+    [data, selectSupervisor]
   );
 
   const classes = useMemo(
@@ -35,8 +36,23 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
     []
   );
 
+  const calcAbsencesBySupervisor = () => {
+    let fin: { full_name: string | null; length: number }[] = [];
+    supervisors.forEach((a) => {
+      const length = _.filter(
+        data,
+        (d) =>
+          d.supervisor_id ===
+          supervisors.filter((s) => s.full_name === a.full_name)[0]
+            .supervisor_id
+      ).length;
+      fin.push({ full_name: a.full_name, length: length });
+    });
+    return fin;
+  };
+
   const supervisorsNames = useMemo(
-    () => supervisors.map((s) => s.full_name).sort(),
+    () => calcAbsencesBySupervisor(),
     [supervisors]
   );
 
@@ -96,19 +112,22 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
         <p className="text-base font-bold">
           التلاميذ الغائبين الى غاية نهاية يوم: {fdate}
         </p>
-        <div className="flex justify-center items-center gap-4">
+        <div className="flex justify-center items-center gap-4 print:hidden">
           <p className="text-base font-bold">
             عدد الغيابات : {absencesData?.length}
           </p>
 
-          <div className="print:hidden">
-            <AppSelectItems
-              selectLabel="المشرفين"
-              firstItem="كل المشرفين"
-              selectedClass={selectedClass}
-              setSelectedClass={setSelectedClass}
-              items={supervisorsNames}
-            />
+          <div>
+            <div>
+              <SelectSupervisor
+                selectLabel="المشرفين"
+                firstItem="كل المشرفين"
+                selectSupervisor={selectSupervisor}
+                setSelectSupervisor={setSelectSupervisor}
+                items={supervisorsNames}
+                // extraText={calcAbsencesBySupervisor}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -174,7 +193,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
                     {student.noticeName}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.student_id}
+                    {student.medical_leave}
                   </td>
                 </tr>
               );
@@ -182,7 +201,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
         </tbody>
       </table>
 
-      {selectedClass === "الكل" ? (
+      {selectSupervisor === "الكل" ? (
         <>
           <table className="w-full   print:text-[13px] font-medium mt-8">
             <thead>

@@ -1,12 +1,14 @@
 import { supabase } from "@/lib/supabaseClient";
 import React, { useEffect, useMemo, useState } from "react";
-import { Student } from "./columns";
 import { calculateStudentStats } from "@/utils/calculateStudentsStats";
+import { Tables } from "@/supabase/database.types";
+import _ from "lodash";
+import { SelectSupervisor } from "./SelectSupervisor";
 
 type LunchAbsencesProps = {
-  data: Student[];
+  data: Tables<"absences">[];
   date: Date;
-  students: Student[];
+  students: Tables<"students">[];
 };
 
 const TABLE_ABSENCE_HEADERS = [
@@ -26,6 +28,23 @@ export default function LuncAbsencePrintTable({
 }: LunchAbsencesProps) {
   const [lunch_note, setLunch_note] = useState<string | null>(null);
   const [lunch_plates, setLunch_Plates] = useState<string | null>(null);
+
+  const [selectSupervisor, setSelectSupervisor] = useState<string>("الكل");
+  const [supervisors, setSupervisors] = useState<Tables<"supervisors">[]>([]);
+
+  const fetchSupervisors = async () => {
+    let { data: supervisors, error } = await supabase
+      .from("supervisors")
+      .select("*");
+    if (error) console.error("Errors fetching data:", error);
+    console.log("fetching ", supervisors);
+    if (supervisors) {
+      setSupervisors(supervisors);
+    }
+  };
+  useEffect(() => {
+    fetchSupervisors();
+  }, []);
 
   const fetchNotes = async () => {
     let { data: note, error } = await supabase
@@ -57,7 +76,42 @@ export default function LuncAbsencePrintTable({
     [data, students]
   );
 
-  const numTables = Math.ceil(absences.length / 40);
+  const absencesData = useMemo(
+    () =>
+      _.sortBy(
+        _.filter(absences, (d) =>
+          selectSupervisor === "الكل"
+            ? true
+            : d.supervisor_id ===
+              supervisors.filter((s) => s.full_name === selectSupervisor)[0]
+                .supervisor_id
+        ),
+        "class_abbreviation"
+      ),
+    [data, selectSupervisor]
+  );
+
+  const calcAbsencesBySupervisor = () => {
+    let fin: { full_name: string | null; length: number }[] = [];
+    supervisors.forEach((a) => {
+      const length = _.filter(
+        absences,
+        (d) =>
+          d.supervisor_id ===
+          supervisors.filter((s) => s.full_name === a.full_name)[0]
+            .supervisor_id
+      ).length;
+      fin.push({ full_name: a.full_name, length: length });
+    });
+    return fin;
+  };
+
+  const supervisorsNames = useMemo(
+    () => calcAbsencesBySupervisor(),
+    [supervisors]
+  );
+
+  const numTables = Math.ceil(absencesData.length / 40);
 
   const handleUpsertLunchNote = async (noteContent: string) => {
     const { data, error } = await supabase
@@ -116,7 +170,7 @@ export default function LuncAbsencePrintTable({
     absences,
     cellNumber,
   }: {
-    absences: Student[];
+    absences: Tables<"absences">[];
     cellNumber: number;
   }) => {
     return (
@@ -244,6 +298,22 @@ export default function LuncAbsencePrintTable({
         <p className="text-lg font-bold mb-4">غيابات المطعم ليوم: {fdate}</p>
         <p className="text-lg font-bold mb-4">عدد الغيابات : {data?.length}</p>
       </div> */}
+      <div className="flex justify-center items-center gap-4 print:hidden">
+        <p className="text-base font-bold">
+          عدد الغيابات : {absencesData?.length}
+        </p>
+
+        <div>
+          <SelectSupervisor
+            selectLabel="المشرفين"
+            firstItem="كل المشرفين"
+            selectSupervisor={selectSupervisor}
+            setSelectSupervisor={setSelectSupervisor}
+            items={supervisorsNames}
+            // extraText={calcAbsencesBySupervisor}
+          />
+        </div>
+      </div>
       <div className="flex flex-row gap-4 chapter">
         {/* <div className="bg-slate-700 h-full w-full"></div> */}
         <div className="w-[700px] text-sm font-bold text-center">
@@ -251,6 +321,7 @@ export default function LuncAbsencePrintTable({
             <caption className="text-base font-bold p-2">
               النظام الداخلي و النصف داخلي
             </caption>
+
             <thead className="border-separate border border-zinc-500 bg-gray-200 p-1">
               <tr>
                 <th
@@ -443,7 +514,10 @@ export default function LuncAbsencePrintTable({
           />
         </div>
         {data.length > 0 ? (
-          <LunchAbsenceTable absences={absences.slice(0, 40)} cellNumber={0} />
+          <LunchAbsenceTable
+            absences={absencesData.slice(0, 40)}
+            cellNumber={0}
+          />
         ) : (
           <table className="w-full  print:text-[13px] font-medium ">
             <caption className="text-base font-bold p-2">
@@ -466,7 +540,7 @@ export default function LuncAbsencePrintTable({
         Array.from({ length: numTables - 1 }).map((_, i) => (
           <div className="chapter">
             <LunchAbsenceTable
-              absences={absences.slice((i + 1) * 40, (i + 1) * 40 + 40)}
+              absences={absencesData.slice((i + 1) * 40, (i + 1) * 40 + 40)}
               cellNumber={(i + 1) * 40}
             />
             <p className="font-bold text-base flex justify-end m-1">
