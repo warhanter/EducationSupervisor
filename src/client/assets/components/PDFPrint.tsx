@@ -128,16 +128,18 @@ function PDFPrint() {
       };
       studentObject.number = index.toString();
       studentObject.id = i.toString();
-      studentObject.last_name = student.last_name;
-      studentObject.first_name = student.first_name;
+      studentObject.student_id = student.student_id;
+      studentObject.last_name = studentFROMDB.last_name;
+      studentObject.first_name = studentFROMDB.first_name;
       studentObject.supervisor_id = studentFROMDB.supervisor_id;
       const medicalLeave =
         studentFROMDB?.medical_leave === true &&
-        rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
+        rapportDate <
+          new Date(studentFROMDB?.medical_leave_end_date).setHours(23);
       studentObject.medical_leave = medicalLeave ? "ش طبية" : "";
-      studentObject.class = `${student.class_level} ${student.class_name} ${student.class_number}`;
-      studentObject.level = student.class_level;
-      studentObject.class_abbreviation = student.class_abbreviation;
+      studentObject.class = studentFROMDB.full_class_name;
+      studentObject.level = studentFROMDB.level;
+      studentObject.class_abbreviation = studentFROMDB.class_abbreviation;
       studentObject.absence_date = new Intl.DateTimeFormat("fr", {
         day: "2-digit",
         month: "2-digit",

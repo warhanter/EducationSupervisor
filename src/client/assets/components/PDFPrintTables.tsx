@@ -170,11 +170,11 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.absence_days}
                   </td>
-                  <td className="border border-collapse border-zinc-500 py-1 px-1">
+                  <td className="border border-colla  pse border-zinc-500 py-1 px-1">
                     {student.noticeName}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.medical_leave}
+                    {student.student_id}
                   </td>
                 </tr>
               );
