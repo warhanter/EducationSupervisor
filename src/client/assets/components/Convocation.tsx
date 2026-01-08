@@ -35,8 +35,11 @@ type ConvocationProps = {
 
 export default function Convocation({ data, title }: ConvocationProps) {
   const { addresses } = useStudents();
+  // const studentAdress: Record<string, any> | undefined = addresses?.filter(
+  //   (address) => address.student_id == data.id
+  // )[0];
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
-    (address) => address.student_id == data.id
+    (address) => address.full_name == data.full_name
   )[0];
   const [fatherName, setFatherName] = useState(
     studentAdress?.last_name + " " + studentAdress?.father_name
