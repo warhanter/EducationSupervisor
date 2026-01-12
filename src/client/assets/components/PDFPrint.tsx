@@ -110,10 +110,10 @@ function PDFPrint() {
             daysOfAbcence < 1
           ? `${12 - start}  -  0`
           : daysOfAbcence > 1
-          ? `4  -  3`
+          ? `4  -  4`
           : start > 12
-          ? `0  -  ${16 - start}`
-          : `${12 - start}  -  3`;
+          ? `0  -  ${17 - start}`
+          : `${12 - start}  -  4`;
       };
       const noticeName = () => {
         return daysOfAbcence < 4
