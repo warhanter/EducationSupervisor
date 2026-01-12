@@ -23,11 +23,25 @@ import Convocation from "./Convocation";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { NoticeDialog } from "./NoticeDialog";
 import { StudentDialogEdit } from "./updateStudentDetails";
-import { Input } from "@/components/ui/input";
+import { EditStudentStatusDialog } from "./EditStudentStatusDialog";
+import { AddStudentStatusDialog } from "./AddStudentStatusDialog";
 import { MarkAbsenceDialog } from "./MarkAbsenceDialog";
 import DateTimePicker from "./AppDatePicker";
 type Status = "داخلي" | "نصف داخلي" | "خارجي";
 type Gender = "ذكر" | "أنثى";
+
+// Component for the Add Student button with dialog
+const AddStudentButton = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="default" className="" onClick={() => setOpen(true)}>
+        إضافة تلميذ
+      </Button>
+      <AddStudentStatusDialog open={open} setOpen={setOpen} />
+    </>
+  );
+};
 export type Student = {
   id: number;
   student_id: number;
@@ -442,12 +456,21 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
   {
     id: "actions",
     enableHiding: false,
+    header: () => {
+      return <AddStudentButton />;
+    },
     cell: ({ row }) => {
       const student = row.original;
       const [open, setOpen] = useState(false);
+      const [openStatusEdit, setOpenStatusEdit] = useState(false);
       return (
         <>
           <StudentDialog open={open} setOpen={setOpen} student={student} />
+          <EditStudentStatusDialog
+            open={openStatusEdit}
+            setOpen={setOpenStatusEdit}
+            student={student}
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -463,6 +486,13 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
                 }}
               >
                 عرض بيانات التلميذ
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setOpenStatusEdit(true);
+                }}
+              >
+                تغيير الصفة
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel>وثائق</DropdownMenuLabel>
