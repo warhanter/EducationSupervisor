@@ -21,6 +21,8 @@ const TABLE_ABSENCE_HEADERS = [
 ];
 const TABLE_GENDER_HEADERS = ["ذكور", "إناث", "مجموع"];
 
+const CELL_NUMBER = 60;
+
 export default function LuncAbsencePrintTable({
   data,
   date,
@@ -316,7 +318,7 @@ export default function LuncAbsencePrintTable({
       </div>
       <div className="flex flex-row gap-4 chapter">
         {/* <div className="bg-slate-700 h-full w-full"></div> */}
-        <div className="w-[700px] text-sm font-bold text-center">
+        {/* <div className="w-[700px] text-sm font-bold text-center">
           <table className="w-full  print:text-[13px] font-medium mb-2">
             <caption className="text-base font-bold p-2">
               النظام الداخلي و النصف داخلي
@@ -512,10 +514,10 @@ export default function LuncAbsencePrintTable({
           <NotesTable
             tableHeaders={["توصيات مدير المؤسسة:", "الختم و الإمضاء"]}
           />
-        </div>
+        </div> */}
         {data.length > 0 ? (
           <LunchAbsenceTable
-            absences={absencesData.slice(0, 40)}
+            absences={absencesData.slice(0, CELL_NUMBER)}
             cellNumber={0}
           />
         ) : (
@@ -540,8 +542,8 @@ export default function LuncAbsencePrintTable({
         Array.from({ length: numTables - 1 }).map((_, i) => (
           <div className="chapter">
             <LunchAbsenceTable
-              absences={absencesData.slice((i + 1) * 40, (i + 1) * 40 + 40)}
-              cellNumber={(i + 1) * 40}
+              absences={absencesData.slice((i + 1) * CELL_NUMBER, (i + 1) * CELL_NUMBER + CELL_NUMBER)}
+              cellNumber={(i + 1) * CELL_NUMBER}
             />
             <p className="font-bold text-base flex justify-end m-1">
               مستشــــار التربيـــــة
