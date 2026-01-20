@@ -113,7 +113,7 @@ export default function LuncAbsencePrintTable({
     [supervisors]
   );
 
-  const numTables = Math.ceil(absencesData.length / 40);
+  const numTables = Math.ceil(absencesData.length / CELL_NUMBER );
 
   const handleUpsertLunchNote = async (noteContent: string) => {
     const { data, error } = await supabase
