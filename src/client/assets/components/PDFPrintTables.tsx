@@ -280,9 +280,15 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
           </table>
         </>
       ) : (
+        
+        <div className="flex justify-between">
+        <p className="font-bold text-xl flex justify-end m-8">
+          مشرف الأقسام
+        </p>
         <p className="font-bold text-xl flex justify-end m-8">
           مستشــــار التربيـــــة
         </p>
+        </div>
       )}
     </div>
   );

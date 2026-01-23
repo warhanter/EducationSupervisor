@@ -50,6 +50,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { arDZ } from "date-fns/locale/ar-DZ";
 import { format } from "date-fns";
 import MarkAbsences from "./mark-absences";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -252,6 +259,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [isTableModalOpen, setIsTableModalOpen] = React.useState(false);
   if (typeof location.state === "object" && location.state !== null) {
     data = location?.state;
   }
@@ -315,7 +323,355 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
               </h2>
             </div>
             <div className="flex flex-1 flex-row-reverse justify-between w-full">
-              <div className="w-1/3 relative">
+              <div className="w-1/3 relative flex gap-2">
+                <Dialog
+                  open={isTableModalOpen}
+                  onOpenChange={setIsTableModalOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline" type="button">
+                      عرض الجدول
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent
+                    id="student-table-print"
+                    className="max-w-[90vw] max-h-[90vh] overflow-auto print:max-w-full print:max-h-full print:m-0 print:p-4 print:border-0 print:shadow-none print:fixed print:inset-0 print:z-[9999] print:bg-white"
+                  >
+                    <style>{`
+                      @media print {
+                        @page {
+                          size: A4 portrait;
+                          margin: 10mm 10mm 15mm 10mm;
+                          @bottom-center {
+                            content: "صفحة " counter(page) " من " counter(pages);
+                            font-size: 10px;
+                            font-family: "Tajawal", sans-serif;
+                            direction: rtl;
+                            text-align: center;
+                          }
+                        }
+                        * {
+                          -webkit-print-color-adjust: exact !important;
+                          print-color-adjust: exact !important;
+                        }
+                        body {
+                          margin: 0 !important;
+                          padding: 0 !important;
+                          visibility: hidden !important;
+                        }
+                        body > *:not([data-radix-portal]) {
+                          display: none !important;
+                          visibility: hidden !important;
+                        }
+                        body > [data-radix-portal] {
+                          position: fixed !important;
+                          left: 0 !important;
+                          top: 0 !important;
+                          right: 0 !important;
+                          bottom: 0 !important;
+                          width: 100% !important;
+                          height: 100% !important;
+                          z-index: 9999 !important;
+                          margin: 0 !important;
+                          padding: 0 !important;
+                          visibility: visible !important;
+                          display: block !important;
+                        }
+                        [data-radix-dialog-overlay] {
+                          display: none !important;
+                        }
+                        #student-table-print {
+                          position: relative !important;
+                          left: auto !important;
+                          top: auto !important;
+                          right: auto !important;
+                          bottom: auto !important;
+                          margin: 0 !important;
+                          padding: 10mm !important;
+                          max-width: 100% !important;
+                          max-height: none !important;
+                          width: 100% !important;
+                          height: auto !important;
+                          min-height: auto !important;
+                          transform: none !important;
+                          translate: none !important;
+                          background: white !important;
+                          overflow: visible !important;
+                          display: block !important;
+                          visibility: visible !important;
+                        }
+                        #student-table-print button[data-radix-dialog-close] {
+                          display: none !important;
+                        }
+                        #student-table-print > div:first-child {
+                          margin-bottom: 10mm !important;
+                          text-align: center !important;
+                        }
+                        #student-table-print > div:last-child {
+                          overflow: visible !important;
+                          height: auto !important;
+                          max-height: none !important;
+                          width: 100% !important;
+                          display: block !important;
+                        }
+                        #student-table-print table {
+                          width: 100% !important;
+                          table-layout: fixed !important;
+                          font-size: 9px !important;
+                          page-break-inside: auto !important;
+                          border-collapse: collapse !important;
+                          direction: rtl !important;
+                          margin: 0 !important;
+                        }
+                        #student-table-print thead {
+                          display: table-header-group !important;
+                        }
+                        #student-table-print thead tr {
+                          background-color: #f3f4f6 !important;
+                          -webkit-print-color-adjust: exact !important;
+                          print-color-adjust: exact !important;
+                        }
+                        #student-table-print tbody {
+                          display: table-row-group !important;
+                        }
+                        #student-table-print tbody tr {
+                          page-break-inside: avoid !important;
+                          page-break-after: auto !important;
+                          break-inside: avoid !important;
+                        }
+                        #student-table-print th {
+                          padding: 8px 6px !important;
+                          font-size: 9px !important;
+                          font-weight: bold !important;
+                          border: 1px solid #000 !important;
+                          text-align: right !important;
+                          background-color: #f3f4f6 !important;
+                          -webkit-print-color-adjust: exact !important;
+                          print-color-adjust: exact !important;
+                        }
+                        #student-table-print td {
+                          padding: 6px 4px !important;
+                          font-size: 9px !important;
+                          border: 1px solid #000 !important;
+                          text-align: right !important;
+                          word-wrap: break-word !important;
+                        }
+                        #student-table-print th:nth-child(1),
+                        #student-table-print td:nth-child(1) {
+                          width: 5% !important;
+                        }
+                        #student-table-print th:nth-child(2),
+                        #student-table-print td:nth-child(2) {
+                          width: 18% !important;
+                        }
+                        #student-table-print th:nth-child(3),
+                        #student-table-print td:nth-child(3) {
+                          width: 18% !important;
+                        }
+                        #student-table-print th:nth-child(4),
+                        #student-table-print td:nth-child(4) {
+                          width: 25% !important;
+                        }
+                        #student-table-print th:nth-child(5),
+                        #student-table-print td:nth-child(5) {
+                          width: 18% !important;
+                        }
+                        #student-table-print th:nth-child(6),
+                        #student-table-print td:nth-child(6) {
+                          width: 16% !important;
+                        }
+                        #student-table-print {
+                          counter-reset: page;
+                        }
+                      }
+                    `}</style>
+
+                    <DialogHeader className="print:mb-4 print:text-center">
+                      <DialogTitle className="print:text-2xl print:font-bold">
+                        جدول التلاميذ
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="overflow-auto print:overflow-visible print:w-full">
+                      <table
+                        className="print:border-2 print:border-gray-800 print:w-full"
+                        style={{
+                          width: "100%",
+                          borderCollapse: "collapse",
+                          direction: "rtl",
+                          textAlign: "right",
+                        }}
+                      >
+                        <thead>
+                          <tr
+                            style={{
+                              backgroundColor: "#f3f4f6",
+                              borderBottom: "2px solid #e5e7eb",
+                            }}
+                            className="print:bg-gray-200"
+                          >
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              الرقم
+                            </th>
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              اللقب
+                            </th>
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              الاسم
+                            </th>
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              القسم
+                            </th>
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              الصفة
+                            </th>
+                            <th
+                              style={{
+                                padding: "12px",
+                                border: "1px solid #e5e7eb",
+                                fontWeight: "bold",
+                                textAlign: "right",
+                              }}
+                              className="print:border-2 print:border-gray-800"
+                            >
+                              تاريخ الازدياد
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {table
+                            .getFilteredRowModel()
+                            .rows.map((row, index) => {
+                              const student = row.original;
+                              return (
+                                <tr
+                                  key={student.id || index}
+                                  style={{
+                                    borderBottom: "1px solid #e5e7eb",
+                                  }}
+                                >
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {index + 1}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {student.last_name || "-"}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {student.first_name || "-"}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {student.full_class_name || "-"}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {student.student_status || "-"}
+                                  </td>
+                                  <td
+                                    style={{
+                                      padding: "10px",
+                                      border: "1px solid #e5e7eb",
+                                      textAlign: "right",
+                                    }}
+                                    className="print:border print:border-gray-600"
+                                  >
+                                    {student.student_dob
+                                      ? (() => {
+                                          try {
+                                            const dob = new Date(
+                                              student.student_dob
+                                            );
+                                            return isNaN(dob.getTime())
+                                              ? "-"
+                                              : format(dob, "yyyy-MM-dd", {
+                                                  locale: arDZ,
+                                                });
+                                          } catch {
+                                            return "-";
+                                          }
+                                        })()
+                                      : "-"}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Input
                   type="search"
                   placeholder="بحث عن تلميذ"

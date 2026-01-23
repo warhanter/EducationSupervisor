@@ -4,6 +4,7 @@ import { calculateStudentStats } from "@/utils/calculateStudentsStats";
 import { Tables } from "@/supabase/database.types";
 import _ from "lodash";
 import { SelectSupervisor } from "./SelectSupervisor";
+import { Button } from "@/components/ui/button";
 
 type LunchAbsencesProps = {
   data: Tables<"absences">[];
@@ -32,6 +33,7 @@ export default function LuncAbsencePrintTable({
   const [lunch_plates, setLunch_Plates] = useState<string | null>(null);
 
   const [selectSupervisor, setSelectSupervisor] = useState<string>("الكل");
+  const [showPresent, setShowPresent] = useState<boolean>(false);
   const [supervisors, setSupervisors] = useState<Tables<"supervisors">[]>([]);
 
   const fetchSupervisors = async () => {
@@ -68,15 +70,15 @@ export default function LuncAbsencePrintTable({
   // TO_BE_REMOVED-- this function is specifically for the current school as it requested
   // because the app doesn't record the lunch Absences in the lunchAbsence Table
   // instead the current LUNCH_ABSENCE Table have the present students on that lunch day.
-  const absences = useMemo(
-    () =>
-      students.filter(
-        (a) =>
-          !data.some((b) => Number(b.ids) === a.id) &&
-          a.student_status !== "خارجي"
-      ),
-    [data, students]
-  );
+  const absences = useMemo(() => {
+    const presentIds = new Set(data.map((item) => Number(item.ids)));
+    return students.filter((student) => {
+      const isPresent = presentIds.has(student.id);
+      return showPresent
+        ? isPresent
+        : !isPresent && student.student_status !== "خارجي";
+    });
+  }, [data, students, showPresent]);
 
   const absencesData = useMemo(
     () =>
@@ -90,7 +92,7 @@ export default function LuncAbsencePrintTable({
         ),
         "class_abbreviation"
       ),
-    [data, selectSupervisor]
+    [absences, selectSupervisor, supervisors]
   );
 
   const calcAbsencesBySupervisor = () => {
@@ -315,7 +317,13 @@ export default function LuncAbsencePrintTable({
             // extraText={calcAbsencesBySupervisor}
           />
         </div>
-      </div>
+
+        {showPresent ? (
+          <Button onClick={() => setShowPresent(false)}>إضهـــار الغيابات</Button>
+        ) : (
+          <Button onClick={() => setShowPresent(true)}>إضهـــار الحضور</Button>
+        )}
+      </div>  
       <div className="flex flex-row gap-4 chapter">
         {/* <div className="bg-slate-700 h-full w-full"></div> */}
         {/* <div className="w-[700px] text-sm font-bold text-center">
