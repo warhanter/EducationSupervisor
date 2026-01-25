@@ -310,6 +310,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
         (table.getColumn("is_mamnouh")?.getFilterValue() as string[]) || [];
       const combinedFilters = [...classFilters, ...categoryFilters];
       setCustomLabel(combinedFilters.join(" - "));
+      setSorting([{ id: "full_class_name", desc: false }]);
     }
   }, [isTableModalOpen, tableTitle, table]);
 
@@ -602,7 +603,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                         </thead>
                         <tbody>
                           {table
-                            .getFilteredRowModel()
+                            .getSortedRowModel()
                             .rows.map((row, index) => {
                               const student = row.original;
                               return (
