@@ -323,6 +323,90 @@ export default function LuncAbsencePrintTable({
         ) : (
           <Button onClick={() => setShowPresent(true)}>إضهـــار الحضور</Button>
         )}
+
+        <table className="w-full  print:text-[13px] font-medium mb-2">
+            <thead className="border-separate border border-zinc-500 bg-gray-200 p-1">
+              <tr>
+                <th
+                  rowSpan={2}
+                  className="border-separate border border-zinc-500 bg-gray-200 p-1"
+                />
+                <th
+                  colSpan={3}
+                  className="border-separate border border-zinc-500 bg-gray-200 p-1"
+                >
+                  الغداء
+                </th>
+ 
+    
+              </tr>
+              <tr>
+                {[...TABLE_GENDER_HEADERS].map(
+                  (header) => (
+                    <th className="border-separate border border-zinc-500 bg-gray-200 p-1">
+                      {header}
+                    </th>
+                  )
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  مسجلون
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {allStudentsStats["المطعم"]["ذكر"]}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {allStudentsStats["المطعم"]["أنثى"]}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {allStudentsStats["المطعم"]["الكل"]}
+                </td>
+
+              </tr>
+              <tr>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  غائبون
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data.length === 0
+                    ? allStudentsStats["المطعم"]["ذكر"]
+                    : absencesStats["المطعم"]["ذكر"]}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data.length === 0
+                    ? allStudentsStats["المطعم"]["أنثى"]
+                    : absencesStats["المطعم"]["أنثى"]}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data?.length === 0
+                    ? allStudentsStats["المطعم"]["الكل"]
+                    : absencesStats["المطعم"]["الكل"]}
+                </td>
+
+              </tr>
+              <tr>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  حاضرون
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data.length === 0 ? 0 : hadirinDokour}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data.length === 0 ? 0 : hadirinInath}
+                </td>
+                <td className="border border-collapse border-zinc-500 p-1">
+                  {data.length === 0
+                    ? 0
+                    : allStudentsStats["المطعم"]["الكل"] -
+                      absencesStats["المطعم"]["الكل"]}
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
       </div>  
       <div className="flex flex-row gap-4 chapter">
         {/* <div className="bg-slate-700 h-full w-full"></div> */}
@@ -530,9 +614,15 @@ export default function LuncAbsencePrintTable({
           />
         ) : (
           <table className="w-full  print:text-[13px] font-medium ">
-            <caption className="text-base font-bold p-2">
-              غيابات المطعم ليوم: {fdate}
-            </caption>
+            {showPresent ? (
+              <caption className="text-base font-bold p-2">
+                حضور المطعم ليوم: {fdate}
+              </caption>
+            ) : (
+              <caption className="text-base font-bold p-2">
+                غيابات المطعم ليوم: {fdate}
+              </caption>
+            )}
 
             <TableHead />
             <tbody className="text-sm font-bold">
