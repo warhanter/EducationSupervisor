@@ -149,7 +149,7 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
             <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               غائب منذ
             </th>
-            <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
+            <th colSpan={2}  className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
               سا/غ
             </th>
             <th className="border-separate border border-zinc-500 py-1 px-1 bg-gray-200">
@@ -184,7 +184,10 @@ export default function PDFPrintTables({ data, date }: PDFPrintTablesProps) {
                     {reverseString(student.absence_date, "/")}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.missed_hours}
+                    {student.missed_hours ? student.missed_hours.split("-")[0] : "-"}
+                  </td>
+                  <td className="border border-collapse border-zinc-500 py-1 px-1">
+                    {student.missed_hours ? student.missed_hours.split("-")[1] : "-"}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
                     {student.absence_days}
