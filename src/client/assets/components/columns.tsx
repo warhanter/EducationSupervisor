@@ -414,21 +414,16 @@ export const nisfdakhiliColumns: ColumnDef<Student>[] = [
         </div>
       );
     },
-    sortingFn: (rowA, rowB) => {
-      const statusA = rowA.original.is_mamnouh
-        ? "ممنوح"
-        : rowA.original.lunch_paid
-        ? "غير ممنوح"
-        : "عدم التجديد";
-      const statusB = rowB.original.is_mamnouh
-        ? "ممنوح"
-        : rowB.original.lunch_paid
-        ? "غير ممنوح"
-        : "عدم التجديد";
-      const numA = statusA;
-      const numB = statusB;
-
-      return numA < numB ? 1 : numA > numB ? -1 : 0;
+    filterFn: (row, _id, value: string[]) => {
+      const student = row.original;
+      return value.some((val) => {
+        if (val === "الممنوحين") return student.is_mamnouh;
+        if (val === "المسددين") return !student.is_mamnouh && student.lunch_paid;
+        if (val === "الغير مسددين")
+          return !student.is_mamnouh && !student.lunch_paid;
+        if (val === "نصف داخلي") return student.student_status === "نصف داخلي";
+        return false;
+      });
     },
   },
   {

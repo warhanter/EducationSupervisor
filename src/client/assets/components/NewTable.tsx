@@ -260,6 +260,9 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [isTableModalOpen, setIsTableModalOpen] = React.useState(false);
+  const [customTitle, setCustomTitle] = React.useState("");
+  const [customLabel, setCustomLabel] = React.useState("");
+
   if (typeof location.state === "object" && location.state !== null) {
     data = location?.state;
   }
@@ -297,6 +300,19 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
     },
   });
 
+  React.useEffect(() => {
+    if (isTableModalOpen) {
+      setCustomTitle(tableTitle);
+      const classFilters =
+        (table.getColumn("full_class_name")?.getFilterValue() as string[]) ||
+        [];
+      const categoryFilters =
+        (table.getColumn("is_mamnouh")?.getFilterValue() as string[]) || [];
+      const combinedFilters = [...classFilters, ...categoryFilters];
+      setCustomLabel(combinedFilters.join(" - "));
+    }
+  }, [isTableModalOpen, tableTitle, table]);
+
   const labels = table.getColumn("full_class_name")?.getFacetedUniqueValues();
   const labels2 = new Map([
     ["نصف داخلي", nisfDakhili.length],
@@ -311,6 +327,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
   labels2?.forEach((a, b) => vals2.push({ label: b + ": " + a, value: b }));
   vals.sort((a, b) => (a.label > b.label ? 1 : b.label > a.label ? -1 : 0));
   const isFiltered1 = table.getColumn("full_class_name")?.getIsFiltered();
+  const isFiltered2 = table.getColumn("is_mamnouh")?.getIsFiltered();
   return (
     <div className="flex min-h-screen w-full flex-col">
       <HeaderNavbar />
@@ -488,8 +505,25 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
 
                     <DialogHeader className="print:mb-4 print:text-center">
                       <DialogTitle className="print:text-2xl print:font-bold">
-                        جدول التلاميذ
+                        {customTitle}
                       </DialogTitle>
+                      <p className="hidden print:block text-lg font-medium text-gray-600">
+                        {customLabel}
+                      </p>
+                      <div className="print:hidden flex justify-center gap-4 py-2">
+                        <Input
+                          placeholder="عنوان الجدول"
+                          value={customTitle}
+                          onChange={(e) => setCustomTitle(e.target.value)}
+                          className="max-w-md text-center font-bold"
+                        />
+                        <Input
+                          placeholder="التسمية المختارة"
+                          value={customLabel}
+                          onChange={(e) => setCustomLabel(e.target.value)}
+                          className="max-w-md text-center font-bold text-blue-600"
+                        />
+                      </div>
                     </DialogHeader>
                     <div className="overflow-auto print:overflow-visible print:w-full">
                       <table
@@ -529,18 +563,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                               }}
                               className="print:border-2 print:border-gray-800"
                             >
-                              اللقب
-                            </th>
-                            <th
-                              style={{
-                                padding: "12px",
-                                border: "1px solid #e5e7eb",
-                                fontWeight: "bold",
-                                textAlign: "right",
-                              }}
-                              className="print:border-2 print:border-gray-800"
-                            >
-                              الاسم
+                              اللقب والإسم
                             </th>
                             <th
                               style={{
@@ -607,17 +630,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                                     }}
                                     className="print:border print:border-gray-600"
                                   >
-                                    {student.last_name || "-"}
-                                  </td>
-                                  <td
-                                    style={{
-                                      padding: "10px",
-                                      border: "1px solid #e5e7eb",
-                                      textAlign: "right",
-                                    }}
-                                    className="print:border print:border-gray-600"
-                                  >
-                                    {student.first_name || "-"}
+                                    {student.full_name || "-"}
                                   </td>
                                   <td
                                     style={{
@@ -696,7 +709,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                     options={vals}
                   />
                 )}
-                {isFiltered1 && (
+                {(isFiltered1 || isFiltered2) && (
                   <Button
                     variant="ghost"
                     onClick={() => table.resetColumnFilters()}
@@ -707,7 +720,11 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                   </Button>
                 )}
                 {table.getColumn("is_mamnouh") && (
-                  <DataTableFacetedFilter title="التعداد" options={vals2} />
+                  <DataTableFacetedFilter
+                    column={table.getColumn("is_mamnouh")}
+                    title="التعداد"
+                    options={vals2}
+                  />
                 )}
               </div>
             </div>
