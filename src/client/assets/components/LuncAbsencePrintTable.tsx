@@ -22,7 +22,7 @@ const TABLE_ABSENCE_HEADERS = [
 ];
 const TABLE_GENDER_HEADERS = ["ذكور", "إناث", "مجموع"];
 
-const CELL_NUMBER = 60;
+const CELL_NUMBER = 500;
 
 export default function LuncAbsencePrintTable({
   data,
