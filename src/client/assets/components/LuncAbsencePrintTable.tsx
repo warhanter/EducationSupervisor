@@ -204,7 +204,7 @@ export default function LuncAbsencePrintTable({
                     {student?.lunch_table_number}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-0 px-1">
-                    {student?.lunch_leave_justification}
+                    {student.lunch_paid ? "" : "غير مسدد"}
                   </td>
                 </tr>
               );
@@ -651,3 +651,4 @@ export default function LuncAbsencePrintTable({
     </div>
   );
 }
+
