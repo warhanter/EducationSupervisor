@@ -5,6 +5,7 @@ import { Tables } from "@/supabase/database.types";
 import _ from "lodash";
 import { SelectSupervisor } from "./SelectSupervisor";
 import { Button } from "@/components/ui/button";
+import { table } from "console";
 
 type LunchAbsencesProps = {
   data: Tables<"absences">[];
@@ -204,15 +205,11 @@ export default function LuncAbsencePrintTable({
                     {student?.lunch_table_number}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-0 px-1">
-<<<<<<< HEAD
-                    {student.lunch_paid ? "" : "غير مسدد"}
-=======
-                    {student?.is_mamnouh ? "ممنوح" : student?.lunch_paid ? "دفع" : "غير مسدد"}
->>>>>>> ed65ee7 (medical leave dates refactoring)
+                    {student?.is_mamnouh ? "ممنوح" : student?.lunch_paid ? "غير ممنوح" : "غير مسدد"}
                   </td>
                 </tr>
               );
-            })}
+            })} 
         </tbody>
       </table>
     );
