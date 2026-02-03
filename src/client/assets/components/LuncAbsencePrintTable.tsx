@@ -204,7 +204,11 @@ export default function LuncAbsencePrintTable({
                     {student?.lunch_table_number}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-0 px-1">
+<<<<<<< HEAD
                     {student.lunch_paid ? "" : "غير مسدد"}
+=======
+                    {student?.is_mamnouh ? "ممنوح" : student?.lunch_paid ? "دفع" : "غير مسدد"}
+>>>>>>> ed65ee7 (medical leave dates refactoring)
                   </td>
                 </tr>
               );

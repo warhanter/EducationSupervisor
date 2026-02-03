@@ -41,6 +41,10 @@ type DailyNoteList = DailyNote[];
 //   daily_notes: DailyNoteList;
 // };
 
+/**
+ * Shape of the raw data collections fetched from Supabase.
+ * Some collections include joined records to avoid extra lookups in consumers.
+ */
 type StudentsData = {
   students: Tables<"students">[];
   absences: (Tables<"absences"> & { students: Tables<"students"> })[];
@@ -77,6 +81,10 @@ type StudentsData = {
 //   refreshData: () => Promise<void>;
 // };
 
+/**
+ * Full context value exposed to consumers.
+ * Includes raw collections + derived/filtered student groupings + refresh helper.
+ */
 type StudentContextType = StudentsData & {
   motamadrisin: Tables<"students">[];
   mo3idin: Tables<"students">[];
@@ -91,7 +99,7 @@ type StudentContextType = StudentsData & {
   refreshData: () => Promise<void>;
 };
 
-// Table names configuration
+// Table names configuration for consistent usage across queries and subscriptions.
 const TABLES = {
   CLASSROOMS: "classrooms",
   PROFESSORS: "professors",
@@ -104,7 +112,7 @@ const TABLES = {
   DAILY_NOTES: "daily_notes",
 } as const;
 
-// Default context values
+// Default context values to keep context consumers stable during initialization.
 const defaultValues: StudentContextType = {
   motamadrisin: [],
   mo3idin: [],
@@ -132,6 +140,12 @@ const defaultValues: StudentContextType = {
 
 const StudentContext = createContext<StudentContextType>(defaultValues);
 
+/**
+ * Provides student-related data and derived lists to the app.
+ * - Loads initial data across multiple tables in parallel.
+ * - Subscribes to realtime updates and merges them into local state.
+ * - Exposes derived lists (e.g., active students, absences grouping).
+ */
 function StudentProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<StudentsData>({
@@ -170,7 +184,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Setup realtime subscription
+  // Setup realtime subscription and initial data load.
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -247,14 +261,19 @@ function StudentProvider({ children }: { children: ReactNode }) {
 
     fetchData();
 
+    /**
+     * Fetch a single row from a table, including joins for tables that
+     * require related data. Used by realtime handlers to re-hydrate
+     * records after INSERT/UPDATE.
+     */
     const fetchSingleRow = async (
       table: string,
       id?: string,
       professor_id?: string,
       classroom_id?: string
     ) => {
-      // You need to implement specific queries here based on the table
-      // This is a simplified example logic
+      // NOTE: This includes minimal join logic required by current consumers.
+      // Add table-specific joins here if new screens require them.
       let query = supabase.from(table).select("*");
 
       if (table === TABLES.ABSENCES)
@@ -283,7 +302,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    // 1️⃣ Subscribe to changes
+    // 1️⃣ Subscribe to changes across tables that need live updates.
     const channel = supabase
       .channel("students-changes")
       .on(
@@ -324,7 +343,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // absences changes
+      // Absences changes (re-hydrate with student join).
       .on(
         "postgres_changes",
         {
@@ -363,7 +382,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // professors changes
+      // Professors changes (re-hydrate with subjects join).
       .on(
         "postgres_changes",
         {
@@ -425,7 +444,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // subjects changes
+      // Subjects changes (simple CRUD updates).
       .on(
         "postgres_changes",
         {
@@ -464,7 +483,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // classroom_professors changes
+      // Classroom-professor assignments (re-hydrate with classroom/professor joins).
       .on(
         "postgres_changes",
         {
@@ -555,7 +574,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // class_programs changes
+      // Class programs changes (no joins here, single-table data).
       .on(
         "postgres_changes",
         {
@@ -606,7 +625,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // lunch_absences changes
+      // Lunch absences changes (simple CRUD updates).
       .on(
         "postgres_changes",
         {
@@ -649,7 +668,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // daily_notes changes
+      // Daily notes changes (simple CRUD updates).
       .on(
         "postgres_changes",
         {
@@ -701,7 +720,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // addresses changes
+      // Student addresses changes (simple CRUD updates).
       .on(
         "postgres_changes",
         {
@@ -751,7 +770,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
-      // classrooms changes
+      // Classrooms changes (simple CRUD updates).
       .on(
         "postgres_changes",
         {
@@ -795,7 +814,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
       )
       .subscribe();
 
-    // 2️⃣ Cleanup when component unmounts
+    // 2️⃣ Cleanup when component unmounts.
     return () => {
       channel.unsubscribe();
     };
@@ -959,6 +978,10 @@ function StudentProvider({ children }: { children: ReactNode }) {
   //   };
   // }, [fetchData]);
 
+  /**
+   * Manual refresh helper exposed to consumers.
+   * Re-fetches all collections without toggling the top-level loading state.
+   */
   const fetchDataManual = useCallback(async () => {
     try {
       const [
@@ -1009,7 +1032,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Computed/filtered student lists using useMemo for performance
+  // Computed/filtered student lists using useMemo for performance.
   const motamadrisin = useMemo(
     () => data.students.filter((s) => !s.is_fired && !s.switched_school),
     [data.students]
@@ -1063,6 +1086,10 @@ function StudentProvider({ children }: { children: ReactNode }) {
     [motamadrisin]
   );
 
+  /**
+   * Sorts active students by absence date (most recent first).
+   * Used by attendance/absence screens that need a stable ordering.
+   */
   const markAbsenceData = useMemo(
     () =>
       motamadrisin.sort((a, b) => {
@@ -1077,6 +1104,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
     [motamadrisin]
   );
 
+  // Memoize the full context value to avoid needless re-renders.
   const contextValue = useMemo(
     () => ({
       ...data,
@@ -1124,8 +1152,9 @@ function StudentProvider({ children }: { children: ReactNode }) {
 export default StudentProvider;
 
 /**
- * Custom hook to access student context data
- * @returns Student context with filtered lists and data collections
+ * Custom hook to access student context data.
+ * Throws if used outside the provider to prevent silent failures.
+ * @returns Student context with raw collections and derived lists.
  */
 export const useStudents = () => {
   const context = useContext(StudentContext);

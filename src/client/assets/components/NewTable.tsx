@@ -182,7 +182,7 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
       );
       const medicalLeave =
         studentFROMDB?.medical_leave === true &&
-        rapportDate < studentFROMDB?.medical_leave_endDate.setHours(23);
+        rapportDate < new Date(studentFROMDB?.medical_leave_endDate).setHours(23);
       const missedHours = () => {
         const start = parseInt(
           new Intl.DateTimeFormat("fr", { hour: "numeric", minute: "numeric" })

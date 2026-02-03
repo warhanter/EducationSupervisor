@@ -63,12 +63,10 @@ export default function MedicalLeavePrintTable({ data, date, title }) {
                     {student.full_class_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.medical_leave_startDate.toLocaleDateString(
-                      "en-ZA"
-                    )}
+                    {student.medical_leave_start_date}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-1 px-1">
-                    {student.medical_leave_endDate.toLocaleDateString("en-ZA")}
+                    {student.medical_leave_end_date}
                   </td>
                 </tr>
               );
