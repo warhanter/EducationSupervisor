@@ -205,7 +205,7 @@ export default function LuncAbsencePrintTable({
                     {student?.lunch_table_number}
                   </td>
                   <td className="border border-collapse border-zinc-500 py-0 px-1">
-                    {student?.is_mamnouh ? "ممنوح" : student?.lunch_paid ? "غير ممنوح" : "غير مسدد"}
+                    {student?.gender}
                   </td>
                 </tr>
               );
@@ -652,4 +652,5 @@ export default function LuncAbsencePrintTable({
     </div>
   );
 }
+
 
