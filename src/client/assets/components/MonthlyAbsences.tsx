@@ -15,10 +15,10 @@ import { supabase } from "@/lib/supabaseClient";
 
 // Fetch holidays
 const { data: holidays, error: holidaysError } = await supabase
-  .from("holidays")
-  .select("*");
+  .from("calendar_events")
+  .select("*")
 
-if (holidaysError) {
+if (holidaysError) {  
   console.error("Error fetching holidays:", holidaysError);
 }
 
@@ -98,7 +98,7 @@ const absenceStudents = absencesData
       .sort((a, b) => b.total - a.total)
   : [];
 
-Date.prototype.between = function (a, b) {
+Date.prototype.between = function (a ,b) {
   let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
   let max = Math.max.apply(Math, [a.getTime(), b.getTime()]);
   return this.getTime() >= min && this.getTime() <= max;
@@ -186,7 +186,7 @@ export function MonthlyAbsences({
     }
     let isHoliday = false;
     holidays?.map((holiday) => {
-      if (new Date(newDate).between(holiday.start_date, holiday.end_date)) {
+      if (new Date(newDate).between(new Date(holiday.start_date), new Date(holiday.end_date))) {
         isHoliday = true;
         return;
       }

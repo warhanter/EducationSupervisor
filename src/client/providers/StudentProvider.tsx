@@ -65,6 +65,7 @@ type StudentsData = {
   subjects: Tables<"subjects">[];
   notification?: Notification;
   daily_notes: Tables<"daily_notes">[];
+  calendar_events: Tables<"calendar_events">[];
 };
 
 // type StudentContextType = StudentsData & {
@@ -110,6 +111,7 @@ const TABLES = {
   ADDRESSES: "student_addresses",
   LUNCH_ABSENCES: "lunch_absences",
   DAILY_NOTES: "daily_notes",
+  CALENDAR_EVENTS: "calendar_events",
 } as const;
 
 // Default context values to keep context consumers stable during initialization.
@@ -134,6 +136,7 @@ const defaultValues: StudentContextType = {
   professors: [],
   subjects: [],
   daily_notes: [],
+  calendar_events: [],
   notification: undefined,
   refreshData: async () => {},
 };
@@ -159,6 +162,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
     professors: [],
     subjects: [],
     daily_notes: [],
+    calendar_events: [],
     notification: undefined,
   });
 
@@ -199,6 +203,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           { data: addresses, error: addressesError },
           { data: lunchAbsences, error: lunchAbsencesError },
           { data: daily_notes, error: daily_notesError },
+          { data: calendar_events, error: calendar_eventsError },
         ] = await Promise.all([
           supabase.from(TABLES.CLASSROOMS).select("*"),
           supabase
@@ -220,6 +225,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           supabase.from(TABLES.ADDRESSES).select("*"),
           supabase.from(TABLES.LUNCH_ABSENCES).select("*"),
           supabase.from(TABLES.DAILY_NOTES).select("*"),
+          supabase.from(TABLES.CALENDAR_EVENTS).select("*"),
         ]);
 
         const errors = [
@@ -233,6 +239,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           addressesError,
           lunchAbsencesError,
           daily_notesError,
+          calendar_eventsError,
         ].filter(Boolean);
 
         if (errors.length > 0) {
@@ -250,6 +257,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
           classroom_professors: classroom_professors || [],
           class_programs: class_programs || [],
           daily_notes: daily_notes || [],
+          calendar_events: calendar_events || [],
           notification: undefined,
         });
       } catch (error) {
@@ -812,6 +820,49 @@ function StudentProvider({ children }: { children: ReactNode }) {
           }
         }
       )
+      // Calendar events changes (simple CRUD updates).
+      .on(
+        "postgres_changes",
+        {
+          event: "*", // or "INSERT", "UPDATE", "DELETE"
+          schema: "public",
+          table: "calendar_events",
+        },
+        (payload) => {
+          console.log("Change received:", payload);
+
+          if (payload.eventType === "INSERT") {
+            setData((prev) => ({
+              ...prev,
+              calendar_events: [
+                ...prev.calendar_events,
+                payload.new as Tables<"calendar_events">,
+              ],
+            }));
+          }
+
+          if (payload.eventType === "UPDATE") {
+            setData((prev) => ({
+              ...prev,
+              calendar_events: prev.calendar_events.map(
+                (s: Tables<"calendar_events">) =>
+                  s.id === payload.new.id
+                    ? (payload.new as Tables<"calendar_events">)
+                    : s
+              ),
+            }));
+          }
+
+          if (payload.eventType === "DELETE") {
+            setData((prev) => ({
+              ...prev,
+              calendar_events: prev.calendar_events.filter(
+                (s: Tables<"calendar_events">) => s.id !== payload.old.id
+              ),
+            }));
+          }
+        }
+      )
       .subscribe();
 
     // 2️⃣ Cleanup when component unmounts.
@@ -995,6 +1046,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
         { data: addresses },
         { data: lunchAbsences },
         { data: daily_notes },
+        { data: calendar_events },
       ] = await Promise.all([
         supabase.from(TABLES.CLASSROOMS).select("*"),
         supabase
@@ -1012,6 +1064,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
         supabase.from(TABLES.ADDRESSES).select("*"),
         supabase.from(TABLES.LUNCH_ABSENCES).select("*"),
         supabase.from(TABLES.DAILY_NOTES).select("*"),
+        supabase.from(TABLES.CALENDAR_EVENTS).select("*"),
       ]);
 
       setData({
@@ -1025,6 +1078,7 @@ function StudentProvider({ children }: { children: ReactNode }) {
         classroom_professors: classroom_professors || [],
         class_programs: class_programs || [],
         daily_notes: daily_notes || [],
+        calendar_events: calendar_events || [],
         notification: undefined,
       });
     } catch (error) {
