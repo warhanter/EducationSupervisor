@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import React, { useEffect, useMemo, useState } from "react";
 import { calculateStudentStats } from "@/utils/calculateStudentsStats";
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 import _ from "lodash";
 import { SelectSupervisor } from "./SelectSupervisor";
 import { Button } from "@/components/ui/button";

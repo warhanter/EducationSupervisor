@@ -26,9 +26,9 @@ if (holidaysError) {
 const { data: selectedClassProgram, error: classProgramError } =
   await supabase.from("classrooms").select(`
     *,
-    program:class_programs!classrooms_class_program_fkey (
+    program:class_programs!class_programs_classroom_id_fkey (
       *,
-      module:professors!class_programs_professor_fkey (*)
+      module:professors!class_programs_professor_id_fkey (*)
     )
   `);
 

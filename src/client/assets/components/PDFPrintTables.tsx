@@ -3,8 +3,7 @@ import { reverseString } from "../contexts/AppFunctions";
 import { Student } from "@/client/providers/StudentProvider";
 import _ from "lodash";
 import { supabase } from "@/lib/supabaseClient";
-import { AppSelectItems } from "./AppSelectItems";
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 import { SelectSupervisor } from "./SelectSupervisor";
 
 export type PDFPrintTablesProps = {

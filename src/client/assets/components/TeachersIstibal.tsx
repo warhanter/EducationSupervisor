@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 import { useStudents } from "@/client/providers/StudentProvider";
 
 type MaafiyinPrintTableProps = {

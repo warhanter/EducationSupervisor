@@ -1,4 +1,4 @@
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 
 type ModifiedSudent = Tables<"students"> & {
   student_status: "داخلي" | "نصف داخلي" | "خارجي";

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
 import { filter, groupBy, max, sortBy } from "lodash";
-import { StudentList, useStudents } from "@/client/providers/StudentProvider";
+import { StudentList } from "@/client/providers/StudentProvider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
+import { extractAbbreviation } from "@/utils/utils/extractAbbreviation";
 
 type Ta9rirYawmiProps = PDFPrintTablesProps & {
   title: string;
@@ -12,6 +13,8 @@ type Ta9rirYawmiProps = PDFPrintTablesProps & {
   allStudents?: StudentList;
 };
 
+
+
 export default function Ta9rirYawmi({
   data,
   date,
@@ -19,7 +22,7 @@ export default function Ta9rirYawmi({
   allStudents,
   table,
 }: Ta9rirYawmiProps) {
-  const { professors } = useStudents();
+  // const { professors } = useStudents();
   const [report_number, setReport_number] = useState<number | null>(null);
   const [supervisors, setSupervisors] = useState("");
   const [totalhours, setTotalHours] = useState("");
@@ -227,30 +230,60 @@ export default function Ta9rirYawmi({
       </th>
     );
   };
-  let professorsAbsences = [];
-  professors?.map((professor) => {
-    if (professor.absences?.length > 0) {
-      professor.absences.map((absence) => {
-        if (absence.date > yesterdayDate && absence.date < todayDate) {
-          // Object.assign({}, absence, {full_name: professor.full_name})
-          professorsAbsences.push(
-            Object.assign({}, absence, {
-              full_name: professor.full_name,
-              module_name: professor.module_name,
-            })
-          );
-        }
-      });
+  const [professorsAbsences, setProfessorsAbsences] = useState<any[]>([]);
+  const fetchProfessorAbsences = async () => {
+    const { data, error } = await supabase
+      .from("professor_absences")
+      .select("*, professors(full_name, subjects(subject))")
+      .eq("absence_date", new Date(date).toISOString().split("T")[0]);
+
+    if (error) {
+      console.error("Error fetching professor absences:", error);
+    } else {
+      console.log("---------------------------",data);
+      const absencesWithDetails = data.map((absence: any) => ({
+        ...absence,
+        full_name: absence.professors?.full_name,
+        module_name: absence.professors?.subjects?.subject,
+        full_class_name: extractAbbreviation(absence.full_class_name),
+      }));
+      console.log("---------------------------",absencesWithDetails);
+      setProfessorsAbsences(absencesWithDetails);
+       setMissedHoursByTeachers(absencesWithDetails.length);
+       setMinTeachersCells(8 - Object.keys(groupBy(absencesWithDetails, "full_name")).length);
     }
-  });
+  };
+
+  useEffect(() => {
+    fetchProfessorAbsences();
+    const channel = supabase
+      .channel("professor_absences_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "professor_absences",
+        },
+        () => {
+          fetchProfessorAbsences();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [date]);
+
   const groupedByTeacher = groupBy(professorsAbsences, "full_name");
   const teacherKeys = Object.keys(groupedByTeacher);
-  console.log(groupedByTeacher);
+  
   const [minTeachersCells, setMinTeachersCells] = useState(
-    8 - teacherKeys.length
+    8
   );
   const [missedHoursByTeachers, setMissedHoursByTeachers] = useState(
-    professorsAbsences.length
+    0
   );
 
   return (
@@ -389,40 +422,32 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(8, 0, 0, 0) &&
-                      s.date < todayDate.setHours(9, 0, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 1
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(9, 0, 0, 0) &&
-                      s.date < todayDate.setHours(10, 0, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 2
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(10, 0, 0, 0) &&
-                      s.date < todayDate.setHours(11, 0, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 3
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(11, 0, 0, 0) &&
-                      s.date < todayDate.setHours(12, 0, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 4
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border-separate border border-zinc-500  bg-gray-200 w-8"></td>
@@ -430,40 +455,32 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(13, 30, 0, 0) &&
-                      s.date < todayDate.setHours(14, 30, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 5
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(14, 30, 0, 0) &&
-                      s.date < todayDate.setHours(15, 30, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 6
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(15, 30, 0, 0) &&
-                      s.date < todayDate.setHours(16, 30, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 7
+                  )[0]?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
                   filter(
                     groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(16, 30, 0, 0) &&
-                      s.date < todayDate.setHours(17, 30, 0, 0)
-                  )[0]?.class_name
+                    (s) => s.hour === 8
+                  )[0]?.full_class_name
                 }
               </td>
 
@@ -539,7 +556,7 @@ export default function Ta9rirYawmi({
                 name=""
                 // type="number"
                 className="w-8 m-0 text-center"
-                defaultValue={missedHoursByTeachers}
+                value={missedHoursByTeachers}
                 onChange={(e) =>
                   setMissedHoursByTeachers(Number(e.target.value))
                 }

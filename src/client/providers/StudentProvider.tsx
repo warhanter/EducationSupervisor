@@ -10,7 +10,7 @@ import React, {
 import { supabase } from "@/lib/supabaseClient";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
 import { ClassroomProfessor } from "../assets/components/Isnad";
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 
 // Types
 type Notification = {
