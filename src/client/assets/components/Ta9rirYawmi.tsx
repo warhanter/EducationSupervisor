@@ -240,14 +240,12 @@ export default function Ta9rirYawmi({
     if (error) {
       console.error("Error fetching professor absences:", error);
     } else {
-      console.log("---------------------------",data);
       const absencesWithDetails = data.map((absence: any) => ({
         ...absence,
         full_name: absence.professors?.full_name,
         module_name: absence.professors?.subjects?.subject,
         full_class_name: extractAbbreviation(absence.full_class_name),
       }));
-      console.log("---------------------------",absencesWithDetails);
       setProfessorsAbsences(absencesWithDetails);
        setMissedHoursByTeachers(absencesWithDetails.length);
        setMinTeachersCells(8 - Object.keys(groupBy(absencesWithDetails, "full_name")).length);
