@@ -79,21 +79,14 @@ export default function TeachersIsti9bal({
                     {teacher.full_name}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {teacher.isti9bal_time &&
-                      new Date(teacher.isti9bal_time).toLocaleDateString(
-                        "ar-DZ",
-                        {
-                          weekday: "long",
-                        }
-                      )}
+                    {teacher.isti9bal_day ?? ""}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1">
-                    {teacher.isti9bal_time &&
-                      `${
-                        new Date(teacher.isti9bal_time).getHours() < 13
-                          ? new Date(teacher.isti9bal_time).getHours() + ":00"
-                          : new Date(teacher.isti9bal_time).getHours() + ":30"
-                      }`}
+                    {teacher.isti9bal_time
+                      ? teacher?.isti9bal_time?.split(":")[0] +
+                        ":" +
+                        teacher?.isti9bal_time?.split(":")[1]
+                      : ""}
                   </td>
                   <td className="border border-collapse border-zinc-500 p-1.5">
                     {professorsWithClassrooms[teacher.id]?.map((c) => (
