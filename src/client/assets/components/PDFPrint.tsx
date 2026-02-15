@@ -52,7 +52,8 @@ function PDFPrint() {
   const studentsGroupedByClass = groupBy(motamadrisin, "full_class_name");
   const filtredghiyabat = absences?.filter(
     (student) =>
-      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired &&
+      !students?.filter((b) => b.id === student.student_id)[0]?.switched_school
   );
   const yatama = motamadrisin.filter((student) => student.yatim);
   const marda = motamadrisin.filter((student) => student.sick);
@@ -129,7 +130,8 @@ function PDFPrint() {
       studentObject.number = index.toString();
       studentObject.id = i.toString();
       studentObject.student_id = student.student_id;
-      studentObject.last_name = studentFROMDB.last_name;
+      studentObject.last_name = studentFROMDB?.last_name;
+      console.log(student.student_id);
       studentObject.first_name = studentFROMDB.first_name;
       studentObject.supervisor_id = studentFROMDB.supervisor_id;
       const medicalLeave =
