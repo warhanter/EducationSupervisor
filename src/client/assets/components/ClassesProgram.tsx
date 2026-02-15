@@ -66,7 +66,7 @@ function ClassProgramForm() {
     text: string;
   }>({ type: "", text: "" });
 
-  const { classrooms, classroom_professors, class_programs } = useStudents();
+  const { classrooms, classroom_professors, class_programs, professors } = useStudents();
 
   const classProgrmas = useMemo(
     () =>
@@ -293,7 +293,7 @@ function ClassProgramForm() {
                       <PlusCircle />
                     </div>
                   </Button>
-                  <ClassroomDetailsModal programs={classProgrmas} />
+                  <ClassroomDetailsModal programs={classProgrmas} professors={professors} />
                   </div>
                 </div>
               )}
@@ -478,7 +478,13 @@ function ClassProgramForm() {
   );
 }
 
-function ClassroomDetailsModal({ programs }: { programs: any[] }) {
+const getIstibalTime = (day: string, hour: string) => {
+  if (!day || !hour) return "-";
+  const [hours, minutes] = hour.split(":");
+  return `${day} ${hours}:${minutes}`;
+}
+
+function ClassroomDetailsModal({ programs, professors }: { programs: any[], professors: any[] }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -502,6 +508,7 @@ function ClassroomDetailsModal({ programs }: { programs: any[] }) {
               <TableRow className="bg-slate-100">
                 <TableHead className="text-right font-bold">المادة</TableHead>
                 <TableHead className="text-right font-bold">الأستاذ</TableHead>
+                <TableHead className="text-right font-bold">توقيت الإستقبال</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -513,6 +520,9 @@ function ClassroomDetailsModal({ programs }: { programs: any[] }) {
                     </TableCell>
                     <TableCell>
                       {program.professors?.full_name || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {getIstibalTime(program.professors?.isti9bal_day, program.professors?.isti9bal_time) || "-"}
                     </TableCell>
                   </TableRow>
                 ))
