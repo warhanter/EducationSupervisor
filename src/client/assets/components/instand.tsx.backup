@@ -1,0 +1,504 @@
+import React, { useCallback, useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2, XCircle, Loader2, Trash2, Save } from "lucide-react";
+import HeaderNavbar from "./HeaderNavbar";
+import { supabase } from "@/lib/supabaseClient";
+import { useStudents } from "@/client/providers/StudentProvider";
+import { sortBy } from "lodash";
+import AddTeacherDialog from "./AddTeacherDialog";
+import { cn } from "@/lib/utils";
+
+type ScheduleItem = {
+  classroom: string;
+};
+type StateMessage = { type: "success" | "error" | ""; text: string };
+// type ScheduleMap = Map<scheduleKey, ScheduleItem>;
+type ScheduleMap = Record<number, ScheduleItem>;
+
+const NUMBER_OF_CLASSROOMS = Array.from({ length: 8 }, (_, i) => i + 1);
+
+function Isnad() {
+  const [subjectName, setSubjectName] = useState<string>("");
+  const [teacherName, setTeacherName] = useState<string>("");
+  const [selectedClassroom, setSelectedClassroom] = useState<string[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleMap>({});
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<StateMessage>({ type: "", text: "" });
+  const {
+    professors: teachers,
+    subjects,
+    classrooms,
+    classroom_professors,
+  } = useStudents();
+
+  // Get classrooms already saved for this subject
+  const savedClassrooms = useMemo(
+    () =>
+      new Set(
+        classroom_professors
+          .filter((p) => p.professors.subjects.subject === subjectName)
+          .map((item) => item.classrooms.class_full_name)
+      ),
+    [subjectName, classroom_professors]
+  );
+
+  // Get classrooms currently selected in the schedule
+  const currentlySelected = useMemo(
+    () => new Set(selectedClassroom),
+    [selectedClassroom]
+  );
+
+  // Available classrooms: not saved AND not currently selected
+  const availableClassrooms = useMemo(
+    () =>
+      classrooms.filter(
+        (classroom) =>
+          !savedClassrooms.has(classroom.class_full_name) &&
+          !currentlySelected.has(classroom.class_full_name)
+      ),
+    [savedClassrooms, classrooms, currentlySelected]
+  );
+
+  const availableTeachers = useMemo(
+    () => teachers.filter((t) => t.subjects.subject === subjectName),
+    [teachers, subjectName]
+  );
+
+  const updateSchedule = (classroom_number: number, classroom: string) => {
+    setSchedule((prev) => {
+      const newSchedule = { ...prev };
+
+      // If this classroom_number slot already has a classroom, remove it from selectedClassroom
+      if (newSchedule[classroom_number]?.classroom) {
+        setSelectedClassroom((prevSelected) =>
+          prevSelected.filter(
+            (c) => c !== newSchedule[classroom_number].classroom
+          )
+        );
+      }
+
+      // Update the schedule
+      newSchedule[classroom_number] = {
+        ...newSchedule[classroom_number],
+        classroom: classroom,
+      };
+
+      return newSchedule;
+    });
+
+    // Add new classroom to selectedClassroom
+    if (classroom) {
+      setSelectedClassroom((prev) => [...prev, classroom]);
+    }
+  };
+
+  // Load existing schedule when teacher changes
+  React.useEffect(() => {
+    if (!teacherName) {
+      setSchedule({});
+      setSelectedClassroom([]);
+      return;
+    }
+
+    // Filter assignments for the selected teacher
+    const teacherAssignments = classroom_professors.filter(
+      (item) => item.professors.full_name === teacherName
+    );
+
+    if (teacherAssignments.length === 0) {
+      setSchedule({});
+      setSelectedClassroom([]);
+      return;
+    }
+
+    // Build schedule from existing assignments
+    const newSchedule: ScheduleMap = {};
+    const newSelected: string[] = [];
+
+    teacherAssignments.forEach((item, index) => {
+      const classroom_number = index + 1;
+      newSchedule[classroom_number] = {
+        classroom: item.classrooms.class_full_name,
+      };
+      newSelected.push(item.classrooms.class_full_name);
+    });
+
+    setSchedule(newSchedule);
+    setSelectedClassroom(newSelected);
+  }, [teacherName]);
+
+  console.log("schedule", schedule);
+
+  const saveToSupabase = async () => {
+    if (!subjectName || !teacherName) {
+      setMessage({ type: "error", text: "يرجى اختيار القسم واليوم" });
+      return;
+    }
+
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const professor_id = teachers.filter(
+        (t) => t.full_name === teacherName
+      )[0].id;
+
+      const { error: deleteError } = await supabase
+        .from("classroom_professors")
+        .delete()
+        .eq("professor_id", professor_id);
+
+      if (deleteError) console.error(deleteError);
+
+      const scheduleData = selectedClassroom.map((classroom) => ({
+        classroom_id: classrooms.filter(
+          (t) => t.class_full_name === classroom
+        )[0].id,
+        professor_id: professor_id,
+      }));
+
+      const { data, error } = await supabase
+        .from("classroom_professors")
+        .insert(scheduleData)
+        .select();
+
+      if (!error) {
+        console.log(data);
+        setMessage({ type: "success", text: "تم حفظ البرنامج بنجاح!" });
+      } else {
+        setMessage({
+          type: "error",
+          text: `حدث خطأ أثناء حفظ البيانات، ${error.message}`,
+        });
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: `حدث خطأ أثناء حفظ البيانات. يرجى المحاولة مرة أخرى. ${error}`,
+      });
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearSchedule = useCallback(() => {
+    setSchedule({});
+    setMessage({ type: "", text: "" });
+  }, []);
+
+  const removeEntryFromSchedule = (classroom_number: number) => {
+    const prevClass = schedule[classroom_number + 8]?.classroom;
+    if (!prevClass) return;
+    const { [classroom_number + 8]: removed, ...newSchedule } = schedule;
+    setSchedule(newSchedule);
+    setSelectedClassroom((prev) => [...prev.filter((c) => c !== prevClass)]);
+  };
+
+  return (
+    <div className="flex min-h-screen w-full flex-col" dir="rtl">
+      <HeaderNavbar />
+      <div className="w-full mx-auto">
+        <Card className="shadow-xl w-full">
+          <CardHeader className="bg-gradient-to-r bg-slate-800 text-white">
+            <CardTitle className="text-2xl md:text-3xl text-center font-bold">
+              الإسناد
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {/* Header Selectors */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  المادة
+                </label>
+                <div className="flex gap-4">
+                  <Select
+                    value={subjectName}
+                    onValueChange={(value) => {
+                      setSubjectName(value);
+                      setSelectedClassroom([]);
+                      setSchedule({});
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-12 text-base" dir="rtl">
+                      <SelectValue placeholder="اختر المادة" />
+                    </SelectTrigger>
+                    <SelectContent dir="rtl">
+                      {subjects.map((subject) => (
+                        <SelectItem
+                          key={subject.subject}
+                          value={subject.subject}
+                          className="text-base"
+                        >
+                          {subject.subject}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <AddTeacherDialog type="subject" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700">
+                  الأستاذ
+                </label>
+                <div className="flex gap-4">
+                  <Select value={teacherName} onValueChange={setTeacherName}>
+                    <SelectTrigger className="w-full h-12 text-base" dir="rtl">
+                      <SelectValue placeholder="اختر الأستاذ" />
+                    </SelectTrigger>
+                    <SelectContent dir="rtl">
+                      {availableTeachers.map((teacher) => (
+                        <SelectItem
+                          key={teacher.id}
+                          value={teacher.full_name}
+                          className="text-base"
+                        >
+                          {teacher.full_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <AddTeacherDialog type="teacher" />
+                </div>
+              </div>
+            </div>
+
+            {/* Schedule Table */}
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full border-collapse table-fixed">
+                <thead>
+                  <tr className="bg-gradient-to-r bg-slate-800 max-w-7">
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-2/12">
+                      الرقم
+                    </th>
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-3/12">
+                      الأقسام
+                    </th>
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12" />
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-2/12">
+                      الرقم
+                    </th>
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-3/12">
+                      الأقسام
+                    </th>
+                    <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {NUMBER_OF_CLASSROOMS.map((classroom_number) => (
+                    <tr
+                      key={classroom_number}
+                      className="hover:bg-blue-50 transition-colors max-w-7"
+                    >
+                      <td className="border border-gray-300 px-4 py-3 text-center bg-gray-50 w-7">
+                        <span className="font-semibold text-gray-700">
+                          {"القسم " + classroom_number}
+                        </span>
+                      </td>
+
+                      <td className="border border-gray-300 px-2 py-2">
+                        <Select
+                          disabled={
+                            selectedClassroom.length + 1 !== classroom_number &&
+                            selectedClassroom.length + 1 < classroom_number
+                          }
+                          value={schedule[classroom_number]?.classroom || ""}
+                          onValueChange={(classroom) =>
+                            updateSchedule(classroom_number, classroom)
+                          }
+                        >
+                          <SelectTrigger
+                            className="w-full border-gray-300"
+                            dir="rtl"
+                          >
+                            <SelectValue placeholder="اختر القسم">
+                              {schedule[classroom_number]?.classroom || ""}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent dir="rtl">
+                            {sortBy(availableClassrooms, "class_full_name").map(
+                              (classroom) => (
+                                <SelectItem
+                                  key={classroom.class_full_name}
+                                  value={classroom.class_full_name}
+                                >
+                                  {classroom.class_full_name}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="border  border-gray-300 px-2 py-2 ">
+                        <div className="flex justify-center">
+                          <Button
+                            variant={"destructive"}
+                            onClick={() => {
+                              const prevClass =
+                                schedule[classroom_number].classroom;
+                              const {
+                                [classroom_number]: removed,
+                                ...newSchedule
+                              } = schedule;
+                              setSchedule(newSchedule);
+                              setSelectedClassroom((prev) => [
+                                ...prev.filter((c) => c !== prevClass),
+                              ]);
+                            }}
+                          >
+                            حذف
+                          </Button>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center bg-gray-50">
+                        <span className="font-semibold text-gray-700">
+                          {"القسم " + (classroom_number + 8)}
+                        </span>
+                      </td>
+                      <td className="border border-gray-300 px-2 py-2">
+                        <Select
+                          disabled={
+                            selectedClassroom.length + 1 !==
+                              classroom_number + 8 &&
+                            selectedClassroom.length + 1 < classroom_number + 8
+                          }
+                          value={
+                            schedule[classroom_number + 8]?.classroom || ""
+                          }
+                          onValueChange={(classroom) =>
+                            updateSchedule(classroom_number + 8, classroom)
+                          }
+                        >
+                          <SelectTrigger
+                            className="w-full border-gray-300"
+                            dir="rtl"
+                          >
+                            <SelectValue placeholder="اختر القسم">
+                              {schedule[classroom_number + 8]?.classroom || ""}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent dir="rtl">
+                            {sortBy(availableClassrooms, "class_full_name").map(
+                              (classroom) => (
+                                <SelectItem
+                                  key={classroom.class_full_name}
+                                  value={classroom.class_full_name}
+                                >
+                                  {classroom.class_full_name}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </td>
+                      <td className="border  border-gray-300 px-2 py-2 ">
+                        <div className="flex justify-center">
+                          <Button
+                            variant={"destructive"}
+                            onClick={() =>
+                              removeEntryFromSchedule(classroom_number)
+                            }
+                          >
+                            حذف
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Message Alert */}
+            {message.text && (
+              <Alert
+                className={`mb-4 ${
+                  message.type === "success"
+                    ? "bg-green-50 border-green-200"
+                    : "bg-red-50 border-red-200"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {message.type === "success" ? (
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <XCircle className="h-5 w-5 text-red-600" />
+                  )}
+                  <AlertDescription
+                    className={
+                      message.type === "success"
+                        ? "text-green-800"
+                        : "text-red-800"
+                    }
+                  >
+                    {message.text}
+                  </AlertDescription>
+                </div>
+              </Alert>
+            )}
+
+            <div className="flex items-center gap-3 w-full md:w-auto order-1 md:order-2">
+              <Button
+                type="button"
+                onClick={clearSchedule}
+                disabled={
+                  loading ||
+                  !selectedClassroom ||
+                  Object.keys(schedule).length === 0
+                }
+                className={cn(
+                  "flex-1 md:w-auto h-12 text-base shadow-sm transition-all duration-300",
+                  "bg-white text-red-600 border border-red-200 hover:bg-red-50 hover:border-red-300 hover:text-red-700",
+                  (!selectedClassroom || Object.keys(schedule).length === 0) &&
+                    "opacity-50 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400"
+                )}
+              >
+                <Trash2 className="ml-2 h-5 w-5" />
+                مسح الكل
+              </Button>
+
+              <Button
+                onClick={saveToSupabase}
+                disabled={
+                  loading || !teacherName || Object.keys(schedule).length === 0
+                }
+                className={cn(
+                  "flex-1 md:w-48 h-12 text-base shadow-lg transition-all duration-300",
+                  !selectedClassroom
+                    ? "bg-slate-300 cursor-not-allowed"
+                    : "bg-slate-700 hover:bg-slate-800  hover:shadow-blue-200"
+                )}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    جاري الحفظ...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-5 w-5" />
+                    حفظ البرنامج
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+export default Isnad;
