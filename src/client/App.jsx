@@ -25,6 +25,7 @@ import StudentForm from "./assets/components/addStudent";
 import { DateProvider } from "./assets/contexts/DateContext";
 import ClassProgramForm from "./assets/components/ClassesProgram";
 import Isnad from "./assets/components/Isnad";
+import TotalAbsencesScreen from "./assets/components/totalMissedHours";
 
 function App() {
   const router = createHashRouter(
@@ -98,6 +99,7 @@ function App() {
           <Route path="/classprogram" element={<ClassProgramForm />} />
           <Route path="/isnad" element={<Isnad />} />
           <Route path="/print-notice" element={<CreatePDFNotice1 />} />
+          <Route path="/total-missed-hours" element={<TotalAbsencesScreen />} />
         </Route>
         <Route path="/login" element={<LoginForm />} />
       </>

@@ -79,6 +79,7 @@ function HeaderNavbar() {
           <AppLink to="/add-student" link="إضافة تلميذ" />
           <AppLink to="/classprogram" link="التوزيع الزمني" />
           <AppLink to="/isnad" link="الإسناد" />
+          <AppLink to="/total-missed-hours" link="مجموع الساعات الضائعة" />
           {/* <AppLink to="/daily-report" link="التقرير اليومي" /> */}
         </nav>
         <Sheet>
