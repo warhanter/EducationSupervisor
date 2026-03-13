@@ -1251,7 +1251,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("date_of_absence");
+      const date: Date = new Date(row.getValue("date_of_absence"));
 
       return (
         <div className="text-right font-medium text-gray-500 py-1">
@@ -1287,7 +1287,7 @@ export const recordsColumns: ColumnDef<Student>[] = [
       );
     },
     cell: ({ row }) => {
-      const date: Date = row.getValue("date_of_return");
+      const date: Date | null = row.getValue("date_of_return") ? new Date(row.getValue("date_of_return")) : null;
 
       return (
         <div className="text-right font-medium text-gray-500">
