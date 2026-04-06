@@ -2,8 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabaseClient";
 import { Search, X, Clock, Filter, Users, Printer } from "lucide-react";
-import { Tables } from "@/types/database.types";
+
 import HeaderNavbar from "./HeaderNavbar";
+import { calculateMissedHours } from "@/client/functions/calcMissedHours";
+// import { calculateMissedHours } from "@/utils/calculateMissedHours";
+import { Tables } from "@/types/database.types";
+
 
 interface StudentTotalAbsence {
   id: number;
@@ -17,32 +21,6 @@ const TRIMESTERS = [
   { label: "الفصل الثاني", value: 2 },
   { label: "الفصل الثالث", value: 3 },
 ];
-
-// Fetch data at module level (same pattern as MonthlyAbsences)
-const { data: studentsRaw, error: studentsError } = await supabase
-  .from("students")
-  .select("*");
-
-if (studentsError) {
-  console.error("Error fetching students:", studentsError);
-}
-
-const { data: absencesRaw, error: absencesError } = await supabase
-  .from("absences")
-  .select("*")
-  .order("student_id");
-
-if (absencesError) {
-  console.error("Error fetching absences:", absencesError);
-}
-
-const { data: schoolsRaw, error: schoolsError } = await supabase
-  .from("schools")
-  .select("*");
-
-if (schoolsError) {
-  console.error("Error fetching schools:", schoolsError);
-}
 
 const DebouncedSearch = ({
   onSearch,
@@ -88,13 +66,50 @@ export default function TotalAbsencesScreen() {
     null,
   );
 
-  const studentsData = studentsRaw as Tables<"students">[] | null;
-  const absencesData = absencesRaw as Tables<"absences">[] | null;
-  const schoolsData = schoolsRaw as Tables<"schools">[] | null;
+  const [studentsData, setStudentsData] = useState<Tables<"students">[] | null>(null);
+  const [absencesData, setAbsencesData] = useState<Tables<"absences">[] | null>(null);
+  const [schoolsData, setSchoolsData] = useState<Tables<"schools">[] | null>(null);
+  const [holidays, setHolidays] = useState<Tables<"calendar_events">[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const [
+        { data: students, error: studentsError },
+        { data: absences, error: absencesError },
+        { data: schools, error: schoolsError },
+        { data: events, error: holidaysError },
+      ] = await Promise.all([
+        supabase.from("students").select("*"),
+        supabase.from("absences").select("*").order("student_id"),
+        supabase.from("schools").select("*"),
+        supabase.from("calendar_events").select("*"),
+      ]);
+
+      if (studentsError) console.error("Error fetching students:", studentsError);
+      else setStudentsData(students);
+
+      if (absencesError) console.error("Error fetching absences:", absencesError);
+      else setAbsencesData(absences);
+
+      if (schoolsError) console.error("Error fetching schools:", schoolsError);
+      else setSchoolsData(schools);
+
+      if (holidaysError) console.error("Error fetching holidays:", holidaysError);
+      else setHolidays(events);
+
+      setIsLoading(false);
+    };
+
+    fetchData();
+  }, []);
 
   const activeSchool = useMemo(() => {
     return schoolsData && schoolsData.length > 0 ? schoolsData[0] : null;
   }, [schoolsData]);
+
+  console.log(holidays);
 
   // Derive the aggregated data
   const aggregatedData = useMemo(() => {
@@ -147,14 +162,20 @@ export default function TotalAbsencesScreen() {
           }
         }
 
-        if (isWithinTrimester && studentTotals[absence.student_id]) {
-          studentTotals[absence.student_id].totalHours += absence.missed_hours;
+       if (isWithinTrimester && studentTotals[absence.student_id] && absence.date_of_absence && absence.date_of_return && holidays) {
+          // Recalculate missed hours using the utility function
+          const startDate = new Date(absence.date_of_absence);
+          const endDate = absence.date_of_return
+            ? new Date(absence.date_of_return)
+            : new Date();
+          const result = calculateMissedHours(startDate, endDate, holidays ?? []);
+          studentTotals[absence.student_id].totalHours += result.totalHours;
         }
       }
     });
 
     return Object.values(studentTotals);
-  }, [studentsData, absencesData, selectedTrimester, activeSchool]);
+  }, [studentsData, absencesData, selectedTrimester, activeSchool, holidays]);
 
   // Get unique classes for the filter
   const availableClasses = useMemo(() => {
@@ -321,7 +342,16 @@ export default function TotalAbsencesScreen() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.length > 0 ? (
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-16 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                          <p className="text-base text-gray-500">جاري تحميل البيانات...</p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                       <tr
                         key={item.id}

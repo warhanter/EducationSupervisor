@@ -13,17 +13,17 @@ export default function StudentCard() {
     () =>
       _.sortBy(
         nisfDakhili.filter((s) => s.gender === "أنثى"),
-        "rakm_tasjil"
+        "rakm_tasjil",
       ),
-    [nisfDakhili]
+    [nisfDakhili],
   );
   const nisfDakhiliMales = useMemo(
     () =>
       _.sortBy(
         nisfDakhili.filter((s) => s.gender === "ذكر"),
-        "rakm_tasjil"
+        "rakm_tasjil",
       ),
-    [nisfDakhili]
+    [nisfDakhili],
   );
 
   return (
@@ -47,7 +47,7 @@ export default function StudentCard() {
                   <div
                     className={cn(
                       "flex",
-                      index % 2 === 0 ? "justify-end" : "justify-start"
+                      index % 2 === 0 ? "justify-end" : "justify-start",
                     )}
                   >
                     {index % 8 === 0 && (
@@ -67,7 +67,7 @@ export default function StudentCard() {
                           </tr>
                           <tr>
                             <td className="p-2  font-bold">
-                              المؤسسة: الثانوية المختلطة مروانة
+                              المؤسسة: الثانوية بروال عبد الرحمن
                             </td>
                           </tr>
                           <tr>
@@ -127,7 +127,7 @@ export default function StudentCard() {
                           </tr>
                           <tr>
                             <td className="p-2  font-bold">
-                              المؤسسة: الثانوية المختلطة مروانة
+                              المؤسسة: الثانوية بروال عبد الرحمن
                             </td>
                           </tr>
                           <tr>

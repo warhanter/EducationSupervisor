@@ -23,7 +23,7 @@ export default function TeachersIsti9bal({
 
   const professorsWithClassrooms = _.groupBy(
     _.orderBy(classroom_professors, ["classrooms.class_prefix"], ["asc"]),
-    "professor_id"
+    "professor_id",
   );
   return (
     <div id="section-to-print" className="w-full p-4 print:p-0">
@@ -34,7 +34,7 @@ export default function TeachersIsti9bal({
       <div className="flex m-0 justify-between">
         <div>
           <h3>مديرية التربية لولاية باتنة</h3>
-          <h3>ثانوية : المختلطة مروانة</h3>
+          <h3>ثانوية : بروال عبد الرحمن</h3>
         </div>
         <div className="flex flex-col items-center text-center">
           <h3>السنة الدراسية : 2026/2025</h3>

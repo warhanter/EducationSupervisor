@@ -606,6 +606,9 @@ export type Database = {
           school_name: string
           school_wilaya: string | null
           start_date: string | null
+          first_trimester: string | null
+          second_trimester: string | null
+          third_trimester: string | null
           tuesday_evening: boolean | null
           updated_at: string | null
         }
@@ -621,6 +624,9 @@ export type Database = {
           school_name: string
           school_wilaya?: string | null
           start_date?: string | null
+          first_trimester?: string | null
+          second_trimester?: string | null
+          third_trimester?: string | null
           tuesday_evening?: boolean | null
           updated_at?: string | null
         }
@@ -636,6 +642,9 @@ export type Database = {
           school_name?: string
           school_wilaya?: string | null
           start_date?: string | null
+          first_trimester?: string | null
+          second_trimester?: string | null
+          third_trimester?: string | null
           tuesday_evening?: boolean | null
           updated_at?: string | null
         }

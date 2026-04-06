@@ -15,11 +15,11 @@ export function calculateMissedHours(
   const holidayStrings = new Set();
 
   holidays.forEach((holiday) => {
-    if (holiday.start && holiday.end) {
+    if (holiday.start_date && holiday.end_date) {
       // نطاق عطلة
-      const start = new Date(holiday.start);
+      const start = new Date(holiday.start_date);
       start.setHours(0, 0, 0, 0);
-      const end = new Date(holiday.end);
+      const end = new Date(holiday.end_date);
       end.setHours(0, 0, 0, 0);
 
       const current = new Date(start);

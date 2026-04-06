@@ -47,7 +47,7 @@ const Notice1Page = ({ state, setOpen }) => {
 
   const noticeName = state.notice;
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
-    (address) => address.full_name == student.full_name
+    (address) => address.full_name == student.full_name,
   )[0];
   console.log(student);
   console.log(studentAdress);
@@ -57,17 +57,17 @@ const Notice1Page = ({ state, setOpen }) => {
   }
   const [noticeDate, setNoticeDate] = useState<Date | null>(null);
   const [fatherName, setFatherName] = useState(
-    studentAdress?.last_name + " " + studentAdress?.father_name
+    studentAdress?.last_name + " " + studentAdress?.father_name,
   );
   const [address, setAddress] = useState(studentAdress?.address);
   const notice1Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 3
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 3,
   )?.toLocaleDateString("en-ZA");
   const notice2Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 10
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 10,
   )?.toLocaleDateString("en-ZA");
   const notice3Date = new Date(
-    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 17
+    absenceDate?.getTime() + 1000 * 60 * 60 * 24 * 17,
   )?.toLocaleDateString("en-ZA");
 
   useEffect(() => {
@@ -98,8 +98,8 @@ const Notice1Page = ({ state, setOpen }) => {
     noticeName === "notice1"
       ? "الإشعـار الأول بالغيـاب"
       : noticeName === "notice2"
-      ? "الإشعـار الثاتي بالغيـاب"
-      : "إعـــــــــذار";
+        ? "الإشعـار الثاتي بالغيـاب"
+        : "إعـــــــــذار";
   const gender =
     student.gender === "أنثى"
       ? { name: "ابنتكم", birth: "المولودة", absence: "تغيبت" }
@@ -126,7 +126,7 @@ const Notice1Page = ({ state, setOpen }) => {
       <div className="flex my-5 justify-between">
         <div>
           <h3>مديرية التربية لولاية باتنة</h3>
-          <h3>ثانوية : المختلطة مروانة</h3>
+          <h3>ثانوية : بروال عبد الرحمن</h3>
           <h3> الرقم : ...............</h3>
         </div>
         <div className="flex flex-col items-center text-center">
@@ -149,8 +149,8 @@ const Notice1Page = ({ state, setOpen }) => {
             {noticeName === "notice2"
               ? notice2Sub
               : noticeName === "notice3"
-              ? notice3Sub
-              : ""}
+                ? notice3Sub
+                : ""}
           </p>
           <p>
             بنــاءً على القـرار الوزاري رقـم: 833 والمـؤرخ فـي: 13/11/1991
@@ -161,8 +161,8 @@ const Notice1Page = ({ state, setOpen }) => {
             {noticeName === "notice2"
               ? notice2
               : noticeName === "notice3"
-              ? notice3
-              : ""}
+                ? notice3
+                : ""}
           </p>
         </div>
         <p>
@@ -203,7 +203,7 @@ const Notice1Page = ({ state, setOpen }) => {
                 variant={"outline"}
                 className={cn(
                   "justify-center text-center font-normal",
-                  sendDate && "text-muted-foreground"
+                  sendDate && "text-muted-foreground",
                 )}
               >
                 <CalendarIcon className="ml-4 h-4 w-4" />

@@ -10,7 +10,7 @@ export function calculateMissedHours(
   startDateTime,
   endDateTime,
   holidays = [],
-  medicalLeave = []
+  medicalLeave = [],
 ) {
   // التأكد من أن التواريخ صحيحة
   if (startDateTime > endDateTime) {
@@ -24,11 +24,11 @@ export function calculateMissedHours(
   const holidayStrings = new Set();
 
   allHolidays.forEach((holiday) => {
-    if (holiday.start && holiday.end) {
+    if (holiday.start_date && holiday.end_date) {
       // نطاق عطلة
-      const start = new Date(holiday.start);
+      const start = new Date(holiday.start_date);
       start.setHours(0, 0, 0, 0);
-      const end = new Date(holiday.end);
+      const end = new Date(holiday.end_date);
       end.setHours(0, 0, 0, 0);
 
       const current = new Date(start);
@@ -51,7 +51,7 @@ export function calculateMissedHours(
 
   const end = new Date(endDateTime);
   const endDateOnly = new Date(end);
-  endDateOnly.setHours(0, 0, 0, 0);
+  endDateOnly.setHours(0, 0, -1, 0);
 
   while (current <= endDateOnly) {
     const dayOfWeek = current.getDay();
@@ -74,7 +74,7 @@ export function calculateMissedHours(
           hoursForDay = calculateHoursForTimeRange(
             startDateTime,
             endDateTime,
-            schedule
+            schedule,
           );
         } else if (isFirstDay) {
           // اليوم الأول - حساب من وقت المغادرة حتى نهاية اليوم الدراسي
@@ -83,7 +83,7 @@ export function calculateMissedHours(
           hoursForDay = calculateHoursForTimeRange(
             startDateTime,
             endOfDay,
-            schedule
+            schedule,
           );
         } else if (isLastDay) {
           // اليوم الأخير - حساب من بداية اليوم الدراسي حتى وقت العودة
@@ -92,7 +92,7 @@ export function calculateMissedHours(
           hoursForDay = calculateHoursForTimeRange(
             startOfDay,
             endDateTime,
-            schedule
+            schedule,
           );
         } else {
           // يوم كامل
