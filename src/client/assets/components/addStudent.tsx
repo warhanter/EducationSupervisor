@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import HeaderNavbar from "./HeaderNavbar";
 import { useStudents } from "@/client/providers/StudentProvider";
 import _ from "lodash";
-import { extractAbbreviation } from "@/utils/extractAbbreviation";
+import { extractAbbreviation } from "@/utils/utils/extractAbbreviation";
 
 const studentSchema = z.object({
   first_name: z.string().min(2, "الاسم يجب أن يحتوي على حرفين على الأقل"),

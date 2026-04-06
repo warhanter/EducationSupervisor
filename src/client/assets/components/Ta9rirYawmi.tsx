@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { PDFPrintTablesProps } from "./PDFPrintTables";
 import { filter, groupBy, max, sortBy } from "lodash";
-import { StudentList, useStudents } from "@/client/providers/StudentProvider";
+import { StudentList } from "@/client/providers/StudentProvider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
+import { extractAbbreviation } from "@/utils/utils/extractAbbreviation";
 
 type Ta9rirYawmiProps = PDFPrintTablesProps & {
   title: string;
@@ -19,7 +20,7 @@ export default function Ta9rirYawmi({
   allStudents,
   table,
 }: Ta9rirYawmiProps) {
-  const { professors } = useStudents();
+  // const { professors } = useStudents();
   const [report_number, setReport_number] = useState<number | null>(null);
   const [supervisors, setSupervisors] = useState("");
   const [totalhours, setTotalHours] = useState("");
@@ -53,7 +54,7 @@ export default function Ta9rirYawmi({
         },
         {
           onConflict: "report_date",
-        }
+        },
       )
       .select();
 
@@ -74,7 +75,7 @@ export default function Ta9rirYawmi({
       !(
         (student.switched_school == true || student.is_fired == true) &&
         yesterdayDate > new Date(student.student_leave_date)
-      )
+      ),
   );
   const todayCount = filter(
     allStudents,
@@ -83,21 +84,21 @@ export default function Ta9rirYawmi({
       !(
         (student.switched_school == true || student.is_fired == true) &&
         new Date(student.student_leave_date) < todayDate
-      )
+      ),
   );
   const studentsGroupedByLevel = groupBy(todayCount, "level");
   const absencesGroupedByLevel = groupBy(data, "level");
   const studentsGroupedByClass1 = groupBy(
     sortBy(studentsGroupedByLevel["أولى"], "class_abbreviation"),
-    "class_abbreviation"
+    "class_abbreviation",
   );
   const studentsGroupedByClass2 = groupBy(
     sortBy(studentsGroupedByLevel["ثانية"], "class_abbreviation"),
-    "class_abbreviation"
+    "class_abbreviation",
   );
   const studentsGroupedByClass3 = groupBy(
     sortBy(studentsGroupedByLevel["ثالثة"], "class_abbreviation"),
-    "class_abbreviation"
+    "class_abbreviation",
   );
   const absencesGroupedByClass = groupBy(data, "class_abbreviation");
   // const studentsGroupedByClass1 = groupBy(data, "full_class_name");
@@ -106,9 +107,9 @@ export default function Ta9rirYawmi({
     Object.keys(studentsGroupedByLevel).map(
       (level) =>
         Object.keys(
-          groupBy(studentsGroupedByLevel[level], "class_abbreviation")
-        ).length
-    )
+          groupBy(studentsGroupedByLevel[level], "class_abbreviation"),
+        ).length,
+    ),
   );
 
   const newStudents = (student_status, gender) => {
@@ -122,7 +123,7 @@ export default function Ta9rirYawmi({
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
               new Date(date).setHours(0, 0, 0, 0))) &&
         s.student_status === student_status &&
-        s.gender === gender
+        s.gender === gender,
     ).length;
   };
   const allNewStudentsByGender = (gender) => {
@@ -135,7 +136,7 @@ export default function Ta9rirYawmi({
           (s.ta7wil_dakhili === true &&
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
               new Date(date).setHours(0, 0, 0, 0))) &&
-        s.gender === gender
+        s.gender === gender,
     ).length;
   };
   const allNewStudents = () => {
@@ -147,7 +148,7 @@ export default function Ta9rirYawmi({
             new Date(date).setHours(0, 0, 0, 0)) ||
         (s.ta7wil_dakhili === true &&
           new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
-            new Date(date).setHours(0, 0, 0, 0))
+            new Date(date).setHours(0, 0, 0, 0)),
     );
   };
   const goneStudents = (student_status, gender) => {
@@ -161,7 +162,7 @@ export default function Ta9rirYawmi({
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
               new Date(date).setHours(0, 0, 0, 0))) &&
         s.student_status === student_status &&
-        s.gender === gender
+        s.gender === gender,
     ).length;
   };
   const AllGoneStudentsByGender = (gender) => {
@@ -174,7 +175,7 @@ export default function Ta9rirYawmi({
           (s.ta7wil_dakhili === true &&
             new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
               new Date(date).setHours(0, 0, 0, 0))) &&
-        s.gender === gender
+        s.gender === gender,
     ).length;
   };
   const AllGoneStudents = () => {
@@ -186,7 +187,7 @@ export default function Ta9rirYawmi({
             new Date(date).setHours(0, 0, 0, 0)) ||
         (s.ta7wil_dakhili === true &&
           new Date(s.ta7wil_dakhili_date).setHours(0, 0, 0, 0) ===
-            new Date(date).setHours(0, 0, 0, 0))
+            new Date(date).setHours(0, 0, 0, 0)),
     );
   };
 
@@ -227,31 +228,57 @@ export default function Ta9rirYawmi({
       </th>
     );
   };
-  let professorsAbsences = [];
-  professors?.map((professor) => {
-    if (professor.absences?.length > 0) {
-      professor.absences.map((absence) => {
-        if (absence.date > yesterdayDate && absence.date < todayDate) {
-          // Object.assign({}, absence, {full_name: professor.full_name})
-          professorsAbsences.push(
-            Object.assign({}, absence, {
-              full_name: professor.full_name,
-              module_name: professor.module_name,
-            })
-          );
-        }
-      });
+  const [professorsAbsences, setProfessorsAbsences] = useState<any[]>([]);
+  const fetchProfessorAbsences = async () => {
+    const { data, error } = await supabase
+      .from("professor_absences")
+      .select("*, professors(full_name, subjects(subject))")
+      .eq("absence_date", new Date(date).toISOString().split("T")[0]);
+
+    if (error) {
+      console.error("Error fetching professor absences:", error);
+    } else {
+      const absencesWithDetails = data.map((absence: any) => ({
+        ...absence,
+        full_name: absence.professors?.full_name,
+        module_name: absence.professors?.subjects?.subject,
+        full_class_name: extractAbbreviation(absence.full_class_name),
+      }));
+      setProfessorsAbsences(absencesWithDetails);
+      setMissedHoursByTeachers(absencesWithDetails.length);
+      setMinTeachersCells(
+        8 - Object.keys(groupBy(absencesWithDetails, "full_name")).length,
+      );
     }
-  });
+  };
+
+  useEffect(() => {
+    fetchProfessorAbsences();
+    const channel = supabase
+      .channel("professor_absences_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "professor_absences",
+        },
+        () => {
+          fetchProfessorAbsences();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [date]);
+
   const groupedByTeacher = groupBy(professorsAbsences, "full_name");
   const teacherKeys = Object.keys(groupedByTeacher);
-  console.log(groupedByTeacher);
-  const [minTeachersCells, setMinTeachersCells] = useState(
-    8 - teacherKeys.length
-  );
-  const [missedHoursByTeachers, setMissedHoursByTeachers] = useState(
-    professorsAbsences.length
-  );
+
+  const [minTeachersCells, setMinTeachersCells] = useState(8);
+  const [missedHoursByTeachers, setMissedHoursByTeachers] = useState(0);
 
   return (
     <div id="section-to-print" className="w-full p-0 print:p-5">
@@ -262,7 +289,7 @@ export default function Ta9rirYawmi({
       <div className="flex mt-5 justify-between">
         <div>
           <h3>مديرية التربية لولاية باتنة</h3>
-          <h3>ثانوية : المختلطة مروانة</h3>
+          <h3>ثانوية : بروال عبد الرحمن</h3>
         </div>
         <div className="flex flex-col items-center text-center">
           <h3>السنة الدراسية : 2026/2025</h3>
@@ -387,83 +414,51 @@ export default function Ta9rirYawmi({
               <td className="border border-zinc-500 w-14 border-collapse">
                 {/* <input type="text" className="w-14 m-0 text-center" /> */}
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(8, 0, 0, 0) &&
-                      s.date < todayDate.setHours(9, 0, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 1)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(9, 0, 0, 0) &&
-                      s.date < todayDate.setHours(10, 0, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 2)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(10, 0, 0, 0) &&
-                      s.date < todayDate.setHours(11, 0, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 3)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(11, 0, 0, 0) &&
-                      s.date < todayDate.setHours(12, 0, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 4)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border-separate border border-zinc-500  bg-gray-200 w-8"></td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(13, 30, 0, 0) &&
-                      s.date < todayDate.setHours(14, 30, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 5)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(14, 30, 0, 0) &&
-                      s.date < todayDate.setHours(15, 30, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 6)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(15, 30, 0, 0) &&
-                      s.date < todayDate.setHours(16, 30, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 7)[0]
+                    ?.full_class_name
                 }
               </td>
               <td className="border border-zinc-500 w-14 border-collapse ">
                 {
-                  filter(
-                    groupedByTeacher[teacher],
-                    (s) =>
-                      s.date >= todayDate.setHours(16, 30, 0, 0) &&
-                      s.date < todayDate.setHours(17, 30, 0, 0)
-                  )[0]?.class_name
+                  filter(groupedByTeacher[teacher], (s) => s.hour === 8)[0]
+                    ?.full_class_name
                 }
               </td>
 
@@ -539,7 +534,7 @@ export default function Ta9rirYawmi({
                 name=""
                 // type="number"
                 className="w-8 m-0 text-center"
-                defaultValue={missedHoursByTeachers}
+                value={missedHoursByTeachers}
                 onChange={(e) =>
                   setMissedHoursByTeachers(Number(e.target.value))
                 }
@@ -907,7 +902,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "داخلي" && s.gender == "ذكر"
+                    (s) => s.student_status == "داخلي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -915,7 +910,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "داخلي" && s.gender == "أنثى"
+                    (s) => s.student_status == "داخلي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -923,7 +918,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر"
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -931,7 +926,8 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "نصف داخلي" && s.gender == "أنثى"
+                    (s) =>
+                      s.student_status == "نصف داخلي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -939,7 +935,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "خارجي" && s.gender == "ذكر"
+                    (s) => s.student_status == "خارجي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -947,7 +943,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     yesterdayCount,
-                    (s) => s.student_status == "خارجي" && s.gender == "أنثى"
+                    (s) => s.student_status == "خارجي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -990,7 +986,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "داخلي" && s.gender == "ذكر"
+                    (s) => s.student_status == "داخلي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -998,7 +994,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "داخلي" && s.gender == "أنثى"
+                    (s) => s.student_status == "داخلي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -1006,7 +1002,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر"
+                    (s) => s.student_status == "نصف داخلي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -1014,7 +1010,8 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "نصف داخلي" && s.gender == "أنثى"
+                    (s) =>
+                      s.student_status == "نصف داخلي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -1022,7 +1019,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "خارجي" && s.gender == "ذكر"
+                    (s) => s.student_status == "خارجي" && s.gender == "ذكر",
                   ).length
                 }
               </TableCell>
@@ -1030,7 +1027,7 @@ export default function Ta9rirYawmi({
                 {
                   filter(
                     todayCount,
-                    (s) => s.student_status == "خارجي" && s.gender == "أنثى"
+                    (s) => s.student_status == "خارجي" && s.gender == "أنثى",
                   ).length
                 }
               </TableCell>
@@ -1048,7 +1045,7 @@ export default function Ta9rirYawmi({
                       !(
                         (s.switched_school == true || s.is_fired) &&
                         new Date(s.student_leave_date) < todayDate
-                      )
+                      ),
                   )?.length
                 }
               </TableCell>
@@ -1155,7 +1152,7 @@ export default function Ta9rirYawmi({
                     </TableCell>
                   </tr>
                 );
-              }
+              },
             )}
             {allNewStudents().length < minTransferCells &&
               Array.from({
@@ -1198,7 +1195,7 @@ export default function Ta9rirYawmi({
                     </TableCell>
                   </tr>
                 );
-              }
+              },
             )}
             {AllGoneStudents().length < minTransferCells &&
               Array.from({

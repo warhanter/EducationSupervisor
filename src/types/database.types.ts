@@ -442,6 +442,7 @@ export type Database = {
           absence_date: string
           created_at: string | null
           full_class_name: string
+          hour: number | null
           id: string
           is_justified: boolean | null
           professor_id: string | null
@@ -451,6 +452,7 @@ export type Database = {
           absence_date: string
           created_at?: string | null
           full_class_name: string
+          hour?: number | null
           id?: string
           is_justified?: boolean | null
           professor_id?: string | null
@@ -460,6 +462,7 @@ export type Database = {
           absence_date?: string
           created_at?: string | null
           full_class_name?: string
+          hour?: number | null
           id?: string
           is_justified?: boolean | null
           professor_id?: string | null
@@ -595,12 +598,17 @@ export type Database = {
           academic_year: string
           app_version: string
           created_at: string | null
+          end_date: string | null
           evening_timing: string | null
           id: string
           school_baladiya: string | null
-          school_level: string | null
+          school_level: Database["public"]["Enums"]["school_level"] | null
           school_name: string
           school_wilaya: string | null
+          start_date: string | null
+          first_trimester: string | null
+          second_trimester: string | null
+          third_trimester: string | null
           tuesday_evening: boolean | null
           updated_at: string | null
         }
@@ -608,12 +616,17 @@ export type Database = {
           academic_year: string
           app_version: string
           created_at?: string | null
+          end_date?: string | null
           evening_timing?: string | null
           id?: string
           school_baladiya?: string | null
-          school_level?: string | null
+          school_level?: Database["public"]["Enums"]["school_level"] | null
           school_name: string
           school_wilaya?: string | null
+          start_date?: string | null
+          first_trimester?: string | null
+          second_trimester?: string | null
+          third_trimester?: string | null
           tuesday_evening?: boolean | null
           updated_at?: string | null
         }
@@ -621,12 +634,17 @@ export type Database = {
           academic_year?: string
           app_version?: string
           created_at?: string | null
+          end_date?: string | null
           evening_timing?: string | null
           id?: string
           school_baladiya?: string | null
-          school_level?: string | null
+          school_level?: Database["public"]["Enums"]["school_level"] | null
           school_name?: string
           school_wilaya?: string | null
+          start_date?: string | null
+          first_trimester?: string | null
+          second_trimester?: string | null
+          third_trimester?: string | null
           tuesday_evening?: boolean | null
           updated_at?: string | null
         }
@@ -726,6 +744,7 @@ export type Database = {
           medical_leave_end_date: string | null
           medical_leave_start_date: string | null
           mo3waz: boolean | null
+          nisfdakhili_inscription_date: string | null
           prev_class_name: string | null
           prev_class_number: number | null
           rakm_tasjil: number | null
@@ -784,6 +803,7 @@ export type Database = {
           medical_leave_end_date?: string | null
           medical_leave_start_date?: string | null
           mo3waz?: boolean | null
+          nisfdakhili_inscription_date?: string | null
           prev_class_name?: string | null
           prev_class_number?: number | null
           rakm_tasjil?: number | null
@@ -842,6 +862,7 @@ export type Database = {
           medical_leave_end_date?: string | null
           medical_leave_start_date?: string | null
           mo3waz?: boolean | null
+          nisfdakhili_inscription_date?: string | null
           prev_class_name?: string | null
           prev_class_number?: number | null
           rakm_tasjil?: number | null
@@ -1046,7 +1067,9 @@ export type Database = {
       populate_classrooms_from_students: { Args: never; Returns: number }
     }
     Enums: {
+      evening_timing: "13:00" | "13:30" | "14:00"
       gender: "ذكر" | "أنثى"
+      school_level: "ثانوي" | "متوسط" | "إبتدائي"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1174,7 +1197,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      evening_timing: ["13:00", "13:30", "14:00"],
       gender: ["ذكر", "أنثى"],
+      school_level: ["ثانوي", "متوسط", "إبتدائي"],
     },
   },
 } as const

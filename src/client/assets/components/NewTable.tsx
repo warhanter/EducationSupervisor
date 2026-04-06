@@ -56,7 +56,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"; 
 
 export default function NewTable({ queryTbale }: { queryTbale: string }) {
   const location = useLocation();
@@ -762,12 +762,13 @@ export default function NewTable({ queryTbale }: { queryTbale: string }) {
                 </a> */}
                 {queryTbale === "Absence" && (
                   <>
+                    {/* <MonthlyAbsences data={absences} students={students} /> */}
                     <MonthlyAbsences data={absences} students={students} />
                     <MarkAbsences />
                     <Popover>
                       <PopoverTrigger className="print:hidden" asChild>
                         <Button>
-                          <CalendarIcon className="ml-4 h-4 w-4" />
+                          <CalendarIcon className="mlr-4 h-4 w-4" />
                           {rapportDate ? (
                             format(rapportDate, "PPPP", { locale: arDZ })
                           ) : (

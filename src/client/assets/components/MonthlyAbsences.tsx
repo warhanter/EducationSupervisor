@@ -12,13 +12,18 @@ import { SelectItems } from "./SelectItems";
 
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabaseClient";
+import {
+  buildMonthlyAttendanceGrid,
+  getAbsentStudentsForDate,
+  missedHours,
+} from "@/utils/utils/dateHelpers";
 
 // Fetch holidays
 const { data: holidays, error: holidaysError } = await supabase
   .from("calendar_events")
-  .select("*")
+  .select("*");
 
-if (holidaysError) {  
+if (holidaysError) {
   console.error("Error fetching holidays:", holidaysError);
 }
 
@@ -26,9 +31,9 @@ if (holidaysError) {
 const { data: selectedClassProgram, error: classProgramError } =
   await supabase.from("classrooms").select(`
     *,
-    program:class_programs!classrooms_class_program_fkey (
+    program:class_programs!class_programs_classroom_id_fkey (
       *,
-      module:professors!class_programs_professor_fkey (*)
+      module:professors!class_programs_professor_id_fkey (*)
     )
   `);
 
@@ -46,84 +51,6 @@ if (absencesError) {
   console.error("Error fetching absences:", absencesError);
 }
 
-// Process absences data (GROUP BY equivalent in JavaScript)
-const absenceStudents = absencesData
-  ? Object.values(
-      absencesData.reduce((acc, absence) => {
-        const studentId = absence.student_id;
-
-        if (!acc[studentId]) {
-          acc[studentId] = {
-            id: studentId,
-            total_missed_hours: 0,
-            total_justified_missed_hours: 0,
-            className: absence.full_class_name,
-            fullName: absence.full_name,
-            dates: [],
-          };
-        }
-
-        // Aggregate totals
-        acc[studentId].total_missed_hours += absence.missed_hours || 0;
-        acc[studentId].total_justified_missed_hours +=
-          absence.justified_missed_hours || 0;
-
-        // Calculate days of absence
-        const dateOfAbsence = new Date(absence.date_of_absence);
-        const dateOfReturn = new Date(absence.date_of_return);
-        const daysOfAbsence = Math.floor(
-          (dateOfReturn.getTime() - dateOfAbsence.getTime()) / 86400000
-        );
-
-        // Add absence details
-        acc[studentId].dates.push({
-          supervisor_id: absence.supervisor_id,
-          missed_hours: absence.missed_hours,
-          justified_missed_hours: absence.justified_missed_hours,
-          start: absence.date_of_absence,
-          return: absence.date_of_return,
-          daysOfAbsence,
-        });
-
-        return acc;
-      }, {} as Record<string, any>)
-    )
-      // Add total field
-      .map((student) => ({
-        ...student,
-        total:
-          student.total_missed_hours + student.total_justified_missed_hours,
-      }))
-      // Sort by total (descending)
-      .sort((a, b) => b.total - a.total)
-  : [];
-
-Date.prototype.between = function (a ,b) {
-  let min = Math.min.apply(Math, [a.getTime(), b.getTime()]);
-  let max = Math.max.apply(Math, [a.getTime(), b.getTime()]);
-  return this.getTime() >= min && this.getTime() <= max;
-};
-const missedHours = (absence_date, rapport_date, eachDayMissedHours) => {
-  const daysOfAbcence = Math.round(
-    (rapport_date - absence_date) / (1000 * 60 * 60 * 24)
-  );
-  const start = new Date(absence_date).getHours();
-  const weekday = new Intl.DateTimeFormat("fr", {
-    weekday: "long",
-  }).format(rapport_date);
-  return weekday === "mardi" && daysOfAbcence >= 1
-    ? 4
-    : (weekday === "mardi" || weekday === "tuesday" || weekday === "Tuesday") &&
-      daysOfAbcence < 1
-    ? 12 - start
-    : daysOfAbcence >= 1
-    ? eachDayMissedHours
-      ? eachDayMissedHours
-      : 7
-    : start > 12
-    ? 16 - start
-    : 15 - start;
-};
 export function MonthlyAbsences({
   data,
   students,
@@ -131,101 +58,65 @@ export function MonthlyAbsences({
   data: Record<string, any>[];
   students: Record<string, any>[];
 }) {
-  const [date, setDate] = useState(new Date().setHours(23));
   const [level, setLevel] = useState("");
   const [month, setMonth] = useState(1);
   const [year, setYear] = useState(2024);
+  const todaysDate = new Date().setHours(23);
+
   const levels = _.sortBy(
     _.uniqBy(data, (e) => e.full_class_name),
-    "class_abbreviation"
+    "class_abbreviation",
   );
+
   const program = selectedClassProgram?.filter(
-    (a) => a?.class_fullName === level
+    (a) => a?.class_fullName === level,
   )[0]?.program;
+
   const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  const years = [2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
-  let studentsData = [];
+  const years = [2025, 2026, 2027, 2028, 2029, 2030];
+
   const allClassStudents = useMemo(
     () =>
       students
         .filter((student) => student.full_class_name === level)
         .sort((a, b) => a.full_name.localeCompare(b.full_name)),
-    [level]
+    [level],
   );
+
   const absentClassData = useMemo(
     () => data.filter((student) => student.full_class_name === level),
-    [level]
+    [level],
   );
-  const selectedDates = _.filter(
-    absentClassData,
-    (i) =>
-      (new Date(i.date_of_return).getTime() > date || !i.date_of_return) &&
-      new Date(i.date_of_absence).getTime() <= date
-  );
-  selectedDates.map((student, i) => {
-    studentsData.push({
-      number: i + 1,
-      name: student.full_name,
-      className: student.full_class_name,
-      missedHours: missedHours(
-        new Date(student.date_of_absence).getTime(),
-        date,
-        program
-      ),
-      date: new Date(date).toLocaleDateString("en-ZA"),
-    });
-  });
-  let studentsData2 = {};
-  let classHours = 0;
-  for (let i = 1; i < 31; i++) {
-    let stdata = [];
-    const newDate = new Date(`${year}-${month}-${i}`).setHours(23);
-    const dateName = new Date(`${year}-${month}-${i}`).getDay();
-    if (dateName === 5 || dateName === 6) {
-      continue;
-    }
-    let isHoliday = false;
-    holidays?.map((holiday) => {
-      if (new Date(newDate).between(new Date(holiday.start_date), new Date(holiday.end_date))) {
-        isHoliday = true;
-        return;
-      }
-    });
-    if (isHoliday) {
-      continue;
-    }
-    const eachDayMissedHours = program?.filter(
-      (p) =>
-        p.day ===
-        new Date(newDate).toLocaleDateString("ar-DZ", {
-          weekday: "long",
-        })
-    ).length;
-    classHours += eachDayMissedHours;
 
-    const selectedDates = _.filter(
-      absentClassData,
-      (i) =>
-        (new Date(i.date_of_return).getTime() > newDate || !i.date_of_return) &&
-        new Date(i.date_of_absence).getTime() <= newDate
-    );
-    selectedDates.map((student, i) => {
-      stdata.push({
-        id: student.student_id,
-        missedHours: missedHours(
-          new Date(student.date_of_absence).getTime(),
-          newDate,
-          eachDayMissedHours
-        ),
-      });
-    });
-    Object.assign(studentsData2, { [`${year}-${month}-${i}`]: stdata });
-  }
-  let numOfStudents = 0;
+  // Students currently absent as of the selected todaysDate
+  const currentlyAbsent = getAbsentStudentsForDate(absentClassData, todaysDate);
+  const studentsData = currentlyAbsent.map((student, i) => ({
+    number: i + 1,
+    name: student.full_name,
+    className: student.full_class_name,
+    missedHours: missedHours(
+      new Date(student.date_of_absence).getTime(),
+      todaysDate,
+      program,
+    ),
+    date: new Date(todaysDate).toLocaleDateString("en-ZA"),
+  }));
+
+  // Monthly attendance grid (one entry per school day)
+  const { grid: studentsData2, classHours } = buildMonthlyAttendanceGrid(
+    year,
+    month,
+    absentClassData,
+    program,
+    holidays ?? [],
+  );
+
   const numdays = Object.keys(studentsData2).length;
   const monthDays = new Date(year, month, 0).getDate();
+  let numOfStudents = 0;
   let realMissedHoursByClass = 0;
   let totalMissedHoursByClass = 0;
+
   return (
     <div>
       <Dialog>
@@ -272,7 +163,7 @@ export function MonthlyAbsences({
               />
             </div>
             <div className="w-full overflow-scroll print:overflow-visible print:h-screen h-[600px]">
-              <table className="border-separate border border-zinc-500 border-slate-500 text print:w-screen">
+              <table className="border-separate border  border-slate-500 text print:w-screen">
                 <thead className="sticky top-0 z-10 bg-white">
                   <tr>
                     <th className="border border-slate-600 px-5">الرقم</th>
@@ -308,15 +199,11 @@ export function MonthlyAbsences({
                           </td>
 
                           {Array.from(Array(monthDays).keys()).map((num) => {
+                            const dayKey = `${year}-${month}-${num + 1}`;
                             const missedH =
-                              studentsData2[
-                                `${year}-${month}-${num + 1}`
-                              ]?.filter((a) => a.id === student.id).length > 0
-                                ? studentsData2[
-                                    `${year}-${month}-${num + 1}`
-                                  ].filter((a) => a.id === student.id)[0]
-                                    .missedHours
-                                : 0;
+                              studentsData2[dayKey]?.find(
+                                (a) => a.id === student.id,
+                              )?.missedHours ?? 0;
                             total += missedH;
                             realMissedHoursByClass += missedH;
                             totalMissedHoursByClass = classHours

@@ -39,10 +39,10 @@ export default function Convocation({ data, title }: ConvocationProps) {
   //   (address) => address.student_id == data.id
   // )[0];
   const studentAdress: Record<string, any> | undefined = addresses?.filter(
-    (address) => address.full_name == data.full_name
+    (address) => address.full_name == data.full_name,
   )[0];
   const [fatherName, setFatherName] = useState(
-    studentAdress?.last_name + " " + studentAdress?.father_name
+    studentAdress?.last_name + " " + studentAdress?.father_name,
   );
   const [address, setAddress] = useState(studentAdress?.address);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -90,7 +90,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
             <div className="flex my-5 justify-between">
               <div>
                 <h3>مديرية التربية لولاية باتنة</h3>
-                <h3>ثانوية : المختلطة مروانة</h3>
+                <h3>ثانوية : بروال عبد الرحمن</h3>
                 <h3> الرقم : ...............</h3>
               </div>
               <div className="flex flex-col items-center text-center">

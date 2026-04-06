@@ -13,17 +13,29 @@ type MaafiyinPrintTableProps = PDFPrintTablesProps & {
 const calcLength = (
   students: Record<string, any>[],
   student_status: string,
-  mamnouh?: boolean
+  mamnouh?: boolean,
 ) => {
   if (mamnouh !== undefined) {
     const len = students?.filter(
       (s: any) =>
-        s.student_status === student_status && s.is_mamnouh === mamnouh
+        s.student_status === student_status && s.is_mamnouh === mamnouh,
+    ).length;
+    return len;
+  }
+  if (student_status === "داخلي") {
+    const len = students?.filter(
+      (s: any) => s.student_status === student_status,
+    ).length;
+    return len;
+  }
+  if (student_status === "نصف داخلي") {
+    const len = students?.filter(
+      (s: any) => s.student_status === student_status,
     ).length;
     return len;
   }
   const len = students?.filter(
-    (s: any) => s.student_status === student_status
+    (s: any) => s.is_mamnouh === false && s.lunch_paid === false,
   ).length;
   return len;
 };
@@ -36,14 +48,28 @@ const calcStats = (students: any[]) => {
   stats.dakhiliMales = calcLength(males, "داخلي");
   stats.dakhiliFemales = calcLength(females, "داخلي");
 
-  stats.nisfDakhiliMales = calcLength(males, "نصف داخلي");
-  stats.nisfDakhiliFemales = calcLength(females, "نصف داخلي");
+  stats.nisfDakhiliMales = calcLength(
+    males?.filter((s) => !(s.lunch_paid === false && s.is_mamnouh === false)),
+    "نصف داخلي",
+  );
+  stats.nisfDakhiliFemales = calcLength(
+    females?.filter((s) => !(s.lunch_paid === false && s.is_mamnouh === false)),
+    "نصف داخلي",
+  );
 
   stats.mamnouhinMales = calcLength(males, "نصف داخلي", true);
   stats.mamnouhinFemales = calcLength(females, "نصف داخلي", true);
 
-  stats.mosadidinMales = calcLength(males, "نصف داخلي", false);
-  stats.mosadidinFemales = calcLength(females, "نصف داخلي", false);
+  stats.mosadidinMales = calcLength(
+    males?.filter((s) => s.lunch_paid === true),
+    "نصف داخلي",
+    false,
+  );
+  stats.mosadidinFemales = calcLength(
+    females?.filter((s) => s.lunch_paid === true),
+    "نصف داخلي",
+    false,
+  );
 
   stats.kharijiMales = calcLength(males, "خارجي");
   stats.kharijiFemales = calcLength(females, "خارجي");
@@ -60,7 +86,7 @@ const DocumentHeader = () => (
     <div className="flex mt-5 justify-between">
       <div>
         <h3>مديرية التربية لولاية باتنة</h3>
-        <h3>ثانوية : المختلطة مروانة</h3>
+        <h3>ثانوية : بروال عبد الرحمن</h3>
       </div>
       <div className="flex flex-col items-center text-center">
         <h3>السنة الدراسية : 2026/2025</h3>
@@ -383,7 +409,7 @@ export default function StatsTable({
 }: MaafiyinPrintTableProps) {
   const studentsGroupedByClassName = groupBy(
     data,
-    (s) => `${s.level}_${s.class_name}`
+    (s) => `${s.level}_${s.class_name}`,
   );
 
   const dakhili = data?.filter((s) => s.student_status === "داخلي").length;
@@ -404,7 +430,7 @@ export default function StatsTable({
                 date={date}
                 dakhili={dakhili}
               />
-            )
+            ),
           )}
         </tbody>
         <StatsTableFooter students={data} dakhili={dakhili} />

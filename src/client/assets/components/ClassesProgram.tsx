@@ -16,8 +16,24 @@ import {
   Trash2,
   Save,
   PlusCircle,
+  Info,
 } from "lucide-react";
 import HeaderNavbar from "./HeaderNavbar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useStudents } from "@/client/providers/StudentProvider";
 import _, { padStart } from "lodash";
 import { supabase } from "@/lib/supabaseClient";
@@ -50,7 +66,7 @@ function ClassProgramForm() {
     text: string;
   }>({ type: "", text: "" });
 
-  const { classrooms, classroom_professors, class_programs } = useStudents();
+  const { classrooms, classroom_professors, class_programs, professors } = useStudents();
 
   const classProgrmas = useMemo(
     () =>
@@ -270,12 +286,15 @@ function ClassProgramForm() {
                       </span>
                     </label>
                   </div>
+                  <div className="flex justify-between">
                   <Button className="h-12" variant={"outline"} asChild>
                     <div className="flex gap-4">
                       <Link to={"/isnad"}>تحيين الإسناد</Link>
                       <PlusCircle />
                     </div>
                   </Button>
+                  <ClassroomDetailsModal programs={classProgrmas} professors={professors} />
+                  </div>
                 </div>
               )}
             </div>
@@ -456,6 +475,69 @@ function ClassProgramForm() {
         </Card>
       </div>
     </div>
+  );
+}
+
+const getIstibalTime = (day: string, hour: string) => {
+  if (!day || !hour) return "-";
+  const [hours, minutes] = hour.split(":");
+  return `${day} ${hours}:${minutes}`;
+}
+
+function ClassroomDetailsModal({ programs, professors }: { programs: any[], professors: any[] }) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        {/* <Button variant="outline" className="h-12 w-12 p-0 rounded-full border-dashed border-2">
+           <Info className="h-6 w-6 text-blue-500" />
+        </Button> */}
+        <Button className="h-12" variant={"outline"} asChild>
+          <div className="flex gap-4">
+            <span>أساتذة القسم</span>
+            <Info className="h-6 w-6 text-blue-500" />
+          </div>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl" dir="rtl">
+        <DialogHeader>
+          <DialogTitle className="text-right">أساتذة القسم</DialogTitle>
+        </DialogHeader>
+        <div className="mt-4">
+          <Table dir="rtl">
+            <TableHeader>
+              <TableRow className="bg-slate-100">
+                <TableHead className="text-right font-bold">المادة</TableHead>
+                <TableHead className="text-right font-bold">الأستاذ</TableHead>
+                <TableHead className="text-right font-bold">توقيت الإستقبال</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {programs.length > 0 ? (
+                programs.map((program, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {program.professors?.subjects?.subject || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {program.professors?.full_name || "-"}
+                    </TableCell>
+                    <TableCell>
+                      {getIstibalTime(program.professors?.isti9bal_day, program.professors?.isti9bal_time) || "-"}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={2} className="text-center py-4 text-gray-500">
+                    لا توجد مواد مسندة لهذا القسم بعد
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

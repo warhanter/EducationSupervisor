@@ -431,11 +431,25 @@ function Isnad() {
               <table className="w-full border-collapse table-fixed">
                 <thead>
                   <tr className="bg-gradient-to-r bg-slate-800">
-                    {TABLE_HEADERS.map((title) => (
-                      <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-2/12">
-                        {title}
+                      <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12">
+                        {"الرقم"}
                       </th>
-                    ))}
+                        <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-4/12">
+                        {"الأقسام"}
+                      </th>
+                        <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12">
+                        {"حذف"}
+                      </th>
+                        <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12">
+                        {"الرقم"}
+                      </th>
+                        <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-4/12">
+                        {"title"}
+                      </th>
+                        <th className="border border-slate-700 px-4 py-3 text-white font-semibold text-center w-1/12">
+                        {"حذف"}
+                      </th>
+
                   </tr>
                 </thead>
                 <tbody>

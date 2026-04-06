@@ -1,3 +1,4 @@
+import { isBetween } from "@/utils/utils/dateHelpers";
 import app from "../realm";
 export async function calcAbsences(studentID, studentClass) {
   Date.prototype.between = function (start: Date, end: Date) {
@@ -11,10 +12,10 @@ export async function calcAbsences(studentID, studentClass) {
   // remove Machtobin..
   const filtredAbsences = absences?.filter(
     (student) =>
-      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired
+      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired,
   );
   const selectedClass = filtredAbsences?.filter(
-    (student) => student.student_id === studentID
+    (student) => student.student_id === studentID,
   );
 
   const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
@@ -61,7 +62,7 @@ export async function calcAbsences(studentID, studentClass) {
           const absenceTime = new Date(date2 + 1000 * 60 * 60 * i);
           let isHoliday = false;
           holidays?.map((holiday) => {
-            if (absenceTime.between(holiday.start_date, holiday.end_date)) {
+            if (isBetween(absenceTime, holiday.start_date, holiday.end_date)) {
               isHoliday = true;
               return;
             }
@@ -71,7 +72,7 @@ export async function calcAbsences(studentID, studentClass) {
               module.day ===
                 absenceTime.toLocaleString("ar-DZ", {
                   weekday: "long",
-                }) && module.hour === absenceTime.getHours()
+                }) && module.hour === absenceTime.getHours(),
           );
           if (hourProgram[0] && !isHoliday) {
             missedModules.push(hourProgram[0].module[0].module_name);
@@ -98,7 +99,7 @@ export async function calcAbsences(studentID, studentClass) {
       let total_justified = 0;
       let total_nonJustified = 0;
       const totalAbsences = absences?.filter(
-        (a) => a.full_name === student.full_name
+        (a) => a.full_name === student.full_name,
       );
       totalAbsences?.map((a) => {
         total_nonJustified += a.missed_hours ? a.missed_hours : 0;
@@ -118,11 +119,11 @@ export async function calcAbsences(studentID, studentClass) {
   // to remove dublicates by full_name later.
   const allStudents = [
     ...new Map(
-      filtredAbsences?.map((item) => [item["full_name"], item])
+      filtredAbsences?.map((item) => [item["full_name"], item]),
     ).values(),
   ];
   let removedDubs = allStudents?.filter(
-    (value, index, array) => array.indexOf(value) === index
+    (value, index, array) => array.indexOf(value) === index,
   );
   // const newData = updateTotals()?.sort(
   //   (a, b) => b.total_missedH - a.total_missedH

@@ -10,7 +10,7 @@ import React, {
 import { supabase } from "@/lib/supabaseClient";
 import { SkeletonCard } from "../assets/components/SkeletonCard";
 import { ClassroomProfessor } from "../assets/components/Isnad";
-import { Tables } from "@/supabase/database.types";
+import { Tables } from "@/types/database.types";
 
 // Types
 type Notification = {
@@ -209,12 +209,12 @@ function StudentProvider({ children }: { children: ReactNode }) {
           supabase
             .from(TABLES.CLASS_PROFESSORS)
             .select(
-              `*, classrooms (class_full_name, class_prefix), professors (full_name, subjects (subject))`
+              `*, classrooms (class_full_name, class_prefix), professors (full_name, isti9bal_time, isti9bal_day, subjects (subject))`
             ),
           supabase
             .from("class_programs")
             .select(
-              `*, classrooms (class_full_name, class_prefix), professors(full_name, subjects (subject))`
+              `*, classrooms (class_full_name, class_prefix), professors(full_name, isti9bal_time, isti9bal_day, subjects (subject))`
             ),
           supabase.from(TABLES.PROFESSORS).select(`*, subjects (subject)`),
           supabase.from(TABLES.SUBJECTS).select("*"),
