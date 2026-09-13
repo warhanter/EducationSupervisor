@@ -17,7 +17,7 @@ app.get("/hello", (req, res) => {
 
 if (isProduction) {
   app.use(express.static(distPath));
-  app.get("*", (req, res) => {
+  app.use((req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 } else {
@@ -30,7 +30,7 @@ if (isProduction) {
   });
 
   app.use(vite.middlewares);
-  app.get("*", async (req, res, next) => {
+  app.use(async (req, res, next) => {
     try {
       const template = await fs.readFile(path.resolve(root, "index.html"), "utf-8");
       const html = await vite.transformIndexHtml(req.originalUrl, template);
