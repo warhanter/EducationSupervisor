@@ -106,6 +106,7 @@ export default function Convocation({ data, title }: ConvocationProps) {
                   setFatherName={setFatherName}
                   address={address}
                   fatherName={fatherName}
+                  student={data}
                 />
               </div>
             </div>
