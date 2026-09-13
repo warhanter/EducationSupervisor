@@ -115,5 +115,5 @@ export const useClassProgram = (
 ) => {
   if (!classPrograms || !className) return null;
   
-  return classPrograms.find((cp) => cp.class_fullName === className)?.program || null;
+  return classPrograms.find((cp) => cp.class_full_name === className)?.program || null;
 };
