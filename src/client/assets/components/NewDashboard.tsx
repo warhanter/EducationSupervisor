@@ -16,7 +16,6 @@ import { PiePlot, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import { ResponsiveChartContainer } from "@mui/x-charts";
 import HeaderNavbar from "./HeaderNavbar";
 import { SonnerDemo } from "./NotificationSnooner";
-import { calcAbsences } from "@/client/functions/calcAbsences";
 import { calculateMissedHours } from "@/utils/calculateMissedHours";
 
 type DataProps = {

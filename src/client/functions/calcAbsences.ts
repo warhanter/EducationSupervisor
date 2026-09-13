@@ -1,49 +1,47 @@
 import { isBetween } from "@/utils/utils/dateHelpers";
-import app from "../realm";
+import { supabase } from "@/lib/supabaseClient";
+
 export async function calcAbsences(studentID, studentClass) {
   Date.prototype.between = function (start: Date, end: Date) {
     return this.getTime() >= start.getTime() && this.getTime() <= end.getTime();
   };
-  const mongo = app.currentUser?.mongoClient("mongodb-atlas").db("2024");
-  const holidays = await mongo?.collection("Holidays").find();
-  const students = await mongo?.collection("Student").find();
-  const absences = await mongo?.collection("Absence").find();
+
+  const [holidaysRes, studentsRes, absencesRes, classroomsRes] =
+    await Promise.all([
+      supabase.from("calendar_events").select("start_date, end_date"),
+      supabase.from("students").select("id, is_fired"),
+      supabase
+        .from("absences")
+        .select(
+          "student_id, date_of_absence, date_of_return, full_name, missed_hours, justified_missed_hours",
+        ),
+      supabase.from("classrooms").select(`
+        class_full_name,
+        program:class_programs (
+          day,
+          hour,
+          module:professors ( full_name )
+        )
+      `),
+    ]);
+
+  const holidays = (holidaysRes.data ?? []).map((h) => ({
+    start_date: new Date(h.start_date),
+    end_date: new Date(h.end_date ?? h.start_date),
+  }));
+  const students = studentsRes.data ?? [];
+  const absences = absencesRes.data ?? [];
+  const weekProgram =
+    classroomsRes.data?.find((c) => c.class_full_name === studentClass)
+      ?.program ?? [];
 
   // remove Machtobin..
-  const filtredAbsences = absences?.filter(
-    (student) =>
-      !students?.filter((b) => b.id === student.student_id)[0]?.is_fired,
+  const filtredAbsences = absences.filter(
+    (student) => !students.find((b) => b.id === student.student_id)?.is_fired,
   );
-  const selectedClass = filtredAbsences?.filter(
+  const selectedClass = filtredAbsences.filter(
     (student) => student.student_id === studentID,
   );
-
-  const selectedClassProgram = await mongo?.collection("Classroom").aggregate([
-    {
-      $lookup: {
-        from: "ClassProgram",
-        localField: "class_program",
-        foreignField: "id",
-        pipeline: [
-          {
-            $lookup: {
-              from: "Professor",
-              localField: "professor",
-              foreignField: "id",
-              as: "module",
-            },
-          },
-        ],
-        as: "program",
-      },
-    },
-    {
-      $match: {
-        class_fullName: studentClass,
-      },
-    },
-  ]);
-  const weekProgram = selectedClassProgram[0].program;
 
   function missed_Modules() {
     let classMissedModules = [];
@@ -51,10 +49,10 @@ export async function calcAbsences(studentID, studentClass) {
     selectedClass?.map((student) => {
       let missedModules = [];
       const date1 = student.date_of_return
-        ? student.date_of_return.getTime()
+        ? new Date(student.date_of_return).getTime()
         : new Date().getTime();
       const date2 = student.date_of_absence
-        ? student.date_of_absence.getTime()
+        ? new Date(student.date_of_absence).getTime()
         : new Date().getTime();
       const absenceHours = Math.round((date1 - date2) / (1000 * 60 * 60));
       if (absenceHours) {
@@ -75,14 +73,16 @@ export async function calcAbsences(studentID, studentClass) {
                 }) && module.hour === absenceTime.getHours(),
           );
           if (hourProgram[0] && !isHoliday) {
-            missedModules.push(hourProgram[0].module[0].module_name);
-            globalmissed.push(hourProgram[0].module[0].module_name);
+            missedModules.push(hourProgram[0].module?.full_name);
+            globalmissed.push(hourProgram[0].module?.full_name);
           }
         }
         classMissedModules.push({
-          [student.date_of_absence.toLocaleString("en-ZA") +
+          [new Date(student.date_of_absence).toLocaleString("en-ZA") +
           " --> " +
-          student?.date_of_return?.toLocaleString("en-ZA")]: missedModules,
+          (student.date_of_return
+            ? new Date(student.date_of_return).toLocaleString("en-ZA")
+            : "")]: missedModules,
         });
       }
     });
@@ -92,7 +92,7 @@ export async function calcAbsences(studentID, studentClass) {
   const finalResult = missed_Modules();
   const counts = {};
   finalResult.forEach(function (x) {
-    counts[x] = (counts[x] || 0) + 1;
+    if (x) counts[x] = (counts[x] || 0) + 1;
   });
   function updateTotals() {
     removedDubs.map((student) => {

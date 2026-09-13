@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
-import app from "../../realm";
 import { Suspense } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import StudentProvider from "@/client/providers/StudentProvider";
