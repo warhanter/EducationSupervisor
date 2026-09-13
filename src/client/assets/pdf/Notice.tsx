@@ -139,6 +139,7 @@ const Notice1Page = ({ state, setOpen }) => {
             setFatherName={setFatherName}
             address={address}
             fatherName={fatherName}
+            student={student}
           />
         </div>
       </div>
